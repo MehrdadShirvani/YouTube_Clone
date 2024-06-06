@@ -53,4 +53,8 @@ public class ServerEncryption {
             throw new RuntimeException();
         }
     }
+
+    public PublicKey getServerPublicKey() {
+        return serverPublicKey;
+    }
 }
