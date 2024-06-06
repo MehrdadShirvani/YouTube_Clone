@@ -21,8 +21,7 @@ public class ServerEncryption {
         } catch (Exception e) {
             System.err.println("ERROR : while generating KeyPair inside the server ! : ");
             e.printStackTrace();
+            throw new RuntimeException();
         }
-
-        return null;
     }
 }
