@@ -27,7 +27,7 @@ public class ServerEncryption {
         }
     }
 
-    public static String encryptData(String jsonData, PublicKey clientPublicKey){
+    public String encryptData(String jsonData, PublicKey clientPublicKey){
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
@@ -40,4 +40,17 @@ public class ServerEncryption {
         }
     }
 
+    public String decryptData(String encryptedJsonData) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, this.serverPrivateKey);
+            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            System.err.println("Error : while encrypting the data inside the server ! :");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
 }
