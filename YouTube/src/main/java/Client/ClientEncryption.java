@@ -55,4 +55,9 @@ public class ClientEncryption {
             throw new RuntimeException();
         }
     }
+
+
+    public PublicKey getClientPublicKey() {
+        return clientPublicKey;
+    }
 }
