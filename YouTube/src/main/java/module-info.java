@@ -11,6 +11,9 @@ module org.example.youtube {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.youtube to javafx.fxml;
-    exports org.example.youtube;
+    opens Server to javafx.fxml;
+    exports Server;
+
+    opens Client to javafx.fxml;
+    exports Client;
 }

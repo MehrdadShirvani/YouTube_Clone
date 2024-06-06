@@ -124,7 +124,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>org.example.youtube/org.example.youtube.HelloApplication</mainClass>
+              <mainClass>org.example.youtube/Server.HelloServerApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
