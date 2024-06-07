@@ -2,12 +2,15 @@ package Server;
 
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import java.security.*;
 import java.util.Base64;
 
 public class ServerEncryption {
     private final PublicKey serverPublicKey;
     private final PrivateKey serverPrivateKey;
+    private final int AES_KEY_SIZE = 128;
 
     public ServerEncryption() {
         KeyPair keyPair =  generateKeyPair() ;
@@ -51,6 +54,18 @@ public class ServerEncryption {
             System.err.println("Error : while encrypting the data inside the server ! :");
             e.printStackTrace();
             throw new RuntimeException();
+        }
+    }
+
+    public SecretKey generateAESsecretKey() {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(AES_KEY_SIZE);
+            return keyGenerator.generateKey();
+        } catch (Exception e) {
+            System.err.println("Error : while generating AES keys inside the server");
+            e.printStackTrace();
+            throw  new RuntimeException();
         }
     }
 
