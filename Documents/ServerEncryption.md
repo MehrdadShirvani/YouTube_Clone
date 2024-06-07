@@ -14,7 +14,7 @@ One potential drawback of using RSA encryption is its computational overhead, es
  This class will generate a new public and private key pair each time. At the beginning of each connection to the server,
  it sends its public key and receives the server's public key. The latest public key of the user will be saved in the database.
 * The `ServerEncryption` class utilizes RSA encryption for securing data transmission. It generates a key pair upon instantiation, consisting of a public key (for encryption) and a private key (for decryption). The `encryptData` method takes a JSON string and a client's public key as input, encrypts the data using RSA, and returns the encrypted data as a Base64-encoded string. The `decryptData` method decrypts the encrypted data using the server's private key and returns the original JSON string.
-Finally note that there is no any getServerPrivateKey function because of the **Security Risks** .
+* Finally note that there is no any getServerPrivateKey function because of the **Security Risks** .
 
 ### Methods
 - `generateKeyPair()`: Generates an RSA key pair (public-private) with a key size of 2048 bits.
