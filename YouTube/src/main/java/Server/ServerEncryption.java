@@ -14,12 +14,12 @@ public class ServerEncryption {
     private final int RSA_KEY_SIZE = 2048;
 
     public ServerEncryption() {
-        KeyPair keyPair =  generateKeyPair() ;
+        KeyPair keyPair =  generateRSAkeyPair() ;
         this.serverRSApublicKey = keyPair.getPublic();
         this.serverRSAprivateKey = keyPair.getPrivate();
     }
 
-    public KeyPair generateKeyPair() {
+    public KeyPair generateRSAkeyPair() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(RSA_KEY_SIZE);
@@ -31,7 +31,7 @@ public class ServerEncryption {
         }
     }
 
-    public String encryptData(String jsonData, PublicKey clientPublicKey){
+    public String encryptDataRSA(String jsonData, PublicKey clientPublicKey){
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
@@ -44,7 +44,7 @@ public class ServerEncryption {
         }
     }
 
-    public String decryptData(String encryptedJsonData) {
+    public String decryptDataRSA(String encryptedJsonData) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, this.serverRSAprivateKey);
