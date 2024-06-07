@@ -1,6 +1,7 @@
 package Client;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -53,6 +54,19 @@ public class ClientEncryption {
             return new String(decryptedBytes);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data inside the client ! :");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+
+    public byte[] decryptDataAES(byte[] encryptedFileBytes , SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(cipher.DECRYPT_MODE , secretKey);
+            return cipher.doFinal(encryptedFileBytes);
+        } catch (Exception e) {
+            System.err.println("Error : while decrypting the data with AES algorithm inside the client !");
             e.printStackTrace();
             throw new RuntimeException();
         }
