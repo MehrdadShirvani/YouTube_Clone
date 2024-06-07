@@ -8,16 +8,16 @@ import java.security.PublicKey;
 import java.util.Base64;
 
 public class ClientEncryption {
-    private final PublicKey clientPublicKey;
-    private final PrivateKey clientPrivateKey;
+    private final PublicKey clientRSApublicKey;
+    private final PrivateKey clientRSAprivateKey;
 
     public ClientEncryption() {
-        KeyPair keyPair = generateKeyPair();
-        this.clientPublicKey = keyPair.getPublic();
-        this.clientPrivateKey = keyPair.getPrivate();
+        KeyPair keyPair = generateRSAkeyPair();
+        this.clientRSApublicKey = keyPair.getPublic();
+        this.clientRSAprivateKey = keyPair.getPrivate();
     }
 
-    public KeyPair generateKeyPair() {
+    public KeyPair generateRSAkeyPair() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
@@ -29,7 +29,7 @@ public class ClientEncryption {
         }
     }
 
-    public String encryptData(String jsonData, PublicKey serverPublicKey){
+    public String encryptDataRSA(String jsonData, PublicKey serverPublicKey){
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, serverPublicKey);
@@ -42,10 +42,10 @@ public class ClientEncryption {
         }
     }
 
-    public String decryptData(String encryptedJsonData) {
+    public String decryptDataRSA(String encryptedJsonData) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.DECRYPT_MODE, this.clientPrivateKey);
+            cipher.init(Cipher.DECRYPT_MODE, this.clientRSAprivateKey);
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
             return new String(decryptedBytes);
@@ -57,7 +57,7 @@ public class ClientEncryption {
     }
 
 
-    public PublicKey getClientPublicKey() {
-        return clientPublicKey;
+    public PublicKey getClientRSApublicKey() {
+        return this.clientRSApublicKey;
     }
 }
