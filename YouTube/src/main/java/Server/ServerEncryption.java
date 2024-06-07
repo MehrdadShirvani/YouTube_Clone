@@ -82,7 +82,7 @@ public class ServerEncryption {
         }
     }
 
-    public PublicKey getServerPublicKey() {
+    public PublicKey getServerRSApublicKey() {
         return serverPublicKey;
     }
 }
