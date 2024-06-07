@@ -8,14 +8,14 @@ import java.security.*;
 import java.util.Base64;
 
 public class ServerEncryption {
-    private final PublicKey serverPublicKey;
-    private final PrivateKey serverPrivateKey;
+    private final PublicKey serverRSApublicKey;
+    private final PrivateKey serverRSAprivateKey;
     private final int AES_KEY_SIZE = 128;
 
     public ServerEncryption() {
         KeyPair keyPair =  generateKeyPair() ;
-        this.serverPublicKey = keyPair.getPublic();
-        this.serverPrivateKey = keyPair.getPrivate();
+        this.serverRSApublicKey = keyPair.getPublic();
+        this.serverRSAprivateKey = keyPair.getPrivate();
     }
 
     public KeyPair generateKeyPair() {
