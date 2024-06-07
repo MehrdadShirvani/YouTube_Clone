@@ -72,6 +72,18 @@ public class ClientEncryption {
         }
     }
 
+    public byte[] encryptDataAES(byte[] fileBytes , SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE , secretKey);
+            return cipher.doFinal(fileBytes);
+        } catch (Exception e) {
+            System.err.println("Error : while encrypting the data with AES algorithm inside the client !");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
 
     public PublicKey getClientRSApublicKey() {
         return this.clientRSApublicKey;
