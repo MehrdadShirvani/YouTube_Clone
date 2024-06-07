@@ -11,6 +11,7 @@ public class ServerEncryption {
     private final PublicKey serverRSApublicKey;
     private final PrivateKey serverRSAprivateKey;
     private final int AES_KEY_SIZE = 128;
+    private final int RSA_KEY_SIZE = 2048;
 
     public ServerEncryption() {
         KeyPair keyPair =  generateKeyPair() ;
@@ -21,7 +22,7 @@ public class ServerEncryption {
     public KeyPair generateKeyPair() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
+            keyPairGenerator.initialize(RSA_KEY_SIZE);
             return keyPairGenerator.generateKeyPair();
         } catch (Exception e) {
             System.err.println("ERROR : while generating KeyPair inside the server ! : ");
@@ -46,7 +47,7 @@ public class ServerEncryption {
     public String decryptData(String encryptedJsonData) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.DECRYPT_MODE, this.serverPrivateKey);
+            cipher.init(Cipher.DECRYPT_MODE, this.serverRSAprivateKey);
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
             return new String(decryptedBytes);
@@ -83,6 +84,6 @@ public class ServerEncryption {
     }
 
     public PublicKey getServerRSApublicKey() {
-        return serverPublicKey;
+        return serverRSApublicKey;
     }
 }
