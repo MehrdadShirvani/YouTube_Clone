@@ -59,7 +59,7 @@ public class ServerEncryption {
     }
 
 
-    public static byte[] encryptDataAES(byte[] fileBytes , SecretKey secretKey) {
+    public byte[] encryptDataAES(byte[] fileBytes , SecretKey secretKey) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE , secretKey);
