@@ -10,6 +10,8 @@ import java.util.Base64;
 public class ClientEncryption {
     private final PublicKey clientRSApublicKey;
     private final PrivateKey clientRSAprivateKey;
+    private final int AES_KEY_SIZE = 128;
+    private final int RSA_KEY_SIZE = 2048;
 
     public ClientEncryption() {
         KeyPair keyPair = generateRSAkeyPair();
@@ -20,7 +22,7 @@ public class ClientEncryption {
     public KeyPair generateRSAkeyPair() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
+            keyPairGenerator.initialize(RSA_KEY_SIZE);
             return keyPairGenerator.generateKeyPair();
         } catch (Exception e) {
             System.err.println("ERROR : while generating KeyPair inside the client ! : ");
