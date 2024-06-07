@@ -71,6 +71,18 @@ public class ServerEncryption {
         }
     }
 
+    public byte[] decryptDataAES(byte[] encryptedFileBytes , SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(cipher.DECRYPT_MODE , secretKey);
+            return cipher.doFinal(encryptedFileBytes);
+        } catch (Exception e) {
+            System.err.println("Error : while decrypting the data with AES algorithm inside the server");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
     public SecretKey generateAESsecretKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
