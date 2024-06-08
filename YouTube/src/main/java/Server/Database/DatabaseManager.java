@@ -2,6 +2,7 @@ package Server.Database;
 
 import Shared.Models.*;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -388,6 +389,108 @@ public class DatabaseManager {
         //Delete Video_Playlist
 
     }
+
+    public static List<Category> getVideoCategories(Long videoId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
+            Root<Category> categoryRoot = cq.from(Category.class);
+            Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("Video_Category", JoinType.INNER);
+
+            cq.select(categoryRoot)
+                    .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+
+            TypedQuery<Category> query = entityManager.createQuery(cq);
+            return query.getResultList();
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        TypedQuery<VideoCategory> query = entityManager.createQuery(
+                "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
+        query.setParameter("videoId", videoId);
+        query.setParameter("categoryId", categoryId);
+        VideoCategory videoCategory = new VideoCategory(videoId, categoryId);
+
+        try
+        {
+            query.getSingleResult();
+        }
+        catch (NoResultException e){
+            entityManager.persist(videoCategory);
+            transaction.commit();
+        }
+
+        entityManager.close();
+        return videoCategory;
+    }
+
+    public static List<VideoView> getVideoViewsOfVideo(Long videoId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            TypedQuery<VideoView> query = entityManager.createQuery("SELECT v FROM VideoViews v WHERE v.videoId = :videoId", VideoView.class);
+            query.setParameter("videoId",videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static List<Reaction> getVideoReactions(Long videoId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reactions r WHERE r.videoId = :videoId", Reaction.class);
+            query.setParameter("videoId",videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+
+    }
+    public static List<Comment> getVideoComments(Long videoId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comments c WHERE c.videoId = :videoId", Comment.class);
+            query.setParameter("videoId",videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static VideoView addVideoView(VideoView videoView)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(videoView);
+        transaction.commit();
+
+        VideoView savedVideoView = entityManager.find(VideoView.class, videoView.getVideoViewId());
+
+        entityManager.close();
+        return savedVideoView;
+    }
+
     //endregion
 
 }
