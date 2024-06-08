@@ -351,4 +351,43 @@ public class DatabaseManager {
         entityManager.close();
     }
     //endregion
+
+    //region Videos
+    public static Video addVideo(Video video) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(video);
+        transaction.commit();
+
+        Video savedVideo = entityManager.find(Video.class, video.getVideoId());
+
+        entityManager.close();
+        return savedVideo;
+    }
+    public static void editVideo(Video video)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Video mergedVideo = entityManager.merge(video);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static void deleteVideo(Long videoId)
+    {
+
+        //Delete VideoViews
+        //Delete Comments
+        //Delete CommentReactions
+        //Delete RepliedComment
+        //Delete Video_Category
+        //Delete Video_Playlist
+
+    }
+    //endregion
+
 }
