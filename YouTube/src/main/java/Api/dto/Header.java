@@ -16,4 +16,8 @@ public class Header {
     public String getEndpoint() {
         return endpoint;
     }
+
+    public String[] endpointParser() {
+        return this.endpoint.split("/");
+    }
 }
