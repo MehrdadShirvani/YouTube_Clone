@@ -43,4 +43,27 @@ public class ClientHandler {
             e.printStackTrace();
         }
     }
+
+    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+        removeClientHandler();
+
+        try {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+
+        } catch (IOException e) {
+            String errorLog = "Error : while closeEverything called : \n\t";
+
+            System.err.println(errorLog);
+            writeLog(errorLog);
+            e.printStackTrace();
+        }
+    }
 }
