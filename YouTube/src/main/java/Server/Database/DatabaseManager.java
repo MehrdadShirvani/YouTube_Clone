@@ -490,7 +490,29 @@ public class DatabaseManager {
         entityManager.close();
         return savedVideoView;
     }
+    public static List<Video> getWatchHistory(Long channelId) {
 
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
+            Root<Video> videoRoot = cq.from(Video.class);
+            Join<Video, VideoView> videoViewJoin = videoRoot.join("videoViews", JoinType.INNER);
+
+            cq.select(videoRoot)
+                    .where(cb.equal(videoViewJoin.get("channelId"), channelId))
+                    .orderBy(cb.desc(videoViewJoin.get("ViewDateTime")));
+
+            TypedQuery<Video> query = entityManager.createQuery(cq);
+            query.setMaxResults(100);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
     //endregion
 
 }
