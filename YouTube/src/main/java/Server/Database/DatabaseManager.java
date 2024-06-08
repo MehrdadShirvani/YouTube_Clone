@@ -514,6 +514,7 @@ public class DatabaseManager {
         }
     }
     //endregion
+
     //region Categories
     public static List<Category> getCategories()
     {
