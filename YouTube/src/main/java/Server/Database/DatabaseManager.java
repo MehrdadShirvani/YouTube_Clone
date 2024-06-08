@@ -1,10 +1,9 @@
 package Server.Database;
 
 import Shared.Models.Channel;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import Shared.Models.Comment;
+import Shared.Models.Reaction;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +71,124 @@ public class DatabaseManager {
     }
     //endregion
 
+    //region Reactions
+    public static Reaction addReaction(Reaction reaction)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
 
+        entityManager.persist(reaction);
+        transaction.commit();
+
+        Reaction savedReaction = entityManager.find(Reaction.class, reaction.getReactionId());
+
+        entityManager.close();
+        return savedReaction;
+    }
+    public static void editReaction(Reaction reaction)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Reaction mergedReaction = entityManager.merge(reaction);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static Reaction getReaction(Long channelId, Long videoId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        TypedQuery<Reaction> query = entityManager.createQuery(
+                "SELECT r FROM Reactions r WHERE r.channelId = :channelId AND r.videoId = :videoId", Reaction.class);
+        query.setParameter("videoId", videoId);
+        query.setParameter("channelId", channelId);
+
+        try
+        {
+            return query.getSingleResult();
+        }
+        catch (NoResultException e)
+        {
+            return null;
+        }
+        finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static void deleteReaction(Long reactionId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Reaction reaction = entityManager.find(Reaction.class, reactionId);
+
+        if (reaction != null) {
+            entityManager.remove(reaction);
+        }
+
+        transaction.commit();
+        entityManager.close();
+    }
+    //endregion
+
+    //region Comments
+    public static Comment getComment(Long commentId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Comment comment = entityManager.find(Comment.class, commentId);
+
+        entityManager.close();
+        return comment;
+    }
+    public static Comment addComment(Comment comment)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(comment);
+        transaction.commit();
+
+        Comment savedComment = entityManager.find(Comment.class, comment.getCommentId());
+
+        entityManager.close();
+        return savedComment;
+    }
+    public static void editComment(Comment comment) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Comment mergedComment = entityManager.merge(comment);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static void deleteComment(Long commentId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Comment comment = entityManager.find(Comment.class, commentId);
+
+        if (comment != null) {
+            entityManager.remove(comment);
+        }
+
+        transaction.commit();
+        entityManager.close();
+    }
+    //endregion
 }
