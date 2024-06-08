@@ -18,7 +18,10 @@ public class Server {
         try {
             this.serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            System.err.println("Error : while Server class constructor started !");
+            String errorLog = "Error : while Server class constructor started !";
+
+            System.err.println(errorLog);
+            writeLog(errorLog);
             throw new RuntimeException(e);
         }
     }
