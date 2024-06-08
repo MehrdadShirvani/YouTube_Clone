@@ -10,6 +10,7 @@ module org.example.youtube {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires jakarta.persistence;
 
     opens Server to javafx.fxml;
     exports Server;
