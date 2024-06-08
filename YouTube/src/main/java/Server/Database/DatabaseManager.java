@@ -514,5 +514,22 @@ public class DatabaseManager {
         }
     }
     //endregion
-
+    //region Categories
+    public static List<Category> getCategories()
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            List<Category> categories = entityManager.createQuery(
+                            "SELECT c FROM Categories c", Category.class)
+                    .getResultList();
+            entityManager.getTransaction().commit();
+            return categories;
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    //endregion
 }
