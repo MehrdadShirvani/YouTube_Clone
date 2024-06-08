@@ -1,9 +1,6 @@
 package Server.Database;
 
-import Shared.Models.Channel;
-import Shared.Models.Comment;
-import Shared.Models.CommentReaction;
-import Shared.Models.Reaction;
+import Shared.Models.*;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -258,6 +255,43 @@ public class DatabaseManager {
         {
             return null;
         }
+    }
+    //endregion
+
+    //region Playlists
+    public static Playlist addPlaylist(Playlist playlist)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(playlist);
+        transaction.commit();
+
+        Playlist savedPlaylist = entityManager.find(Playlist.class, playlist.getPlaylistId());
+
+        entityManager.close();
+        return savedPlaylist;
+    }
+    public static void editPlaylist(Playlist playlist) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Playlist mergePlaylist = entityManager.merge(playlist);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static List<Video> getPlaylistVideos(Long playlistId)
+    {
+        return new ArrayList<>();
+        //TODO
+    }
+    public static List<Channel> getPlaylistChannels(Long playlistId)
+    {
+        return new ArrayList<>();
+        //TODO
     }
     //endregion
 }
