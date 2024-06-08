@@ -294,4 +294,61 @@ public class DatabaseManager {
         //TODO
     }
     //endregion
+
+    //region Accounts
+    public static Account getAccount(Long accountId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Account account = entityManager.find(Account.class, accountId);
+
+        entityManager.close();
+        return account;
+    }
+    public static Account getAccount(String username, String password)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        TypedQuery<Account> query = entityManager.createQuery(
+                "SELECT a FROM Accounts a WHERE a.username = :username AND a.password = :password", Account.class);
+        query.setParameter("username", username);
+        query.setParameter("password", password);
+        try
+        {
+            return query.getSingleResult();
+        }catch (NoResultException e)
+        {
+            return null;
+        }
+    }
+    public static Account addAccount(Account account)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(account);
+        transaction.commit();
+
+        Account savedAccount = entityManager.find(Account.class, account.getAccountId());
+
+        entityManager.close();
+        return savedAccount;
+    }
+    public static void editAccount(Account account)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        Account mergeAccount = entityManager.merge(account);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    //endregion
 }
