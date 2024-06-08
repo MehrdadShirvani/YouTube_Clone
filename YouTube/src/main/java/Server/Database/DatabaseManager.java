@@ -2,6 +2,7 @@ package Server.Database;
 
 import Shared.Models.Channel;
 import Shared.Models.Comment;
+import Shared.Models.CommentReaction;
 import Shared.Models.Reaction;
 import jakarta.persistence.*;
 
@@ -189,6 +190,74 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+    }
+    //endregion
+
+    //region CommentReactions
+    public static CommentReaction addCommentReaction(CommentReaction commentReaction) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.persist(commentReaction);
+        transaction.commit();
+
+        CommentReaction savedCommentReaction = entityManager.find(CommentReaction.class, commentReaction.getCommentId());
+
+        entityManager.close();
+        return savedCommentReaction;
+    }
+    public static void editCommentReaction(CommentReaction commentReaction) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        CommentReaction mergedCommentReaction = entityManager.merge(commentReaction);
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static void deleteCommentReaction(Long commentReactionId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        CommentReaction commentReaction = entityManager.find(CommentReaction.class, commentReactionId);
+
+        if (commentReaction != null) {
+            entityManager.remove(commentReaction);
+        }
+
+        transaction.commit();
+        entityManager.close();
+    }
+    public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        TypedQuery<CommentReaction> query = entityManager.createQuery(
+                "SELECT cr FROM CommentReactions cr WHERE cr.commentId = :commentId", CommentReaction.class);
+        query.setParameter("commentId", commentId);
+        return  query.getResultList();
+    }
+    public static CommentReaction getCommentReaction(Long channelId, Long commentId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        TypedQuery<CommentReaction> query = entityManager.createQuery(
+                "SELECT cr FROM CommentReactions cr WHERE cr.commentId = :commentId", CommentReaction.class);
+        query.setParameter("commentId", commentId);
+        try
+        {
+            return query.getSingleResult();
+        }catch (NoResultException e)
+        {
+            return null;
+        }
     }
     //endregion
 }
