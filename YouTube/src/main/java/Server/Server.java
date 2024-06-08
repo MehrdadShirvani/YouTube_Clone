@@ -38,6 +38,22 @@ public class Server {
         } catch (IOException e) {
             String errorLog = "Error : IOException error occur while listening for new clients in startServer function";
             System.err.println(errorLog);
+
+            writeLog(errorLog);
+            closeServer();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void closeServer() {
+        try {
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            String errorLog = "Error : IOException error occur while closing the serverSocket inside closeServer function !";
+            System.err.println(errorLog);
+
             writeLog(errorLog);
             throw new RuntimeException(e);
         }
