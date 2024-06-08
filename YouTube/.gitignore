@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Server Log ###
+src/main/java/Server/logs/*
