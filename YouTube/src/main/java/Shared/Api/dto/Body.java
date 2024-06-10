@@ -16,6 +16,7 @@ public class Body {
     private Long accountId;
     private Long channelId;
     private Long reactionId;
+    private Long commentId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -176,5 +177,13 @@ public class Body {
 
     public void setReactionId(Long reactionId) {
         this.reactionId = reactionId;
+    }
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 }
