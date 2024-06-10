@@ -90,7 +90,7 @@ public class ClientHandler implements Runnable {
 
 
     public void handleApiRequests(Request request) {
-        String endpoint = request.getHeader().endpointParser()[2];
+        String endpoint = request.getHeader().endpointParser()[1];
 
         if (endpoint == "account") {
             handleAccountRequests(request);
@@ -112,7 +112,7 @@ public class ClientHandler implements Runnable {
 
     public void handleAccountRequests(Request request) {
         Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[3];
+        String endpoint = request.getHeader().endpointParser()[2];
 
         if (endpoint == "login") {
             handleLoginRequests(request);
@@ -125,6 +125,25 @@ public class ClientHandler implements Runnable {
 
         } else if (endpoint == "info") {
             handleAccountInfoRequests(request);
+
+        } else {
+            handleBadRequest();
+        }
+    }
+
+
+    public void handleChannelRequests(Request request) {
+        Body body = request.getBody();
+        String endpoint = request.getHeader().endpointParser()[2];
+
+        if (endpoint == "edit") {
+            handleChannelEditRequests(request);
+
+        } else if (endpoint == "info") {
+            handleChannelInfoRequests(request);
+
+        } else if (endpoint == "subscribers") {
+            handleChannelSubscribersRequests(request);
 
         } else {
             handleBadRequest();
