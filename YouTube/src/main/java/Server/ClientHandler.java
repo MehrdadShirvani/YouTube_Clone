@@ -316,4 +316,44 @@ public class ClientHandler implements Runnable {
 
         sendResponse(response);
     }
+
+
+    public void handleAccountInfoRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long accountId = body.getAccountId();
+
+        if (Objects.equals(accountId , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("The accountId is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        Account account = DatabaseManager.getAccount(accountId);
+
+        if (Objects.equals(account , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("There is no Account with this accountId ! [" + accountId + "]");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+
+        }
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setAccount(account);
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
 }
