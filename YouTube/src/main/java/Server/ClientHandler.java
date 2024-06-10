@@ -356,4 +356,33 @@ public class ClientHandler implements Runnable {
 
         sendResponse(response);
     }
+
+
+    public void handleChannelEditRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Channel channel = body.getChannel();
+
+        if (Objects.equals(channel , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("The channel that sent is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        //TODO make editChannel return channel
+        DatabaseManager.editChannel(channel);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
 }
