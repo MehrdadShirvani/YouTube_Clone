@@ -15,6 +15,7 @@ public class Body {
     private String password;
     private Long accountId;
     private Long channelId;
+    private Long reactionId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -167,5 +168,13 @@ public class Body {
 
     public void setSubscriberChannels(List<Channel> subscriberChannels) {
         this.subscriberChannels = subscriberChannels;
+    }
+
+    public Long getReactionId() {
+        return reactionId;
+    }
+
+    public void setReactionId(Long reactionId) {
+        this.reactionId = reactionId;
     }
 }
