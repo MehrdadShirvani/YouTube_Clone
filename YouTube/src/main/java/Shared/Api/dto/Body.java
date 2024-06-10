@@ -11,6 +11,7 @@ public class Body {
 
     private String username;
     private String password;
+    private Long accountId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -138,5 +139,13 @@ public class Body {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 }
