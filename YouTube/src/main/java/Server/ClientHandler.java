@@ -586,4 +586,73 @@ public class ClientHandler implements Runnable {
         response = new Response(header , body);
         sendResponse(response);
     }
+
+    public void handleCommentLikeRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        String endpoint = header.endpointParser()[4];
+
+        if (endpoint == "add") {
+            CommentReaction commentReaction = body.getCommentReaction();
+
+            if (Objects.equals(commentReaction, null)) {
+                body = new Body();
+                body.setSuccess(false);
+                body.setMessage("The comment reaction that sent is null !");
+
+                response = new Response(header , body);
+                sendResponse(response);
+                return;
+            }
+
+            CommentReaction commentReactionInDB = DatabaseManager.getCommentReaction(commentReaction.getChannelId() , commentReaction.getCommentId());
+            if (Objects.equals(commentReactionInDB, null)) {
+                commentReaction = DatabaseManager.addCommentReaction(commentReaction);
+                body = new Body();
+                body.setSuccess(true);
+                body.setMessage("200 Ok");
+                body.setCommentReaction(commentReaction);
+
+                response = new Response(header , body);
+                sendResponse(response);
+
+            } else {
+                //TODO make editCommentReaction return Reaction
+                DatabaseManager.editCommentReaction(commentReaction);
+                body = new Body();
+                body.setSuccess(true);
+                body.setMessage("200 Ok");
+
+                response = new Response(header , body);
+                sendResponse(response);
+            }
+
+
+        } else if (endpoint == "delete") {
+            Long commentReactionId = body.getCommentReactionId();
+
+            if (Objects.equals(commentReactionId, null)) {
+                body = new Body();
+                body.setSuccess(false);
+                body.setMessage("The reactionId that sent is null !");
+
+                response = new Response(header , body);
+                sendResponse(response);
+                return;
+            }
+
+            DatabaseManager.deleteCommentReaction(commentReactionId);
+
+            body = new Body();
+            body.setSuccess(true);
+            body.setMessage("200 Ok");
+
+            response = new Response(header , body);
+            sendResponse(response);
+
+        } else {
+            handleBadRequest(header);
+        }
+    }
 }
