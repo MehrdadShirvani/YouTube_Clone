@@ -12,6 +12,7 @@ public class Body {
     private String username;
     private String password;
     private Long accountId;
+    private Long channelId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -147,5 +148,13 @@ public class Body {
 
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
+    }
+
+    public Long getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(Long channelId) {
+        this.channelId = channelId;
     }
 }
