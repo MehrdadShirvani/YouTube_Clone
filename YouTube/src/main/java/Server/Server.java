@@ -13,9 +13,11 @@ public class Server {
     private static final int PORT = 12345;
     private static final String LOG_FILE_ADDRESS = "src/main/java/Server/logs/Server_Log.txt";
     private ServerSocket serverSocket;
+    public static ServerEncryption serverEncryption;
 
     public Server() {
         try {
+            serverEncryption = new ServerEncryption();
             this.serverSocket = new ServerSocket(PORT);
             startServer();
         } catch (IOException e) {
