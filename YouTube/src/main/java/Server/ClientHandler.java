@@ -162,4 +162,23 @@ public class ClientHandler implements Runnable {
             handleBadRequest();
         }
     }
+
+    public void handleCommentRequests(Request request) {
+        Body body = request.getBody();
+        String endpoint = request.getHeader().endpointParser()[3];
+
+        if (endpoint == "add") {
+            handleCommentAddReqeuests(request);
+
+        } else if (endpoint == "delete") {
+            handleCommentDeleteRequests(request);
+
+        } else if (endpoint == "like") {
+            handleCommentLikeRequests(request);
+
+        } else {
+            handleBadRequest();
+
+        }
+    }
 }
