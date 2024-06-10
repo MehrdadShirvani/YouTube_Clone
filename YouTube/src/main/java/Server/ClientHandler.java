@@ -270,6 +270,10 @@ public class ClientHandler implements Runnable {
             body = new Body();
             body.setSuccess(false);
             body.setMessage("Requested account is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
         }
 
         account = DatabaseManager.addAccount(account);
@@ -278,6 +282,35 @@ public class ClientHandler implements Runnable {
         body.setSuccess(true);
         body.setMessage("200 Ok");
         body.setAccount(account);
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
+
+
+    public void handleAccountEditRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Account account = body.getAccount();
+
+        if (Objects.equals(account , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("Requested account is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        //TODO make editAccount return the account
+        DatabaseManager.editAccount(account);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
 
         response = new Response(header , body);
 
