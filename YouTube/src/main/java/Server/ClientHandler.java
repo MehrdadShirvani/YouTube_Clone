@@ -6,6 +6,7 @@ import Shared.Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import javafx.scene.chart.PieChart;
 
 import java.io.*;
 import java.net.Socket;
@@ -215,6 +216,46 @@ public class ClientHandler implements Runnable {
         body.setMessage("400 Bad Request : " + header.getEndpoint());
 
         Response response = new Response(header , body);
+        sendResponse(response);
+    }
+
+
+    public void handleLoginRequests(Request request) {
+        Response response;
+        Body body = request.getBody();
+        Header header = request.getHeader();
+        String username = body.getUsername();
+        String password = body.getPassword();
+
+        if (Objects.equals(username , null) || Objects.equals(password , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("Username or Password is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        Account account = DatabaseManager.getAccount(username , password);
+
+        if (Objects.equals(account , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("Username or Password is wrong !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setAccount(account);
+
+        response = new Response(header , body);
+
         sendResponse(response);
     }
 }
