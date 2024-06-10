@@ -11,6 +11,7 @@ module org.example.youtube {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires jakarta.persistence;
+    requires com.fasterxml.jackson.databind;
 
     opens Server to javafx.fxml;
     exports Server;
