@@ -14,6 +14,7 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ClientHandler implements Runnable {
@@ -419,6 +420,44 @@ public class ClientHandler implements Runnable {
         body.setSuccess(true);
         body.setMessage("200 Ok");
         body.setChannel(channel);
+
+        response = new Response(header , body);
+        sendResponse(response);
+    }
+
+
+    public void handleChannelSubscribersRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long channelId = body.getChannelId();
+
+        if (Objects.equals(channelId , null)) {
+            body = new Body();
+            body.setSuccess(true);
+            body.setMessage("The channelId that sent is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        List<Channel> subscriberChannels = DatabaseManager.getSubscriberChannels(channelId);
+
+        if (Objects.equals(subscriberChannels , null)) {
+            body = new Body();
+            body.setSuccess(true);
+            body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setSubscriberChannels(subscriberChannels);
 
         response = new Response(header , body);
         sendResponse(response);
