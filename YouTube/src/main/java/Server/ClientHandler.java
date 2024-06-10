@@ -3,6 +3,9 @@ package Server;
 import Server.Database.DatabaseManager;
 import Shared.Api.dto.*;
 import Shared.Models.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.io.*;
 import java.net.Socket;
@@ -181,8 +184,26 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void sendRequest(Request request) {
+    public void sendResponse(Response response) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectWriter objectWriter = objectMapper.writer();
+            String json = objectWriter.writeValueAsString(response);
+            String encryptedJson = Server.serverEncryption.encryptDataRSA(json , this.clientPublicKey);
 
+            this.bufferedWriter.write(encryptedJson);
+            this.bufferedWriter.newLine();
+            this.bufferedWriter.flush();
 
+        } catch (JsonProcessingException e) {
+            String errorLog = "Error : while serialize the response client in ClientHandler (sendResponse function)";
+            e.printStackTrace();
+            writeLog(errorLog);
+
+        } catch (IOException e) {
+            String errorLog = "Error : while sending the encryptedJson to client in sendResponse function !";
+            e.printStackTrace();
+            writeLog(errorLog);
+        }
     }
 }
