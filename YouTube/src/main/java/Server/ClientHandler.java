@@ -560,4 +560,30 @@ public class ClientHandler implements Runnable {
         response = new Response(header , body);
         sendResponse(response);
     }
+
+    public void handleCommentDeleteRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long commentId = body.getCommentId();
+
+        if (Objects.equals(commentId , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("The commentId that send is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+
+        }
+
+        DatabaseManager.deleteComment(commentId);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+
+        response = new Response(header , body);
+        sendResponse(response);
+    }
 }
