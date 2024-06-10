@@ -1,6 +1,6 @@
 package Server;
 
-import Client.ClientEncryption;
+import Shared.Api.dto.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -82,6 +82,27 @@ public class ClientHandler implements Runnable {
             System.err.println(errorLog);
             writeLog(errorLog);
             e.printStackTrace();
+        }
+    }
+
+
+    public void handleApiRequests(Request request) {
+        String endpoint = request.getHeader().endpointParser()[2];
+
+        if (endpoint == "account") {
+            handleAccountRequests(request);
+
+        } else if (endpoint == "channel") {
+            handleChannelRequests(request);
+
+        } else if (endpoint == "video") {
+            handleVideoRequests(request);
+
+        } else if (endpoint == "comment") {
+            handleCommentRequests(request);
+
+        } else {
+            handleBadRequest();
         }
     }
 }
