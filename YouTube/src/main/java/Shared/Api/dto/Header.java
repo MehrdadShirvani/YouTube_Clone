@@ -1,4 +1,4 @@
-package Api.dto;
+package Shared.Api.dto;
 
 public class Header {
     private final String method;
