@@ -90,7 +90,7 @@ public class ClientHandler implements Runnable {
 
 
     public void handleApiRequests(Request request) {
-        String endpoint = request.getHeader().endpointParser()[1];
+        String endpoint = request.getHeader().endpointParser()[2];
 
         if (endpoint == "account") {
             handleAccountRequests(request);
@@ -112,7 +112,7 @@ public class ClientHandler implements Runnable {
 
     public void handleAccountRequests(Request request) {
         Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[2];
+        String endpoint = request.getHeader().endpointParser()[3];
 
         if (endpoint == "login") {
             handleLoginRequests(request);
@@ -134,7 +134,7 @@ public class ClientHandler implements Runnable {
 
     public void handleChannelRequests(Request request) {
         Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[2];
+        String endpoint = request.getHeader().endpointParser()[3];
 
         if (endpoint == "edit") {
             handleChannelEditRequests(request);
@@ -144,6 +144,19 @@ public class ClientHandler implements Runnable {
 
         } else if (endpoint == "subscribers") {
             handleChannelSubscribersRequests(request);
+
+        } else {
+            handleBadRequest();
+        }
+    }
+
+
+    public void handleVideoRequests(Request request) {
+        Body body = request.getBody();
+        String endpoint = request.getHeader().endpointParser()[3];
+
+        if (endpoint == "like") {
+            handleVideoLikeRequests(request);
 
         } else {
             handleBadRequest();
