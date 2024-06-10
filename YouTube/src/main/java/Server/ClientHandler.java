@@ -533,4 +533,32 @@ public class ClientHandler implements Runnable {
             handleBadRequest(header);
         }
     }
+
+
+    public void handleCommentAddReqeuests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Comment comment = body.getComment();
+
+        if (Objects.equals(comment , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("The comment that sent is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        comment = DatabaseManager.addComment(comment);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setComment(comment);
+
+        response = new Response(header , body);
+        sendResponse(response);
+    }
 }
