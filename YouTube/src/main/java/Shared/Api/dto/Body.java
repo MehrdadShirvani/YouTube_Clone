@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class Body {
     private boolean success;
-    private String Message;
+    private String message;
 
     private String username;
     private String password;
@@ -37,11 +37,11 @@ public class Body {
     }
 
     public String getMessage() {
-        return Message;
+        return message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        this.message = message;
     }
 
     public Account getAccount() {
