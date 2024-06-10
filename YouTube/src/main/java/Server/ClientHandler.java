@@ -434,7 +434,7 @@ public class ClientHandler implements Runnable {
 
         if (Objects.equals(channelId , null)) {
             body = new Body();
-            body.setSuccess(true);
+            body.setSuccess(false);
             body.setMessage("The channelId that sent is null !");
 
             response = new Response(header , body);
@@ -446,7 +446,7 @@ public class ClientHandler implements Runnable {
 
         if (Objects.equals(subscriberChannels , null)) {
             body = new Body();
-            body.setSuccess(true);
+            body.setSuccess(false);
             body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
 
             response = new Response(header , body);
@@ -461,5 +461,76 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
         sendResponse(response);
+    }
+
+
+    public void handleVideoLikeRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        String endpoint = header.endpointParser()[4];
+
+        if (endpoint == "add") {
+            Reaction reaction = body.getReaction();
+
+            if (Objects.equals(reaction , null)) {
+                body = new Body();
+                body.setSuccess(false);
+                body.setMessage("The reaction that sent is null !");
+                body.setReaction(reaction);
+
+                response = new Response(header , body);
+                sendResponse(response);
+                return;
+            }
+
+            reaction = DatabaseManager.getReaction(reaction.getChannelId() , reaction.getVideoId());
+            if (Objects.equals(reaction , null)) {
+                reaction = DatabaseManager.addReaction(reaction);
+                body = new Body();
+                body.setSuccess(true);
+                body.setMessage("200 Ok");
+                body.setReaction(reaction);
+
+                response = new Response(header , body);
+                sendResponse(response);
+
+            } else {
+                //TODO make editReaction return Reaction
+                DatabaseManager.editReaction(reaction);
+                body = new Body();
+                body.setSuccess(true);
+                body.setMessage("200 Ok");
+
+                response = new Response(header , body);
+                sendResponse(response);
+            }
+
+
+        } else if (endpoint == "delete") {
+            Long reactionId = body.getReactionId();
+
+            if (Objects.equals(reactionId , null)) {
+                body = new Body();
+                body.setSuccess(false);
+                body.setMessage("The reactionId that sent is null !");
+
+                response = new Response(header , body);
+                sendResponse(response);
+                return;
+            }
+
+            DatabaseManager.deleteComment(reactionId);
+
+            body = new Body();
+            body.setSuccess(true);
+            body.setMessage("200 Ok");
+
+            response = new Response(header , body);
+            sendResponse(response);
+
+        } else {
+            handleBadRequest(header);
+        }
     }
 }
