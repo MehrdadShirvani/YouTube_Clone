@@ -18,7 +18,6 @@ public class ClientHandler implements Runnable {
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private ServerEncryption serverEncryption;
     private PublicKey clientPublicKey;
 
 
@@ -27,7 +26,6 @@ public class ClientHandler implements Runnable {
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.serverEncryption = new ServerEncryption();
             clientHandlers.add(this);
 
 
@@ -180,5 +178,11 @@ public class ClientHandler implements Runnable {
             handleBadRequest();
 
         }
+    }
+
+
+    public void sendRequest(Request request) {
+
+
     }
 }
