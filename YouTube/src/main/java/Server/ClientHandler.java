@@ -258,4 +258,29 @@ public class ClientHandler implements Runnable {
 
         sendResponse(response);
     }
+
+
+    public void handleSignupRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Account account = body.getAccount();
+
+        if (Objects.equals(account , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("Requested account is null !");
+        }
+
+        account = DatabaseManager.addAccount(account);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setAccount(account);
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
 }
