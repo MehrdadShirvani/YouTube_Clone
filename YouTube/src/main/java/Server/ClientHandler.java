@@ -172,7 +172,7 @@ public class ClientHandler implements Runnable {
         String endpoint = header.endpointParser()[3];
 
         if (endpoint == "add") {
-            handleCommentAddReqeuests(request);
+            handleCommentAddRequests(request);
 
         } else if (endpoint == "delete") {
             handleCommentDeleteRequests(request);
@@ -477,15 +477,14 @@ public class ClientHandler implements Runnable {
                 body = new Body();
                 body.setSuccess(false);
                 body.setMessage("The reaction that sent is null !");
-                body.setReaction(reaction);
 
                 response = new Response(header , body);
                 sendResponse(response);
                 return;
             }
 
-            reaction = DatabaseManager.getReaction(reaction.getChannelId() , reaction.getVideoId());
-            if (Objects.equals(reaction , null)) {
+            Reaction reactionInDB = DatabaseManager.getReaction(reaction.getChannelId() , reaction.getVideoId());
+            if (Objects.equals(reactionInDB, null)) {
                 reaction = DatabaseManager.addReaction(reaction);
                 body = new Body();
                 body.setSuccess(true);
@@ -535,7 +534,7 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void handleCommentAddReqeuests(Request request) {
+    public void handleCommentAddRequests(Request request) {
         Response response;
         Header header = request.getHeader();
         Body body = request.getBody();
