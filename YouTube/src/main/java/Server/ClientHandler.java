@@ -385,4 +385,42 @@ public class ClientHandler implements Runnable {
 
         sendResponse(response);
     }
+
+
+    public void handleChannelInfoRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long channelId = body.getChannelId();
+
+        if (Objects.equals(channelId , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("The channel id that sent is null !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        Channel channel = DatabaseManager.getChannel(channelId);
+
+        if (Objects.equals(channel , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setChannel(channel);
+
+        response = new Response(header , body);
+        sendResponse(response);
+    }
 }
