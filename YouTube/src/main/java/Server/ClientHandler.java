@@ -1,6 +1,8 @@
 package Server;
 
+import Server.Database.DatabaseManager;
 import Shared.Api.dto.*;
+import Shared.Models.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -8,6 +10,7 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ClientHandler implements Runnable {
     private static final String LOG_FILE_ADDRESS = "src/main/java/Server/logs/ClientHandler_Log.txt";
@@ -100,6 +103,28 @@ public class ClientHandler implements Runnable {
 
         } else if (endpoint == "comment") {
             handleCommentRequests(request);
+
+        } else {
+            handleBadRequest();
+        }
+    }
+
+
+    public void handleAccountRequests(Request request) {
+        Body body = request.getBody();
+        String endpoint = request.getHeader().endpointParser()[3];
+
+        if (endpoint == "login") {
+            handleLoginRequests(request);
+
+        } else if (endpoint == "signup") {
+            handleSignupRequests(request);
+
+        } else if (endpoint == "edit") {
+            handleAccountEditRequests(request);
+
+        } else if (endpoint == "info") {
+            handleAccountInfoRequests(request);
 
         } else {
             handleBadRequest();
