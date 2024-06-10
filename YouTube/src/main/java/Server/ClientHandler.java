@@ -91,7 +91,8 @@ public class ClientHandler implements Runnable {
 
 
     public void handleApiRequests(Request request) {
-        String endpoint = request.getHeader().endpointParser()[2];
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
 
         if (endpoint == "account") {
             handleAccountRequests(request);
@@ -106,14 +107,14 @@ public class ClientHandler implements Runnable {
             handleCommentRequests(request);
 
         } else {
-            handleBadRequest();
+            handleBadRequest(header);
         }
     }
 
 
     public void handleAccountRequests(Request request) {
-        Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[3];
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
 
         if (endpoint == "login") {
             handleLoginRequests(request);
@@ -128,14 +129,14 @@ public class ClientHandler implements Runnable {
             handleAccountInfoRequests(request);
 
         } else {
-            handleBadRequest();
+            handleBadRequest(header);
         }
     }
 
 
     public void handleChannelRequests(Request request) {
-        Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[3];
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
 
         if (endpoint == "edit") {
             handleChannelEditRequests(request);
@@ -147,26 +148,26 @@ public class ClientHandler implements Runnable {
             handleChannelSubscribersRequests(request);
 
         } else {
-            handleBadRequest();
+            handleBadRequest(header);
         }
     }
 
 
     public void handleVideoRequests(Request request) {
-        Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[3];
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
 
         if (endpoint == "like") {
             handleVideoLikeRequests(request);
 
         } else {
-            handleBadRequest();
+            handleBadRequest(header);
         }
     }
 
     public void handleCommentRequests(Request request) {
-        Body body = request.getBody();
-        String endpoint = request.getHeader().endpointParser()[3];
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
 
         if (endpoint == "add") {
             handleCommentAddReqeuests(request);
@@ -178,7 +179,7 @@ public class ClientHandler implements Runnable {
             handleCommentLikeRequests(request);
 
         } else {
-            handleBadRequest();
+            handleBadRequest(header);
 
         }
     }
@@ -205,5 +206,15 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
             writeLog(errorLog);
         }
+    }
+
+
+    public void handleBadRequest(Header header) {
+        Body body = new Body();
+        body.setSuccess(false);
+        body.setMessage("400 Bad Request : " + header.getEndpoint());
+
+        Response response = new Response(header , body);
+        sendResponse(response);
     }
 }
