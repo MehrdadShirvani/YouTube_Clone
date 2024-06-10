@@ -4,6 +4,8 @@ package Shared.Api.dto;
 import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.List;
+
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class Body {
     private boolean success;
@@ -23,6 +25,7 @@ public class Body {
     private Video video;
     private VideoCategory videoCategory;
     private VideoView videoView;
+    private List<Channel> subscriberChannels;
 
 
 
@@ -156,5 +159,13 @@ public class Body {
 
     public void setChannelId(Long channelId) {
         this.channelId = channelId;
+    }
+
+    public List<Channel> getSubscriberChannels() {
+        return subscriberChannels;
+    }
+
+    public void setSubscriberChannels(List<Channel> subscriberChannels) {
+        this.subscriberChannels = subscriberChannels;
     }
 }
