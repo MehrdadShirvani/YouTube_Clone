@@ -11,16 +11,26 @@ public class Category {
     private Long categoryId;
 
     @Column(name = "Name", unique = true, nullable = false, length = 50)
-    private Long name;
+    private String name;
 
     public Long getCategoryId() {
         return categoryId;
     }
-    public Long getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(Long name) {
+    public void setName(String name) {
         this.name = name;
     }
+
+    public Category()
+    {
+
+    }
+    public Category(String name)
+    {
+        this.name = name;
+    }
+
 }

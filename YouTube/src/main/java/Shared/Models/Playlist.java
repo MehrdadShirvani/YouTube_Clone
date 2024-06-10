@@ -60,4 +60,16 @@ public class Playlist {
     public void setCreatedDateTime(Timestamp createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
+
+    public Playlist()
+    {
+
+    }
+    public Playlist(String name, Short playlistTypeId,  Boolean isPrivate,Timestamp createdDateTime)
+    {
+        this.name = name;
+        this.playlistTypeId = playlistTypeId;
+        this.isPrivate = isPrivate;
+        this.createdDateTime = createdDateTime;
+    }
 }

@@ -64,4 +64,16 @@ public class Reaction {
     public Channel getChannel() {
         return channel;
     }
+
+    public Reaction()
+    {
+
+    }
+
+    public Reaction(Long videoId, Long channelId, Short reactionTypeId)
+    {
+        this.videoId = videoId;
+        this.channelId = channelId;
+        this.reactionTypeId = reactionTypeId;
+    }
 }

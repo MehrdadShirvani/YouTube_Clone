@@ -39,6 +39,10 @@ public class VideoCategory {
         this.categoryId = categoryId;
     }
 
+    public VideoCategory()
+    {
+
+    }
     public VideoCategory(Long videoId, int categoryId)
     {
         this.videoId = videoId;

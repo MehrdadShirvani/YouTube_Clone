@@ -96,4 +96,17 @@ public class Comment {
     public Comment getRepliedComment() {
         return repliedComment;
     }
+
+    public Comment()
+    {
+
+    }
+    public Comment(String text, Long videoId,  Long channelId, Timestamp createdDateTime, Long repliedCommentId)
+    {
+        this.text = text;
+        this.videoId = videoId;
+        this.channelId = channelId;
+        this.createdDateTime = createdDateTime;
+        this.repliedCommentId = repliedCommentId;
+    }
 }

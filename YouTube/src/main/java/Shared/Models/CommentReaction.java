@@ -64,4 +64,16 @@ public class CommentReaction {
     public Channel getChannel() {
         return channel;
     }
+
+    public CommentReaction()
+    {
+
+    }
+    public CommentReaction(Long commentId, Long channelId, Short commentReactionTypeId)
+    {
+        this.commentId = commentId;
+        this.channelId = channelId;
+        this.commentReactionTypeId = commentReactionTypeId;
+    }
+
 }

@@ -55,6 +55,25 @@ public class Account {
     @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
     private Channel channel;
 
+    public Account()
+    {
+
+    }
+    public Account(Long channelId, String firstName, String lastName, String username, String email, String password, Date birthDate,  Timestamp createdDateTime,  Timestamp lastSeenAdDateTime, Date premiumExpirationDate, String publicKey)
+    {
+        this.channelId = channelId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.createdDateTime = createdDateTime;
+        this.lastSeenAdDateTime = lastSeenAdDateTime;
+        this.premiumExpirationDate = premiumExpirationDate;
+        this.publicKey = publicKey;
+    }
+
     public Long getAccountId() {
         return accountId;
     }

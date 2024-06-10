@@ -67,4 +67,16 @@ public class VideoView {
     public Channel getChannel() {
         return channel;
     }
+
+    public VideoView()
+    {
+
+    }
+
+    public VideoView(Long videoId, Long channelId, Timestamp viewDateTime)
+    {
+        this.videoId = videoId;
+        this.channelId = channelId;
+        this.viewDateTime = viewDateTime;
+    }
 }

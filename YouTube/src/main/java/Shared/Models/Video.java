@@ -116,4 +116,20 @@ public class Video {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+    public Video()
+    {
+
+    }
+    public Video(String name, String description, String thumbnail, Long channelId, Timestamp createdDateTime, Boolean isPrivate, Boolean isAgeRestricted, String videoAddress)
+    {
+        this.name = name;
+        this.description = description;
+        this.thumbnail = thumbnail;
+        this.channelId = channelId;
+        this.createdDateTime = createdDateTime;
+        this.isPrivate = isPrivate;
+        this.isAgeRestricted = isAgeRestricted;
+        this.videoAddress = videoAddress;
+    }
 }

@@ -36,6 +36,7 @@ public class Channel {
         this.picture = picture;
         this.createdDateTime = createdDateTime;
     }
+
     public Long getChannelId() {
         return channelId;
     }
@@ -78,9 +79,5 @@ public class Channel {
     public void setCreatedDateTime(Timestamp createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
-
-
-
-
 
 }
