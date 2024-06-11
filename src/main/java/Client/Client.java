@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.PublicKey;
+import java.util.Base64;
 
 public class Client {
     private Socket socket;
@@ -52,5 +53,19 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void sendClientPublicKeyRSA() {
+         try {
+             PublicKey clientPublicKey = this.clientEncryption.getClientRSApublicKey();
+             String encodedClientPublicKey = Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
+             this.bufferedWriter.write(encodedClientPublicKey);
+             this.bufferedWriter.newLine();
+             this.bufferedWriter.flush();
+         } catch(IOException e) {
+             e.printStackTrace();
+             throw new RuntimeException(e);
+         }
     }
 }
