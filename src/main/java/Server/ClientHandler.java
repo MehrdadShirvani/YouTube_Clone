@@ -46,8 +46,37 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String encryptedJson;
+            String json;
+            Request request;
+            Header header;
+            String endpoint;
+
             sendServerPublicKeyRSA();
             receiveClientPublicKeyRSA();
+
+            while (socket.isConnected()) {
+                try {
+                    encryptedJson =  this.bufferedReader.readLine();
+                    json = Server.serverEncryption.decryptDataRSA(encryptedJson);
+                    request = objectMapper.readValue(json , Request.class);
+                    header = request.getHeader();
+                    endpoint = header.endpointParser()[1];
+
+                    if (endpoint == "api") {
+                        handleApiRequests(request);
+
+                    } else {
+                        handleBadRequest(header);
+                    }
+                } catch (IOException e) {
+                    String errorLog = "Error : while reading request json in ClientHandler !";
+                    System.err.println(errorLog);
+                    e.printStackTrace();
+                    writeLog(errorLog);
+                }
+            }
 
         } catch (IOException e) {
             String errorLog = "Error : while running ClientHandler ";
@@ -55,6 +84,8 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
             writeLog(errorLog);
             throw new RuntimeException();
+        } finally {
+            closeEverything(socket , bufferedReader , bufferedWriter);
         }
     }
 
