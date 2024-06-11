@@ -1,0 +1,69 @@
+.root {
+    -fx-black-color: #121212;
+    -fx-gray-color: #212121;
+    -fx-semi-gray-color: #303030;
+    -fx-bright-gray-color: #AAAAAA;
+    -fx-blue-color: #065fd4;
+}
+#backgroundGridPane {
+    -fx-background-color: -fx-gray-color;
+}
+#signupVbox, #backgroundBorderPane{
+    -fx-background-color: -fx-semi-gray-color;
+    -fx-border-radius: 28;
+    -fx-background-radius: 28;
+}
+TextField, PasswordField, DatePicker{
+    -fx-font-family: Roboto;
+    -fx-font-size: 16;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: -fx-black-color;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #AAAAAA;
+    -fx-selection-bar: -fx-blue-color;
+}
+TextField:focused, PasswordField:focused, DatePicker:focused{
+    -fx-border-color: -fx-blue-color;
+}
+.account-title
+{
+    -fx-font-family: "Product Sans";
+    -fx-font-size: 45;
+}
+DatePicker .text-field{
+    -fx-control-inner-background: -fx-black-color;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #AAAAAA;
+}
+DatePicker .arrow-button {
+    -fx-background-color: -fx-semi-gray-color;
+}
+DatePicker .month-year-pane {
+    -fx-background-color: -fx-semi-gray-color;
+}
+DatePicker .month-year-pane .spinner {
+    -fx-text-fill: white;
+}
+.conformation-button{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    /*-fx-background-color: -fx-blue-color;*/
+    -fx-background-color: #0b57d0;
+    /*-fx-background-color: #075FDE;*/
+    -fx-text-fill: white;
+    -fx-font-family: Roboto;
+    -fx-font-weight: Bold;
+    -fx-font-size: 14;
+}
+#designGridBox{
+    -fx-background-image: url('line1.png'),url('line2.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover,cover;
+    /*-fx-background-size: stretch,stretch;*/
+}
+.conformation-button:hover{
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}

@@ -45,17 +45,17 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        try {
-            sendServerPublicKeyRSA();
-            receiveClientPublicKeyRSA();
-
-        } catch (IOException e) {
-            String errorLog = "Error : while running ClientHandler ";
-            System.err.println(errorLog);
-            e.printStackTrace();
-            writeLog(errorLog);
-            throw new RuntimeException();
-        }
+//        try {
+//            sendServerPublicKeyRSA();
+//            receiveClientPublicKeyRSA();
+//
+//        } catch (IOException e) {
+//            String errorLog = "Error : while running ClientHandler ";
+//            System.err.println(errorLog);
+//            e.printStackTrace();
+//            writeLog(errorLog);
+//            throw new RuntimeException();
+//        }
     }
 
     public void writeLog(String log) {
