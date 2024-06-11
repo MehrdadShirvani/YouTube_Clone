@@ -5,7 +5,11 @@ import Shared.Models.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class Client {
@@ -67,5 +71,28 @@ public class Client {
              e.printStackTrace();
              throw new RuntimeException(e);
          }
+    }
+
+
+    public void receiveServerPublicKeyRSA() {
+        try {
+            String encodedServerPublicKey = this.bufferedReader.readLine();
+            byte[] decodedServerPublicKey = Base64.getDecoder().decode(encodedServerPublicKey);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedServerPublicKey);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            this.serverPublicKey = keyFactory.generatePublic(keySpec);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }
