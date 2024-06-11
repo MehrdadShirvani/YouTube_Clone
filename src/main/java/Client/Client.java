@@ -13,6 +13,7 @@ public class Client {
     private BufferedReader bufferedReader;
     private static final int PORT = 12345;
     private static final String HOST = "localhost";
+    private final ClientEncryption clientEncryption;
     private PublicKey serverPublicKey;
     private Account account;
 
@@ -21,6 +22,7 @@ public class Client {
             this.socket = new Socket(HOST , PORT);
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.clientEncryption = new ClientEncryption();
 
             receiveServerPublicKeyRSA();
             sendClientPublicKeyRSA();
