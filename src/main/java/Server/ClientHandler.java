@@ -14,6 +14,7 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,9 +84,8 @@ public class ClientHandler implements Runnable {
             System.err.println(errorLog);
             e.printStackTrace();
             writeLog(errorLog);
+            closeEverything(socket, bufferedReader, bufferedWriter);
             throw new RuntimeException();
-        } finally {
-            closeEverything(socket , bufferedReader , bufferedWriter);
         }
     }
 
@@ -684,6 +684,22 @@ public class ClientHandler implements Runnable {
 
         } else {
             handleBadRequest(header);
+        }
+    }
+
+
+    public void sendServerPublicKeyRSA() {
+        try {
+            PublicKey serverPublicKey = Server.serverEncryption.getServerRSApublicKey();
+            String encodedServerPublicKey = Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
+            this.bufferedWriter.write(encodedServerPublicKey);
+            this.bufferedWriter.newLine();
+            this.bufferedWriter.flush();
+        } catch (IOException e) {
+            String errorLog = "Error : while encoding the RSA public key and send to client in sendServerPublicKeyRSA function";
+            System.err.println(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }
