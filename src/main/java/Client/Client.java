@@ -34,4 +34,21 @@ public class Client {
             throw new RuntimeException(e);
         }
     }
+
+
+    public void closeEverything(Socket socket , BufferedReader bufferedReader , BufferedWriter bufferedWriter) {
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
