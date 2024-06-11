@@ -1,6 +1,7 @@
 package Client;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -79,6 +80,18 @@ public class ClientEncryption {
             return cipher.doFinal(fileBytes);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data with AES algorithm inside the client !");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    public SecretKey generateAESsecretKey() {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(AES_KEY_SIZE);
+            return keyGenerator.generateKey();
+        } catch (Exception e) {
+            System.err.println("Error : while generating AES keys inside the server");
             e.printStackTrace();
             throw new RuntimeException();
         }

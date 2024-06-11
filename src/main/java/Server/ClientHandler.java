@@ -10,10 +10,15 @@ import javafx.scene.chart.PieChart;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,17 +50,37 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-//        try {
-//            sendServerPublicKeyRSA();
-//            receiveClientPublicKeyRSA();
-//
-//        } catch (IOException e) {
-//            String errorLog = "Error : while running ClientHandler ";
-//            System.err.println(errorLog);
-//            e.printStackTrace();
-//            writeLog(errorLog);
-//            throw new RuntimeException();
-//        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        String encryptedJson;
+        String json;
+        Request request;
+        Header header;
+        String endpoint;
+
+        sendServerPublicKeyRSA();
+        receiveClientPublicKeyRSA();
+
+        while (socket.isConnected()) {
+            try {
+                encryptedJson =  this.bufferedReader.readLine();
+                json = Server.serverEncryption.decryptDataRSA(encryptedJson);
+                request = objectMapper.readValue(json , Request.class);
+                header = request.getHeader();
+                endpoint = header.endpointParser()[1];
+
+                if (endpoint == "api") {
+                    handleApiRequests(request);
+
+                } else {
+                    handleBadRequest(header);
+                }
+            } catch (IOException e) {
+                String errorLog = "Error : while reading request json in ClientHandler !";
+                System.err.println(errorLog);
+                e.printStackTrace();
+                writeLog(errorLog);
+            }
+        }
     }
 
     public void writeLog(String log) {
@@ -653,6 +678,51 @@ public class ClientHandler implements Runnable {
 
         } else {
             handleBadRequest(header);
+        }
+    }
+
+
+    public void sendServerPublicKeyRSA() {
+        try {
+            PublicKey serverPublicKey = Server.serverEncryption.getServerRSApublicKey();
+            String encodedServerPublicKey = Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
+            this.bufferedWriter.write(encodedServerPublicKey);
+            this.bufferedWriter.newLine();
+            this.bufferedWriter.flush();
+        } catch (IOException e) {
+            String errorLog = "Error : while encoding the RSA public key and send to client in sendServerPublicKeyRSA function";
+            System.err.println(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void receiveClientPublicKeyRSA() {
+        try {
+            String encodedClientPublicKey = this.bufferedReader.readLine();
+            byte[] decodedClientPublicKey = Base64.getDecoder().decode(encodedClientPublicKey);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedClientPublicKey);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            this.clientPublicKey = keyFactory.generatePublic(keySpec);
+
+        } catch (IOException e) {
+            String errorLog = "Error : while reading data from client in recive ClientPublicKeyRSA function !";
+            writeLog(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (NoSuchAlgorithmException e) {
+            String errorLog = "Error : while getting instance of RSA Algorithm throws NoSuchAlgorithmException in receiveClientPublicKeyRSA function !";
+            writeLog(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (InvalidKeySpecException e) {
+            String errorLog = "Error : while generatePublic throws InvalidKeySpecException in receiveClientPublicKeyRSA function !";
+            writeLog(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }
