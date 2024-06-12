@@ -179,4 +179,31 @@ public class Client {
 
          return false;
     }
+
+    public boolean sendSignupRequest(Account enteredAccount) {
+        String endpoint = "/api/account/signup";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setAccount(enteredAccount);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            Account responseAccount = responseBody.getAccount();
+            if (!Objects.equals(responseAccount , null)) {
+                this.account = responseAccount;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
