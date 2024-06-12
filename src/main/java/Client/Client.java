@@ -233,4 +233,30 @@ public class Client {
         return false;
     }
 
+
+    public Account getAccountInfo(Long accountId) {
+        String endpoint = "/api/account/info";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setAccountId(accountId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            Account responseAccount = responseBody.getAccount();
+            if (!Objects.equals(responseAccount , null)) {
+                return responseAccount;
+            }
+        }
+
+        return null;
+    }
+
 }
