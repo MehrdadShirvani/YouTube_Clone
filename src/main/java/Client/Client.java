@@ -112,7 +112,7 @@ public class Client {
             this.bufferedWriter.write(encryptedJson);
             this.bufferedWriter.newLine();
             this.bufferedWriter.flush();
-            
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -121,5 +121,33 @@ public class Client {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+
+    public boolean sendLoginRequest(String username , String password) {
+         String endpoint = "/api/account/login";
+         String method = "POST";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setUsername(username);
+         requestBody.setPassword(password);
+         
+         Request request = new Request(requestHeader, requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             Account responseAccount = responseBody.getAccount();
+             if (!Objects.equals(responseAccount , null)) {
+                 this.account = responseAccount;
+                 return true;
+             }
+         }
+
+         return false;
     }
 }
