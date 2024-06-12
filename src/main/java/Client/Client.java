@@ -374,4 +374,27 @@ public class Client {
         return false;
     }
 
+
+    public boolean sendCommentAddRequest(Comment comment) {
+        String endpoint = "/api/video/like/delete";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setComment(comment);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
