@@ -330,7 +330,7 @@ public class Client {
     }
 
 
-    public boolean sendVideoLikeRequest(Reaction reaction) {
+    public boolean sendVideoLikeAddRequest(Reaction reaction) {
         String endpoint = "/api/video/like/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
