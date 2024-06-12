@@ -443,4 +443,27 @@ public class Client {
         return false;
     }
 
+
+    public boolean sendCommentLikeDeleteRequest(Long commentId) {
+        String endpoint = "/api/comment/like/delete";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setCommentId(commentId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
