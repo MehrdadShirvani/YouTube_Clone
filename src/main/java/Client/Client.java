@@ -329,4 +329,27 @@ public class Client {
         return null;
     }
 
+
+    public boolean sendVideoLikeRequest(Reaction reaction) {
+        String endpoint = "/api/video/like/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setReaction(reaction);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
