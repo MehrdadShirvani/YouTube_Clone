@@ -281,4 +281,27 @@ public class Client {
         return false;
     }
 
+    public Channel getChannelInfo(Long channelId) {
+        String endpoint = "/api/channel/info";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            Channel channel = responseBody.getChannel();
+            return channel;
+        }
+
+        return null;
+    }
+
 }
