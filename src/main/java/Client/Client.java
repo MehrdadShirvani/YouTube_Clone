@@ -16,6 +16,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.List;
 import java.util.Objects;
 
 public class Client {
@@ -299,6 +300,30 @@ public class Client {
         if (responseBody.isSuccess()) {
             Channel channel = responseBody.getChannel();
             return channel;
+        }
+
+        return null;
+    }
+
+
+    public List<Channel> getChannelSubscribers(Long channelId) {
+        String endpoint = "/api/channel/subscriber";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            List<Channel> subscribersChannel = responseBody.getSubscriberChannels();
+            return subscribersChannel;
         }
 
         return null;
