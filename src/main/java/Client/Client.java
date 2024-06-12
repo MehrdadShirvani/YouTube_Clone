@@ -352,4 +352,26 @@ public class Client {
         return false;
     }
 
+    public boolean sendVideoLikeDeleteRequest(Long reactionId) {
+        String endpoint = "/api/video/like/delete";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setReactionId(reactionId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
