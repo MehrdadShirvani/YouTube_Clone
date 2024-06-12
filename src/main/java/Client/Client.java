@@ -1,6 +1,10 @@
 package Client;
 
+import Shared.Api.dto.*;
 import Shared.Models.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,6 +15,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Objects;
 
 public class Client {
     private Socket socket;
@@ -91,6 +96,28 @@ public class Client {
             throw new RuntimeException(e);
 
         } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void sendRequest(Request request) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectWriter objectWriter = objectMapper.writer();
+            String json = objectWriter.writeValueAsString(request);
+            String encryptedJson = this.clientEncryption.encryptDataRSA(json , this.serverPublicKey);
+
+            this.bufferedWriter.write(encryptedJson);
+            this.bufferedWriter.newLine();
+            this.bufferedWriter.flush();
+            
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
