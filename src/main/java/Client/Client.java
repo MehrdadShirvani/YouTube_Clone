@@ -236,7 +236,7 @@ public class Client {
 
     public Account getAccountInfo(Long accountId) {
         String endpoint = "/api/account/info";
-        String method = "POST";
+        String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
@@ -257,6 +257,28 @@ public class Client {
         }
 
         return null;
+    }
+
+    public boolean sendChannelEditRequest(Channel channel) {
+        String endpoint = "/api/channel/edit";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannel(channel);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return true;
+        }
+
+        return false;
     }
 
 }
