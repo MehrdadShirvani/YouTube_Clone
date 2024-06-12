@@ -376,7 +376,7 @@ public class Client {
 
 
     public boolean sendCommentAddRequest(Comment comment) {
-        String endpoint = "/api/video/like/delete";
+        String endpoint = "/api/comment/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
