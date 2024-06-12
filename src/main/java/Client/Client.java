@@ -3,6 +3,7 @@ package Client;
 import Shared.Api.dto.*;
 import Shared.Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -124,6 +125,34 @@ public class Client {
     }
 
 
+
+    public Response handleResponse() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String encryptedJson;
+        String decryptedJson;
+        Response response;
+
+        try {
+            encryptedJson = this.bufferedReader.readLine();
+            decryptedJson = this.clientEncryption.decryptDataRSA(encryptedJson);
+            response = objectMapper.readValue(decryptedJson , Response.class);
+
+            return response;
+
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean sendLoginRequest(String username , String password) {
          String endpoint = "/api/account/login";
          String method = "POST";
@@ -132,7 +161,7 @@ public class Client {
 
          requestBody.setUsername(username);
          requestBody.setPassword(password);
-         
+
          Request request = new Request(requestHeader, requestBody);
 
          sendRequest(request);
