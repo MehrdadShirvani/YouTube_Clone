@@ -890,6 +890,41 @@ public class DatabaseManager {
             return videoCategory;
         }
     }
+    public static void deleteVideoCategory(VideoCategory videoCategory) {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            if (videoCategory != null) {
+                entityManager.remove(videoCategory);
+            }
+
+            transaction.commit();
+        }
+    }
+    public static void deleteVideoCategory(Long videoId, Integer categoryId) {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<VideoCategory> query = entityManager.createQuery(
+                    "SELECT v FROM video_category v WHERE v.VideoId = :VideoId AND s.CategoryId = :CategoryId", VideoCategory.class);
+            query.setParameter("VideoId", videoId);
+            query.setParameter("CategoryId", categoryId);
+
+
+            try
+            {
+                VideoCategory videoCategory = query.getSingleResult();
+                entityManager.remove(videoCategory);
+                transaction.commit();
+            }
+            catch (NoResultException ignored){
+            }
+        }
+    }
 
     public static List<VideoView> getVideoViewsOfVideo(Long videoId)
     {
