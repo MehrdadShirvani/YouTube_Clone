@@ -1023,5 +1023,18 @@ public class DatabaseManager {
             return categories;
         }
     }
+    public static Category getCategory(Integer categoryId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Category category = entityManager.find(Category.class, categoryId);
+
+            entityManager.close();
+            return category;
+        }
+    }
     //endregion
 }
