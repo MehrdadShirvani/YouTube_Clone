@@ -3,8 +3,6 @@ package Server.Database;
 import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
@@ -503,7 +501,24 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
-    public static List<Channel> getPlaylistChannels(Long playlistId)
+
+    public static List<VideoPlaylist> getVideoPlaylists(Long videoId) {
+        if(getVideo(videoId) == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<VideoPlaylist> query = entityManager.createQuery(
+                    "SELECT vc FROM Video_Playlist vc WHERE vc.videoId = :videoId", VideoPlaylist.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        }
+    }
+    public static List<Channel> getChannelsOfPlaylist(Long playlistId)
     {
         Playlist playlist = getPlaylist(playlistId);
         if(playlist == null)
