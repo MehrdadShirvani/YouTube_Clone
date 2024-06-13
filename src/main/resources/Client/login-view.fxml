@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="backgroundGridPane" alignment="CENTER" prefHeight="641.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.LoginController">
+    <stylesheets>
+        <URL value="@login-signup.css" />
+    </stylesheets>
+    <BorderPane fx:id="backgroundBorderPane" layoutX="64.0" layoutY="73.0" prefHeight="328.0" prefWidth="892.0">
+        <right>
+            <VBox fx:id="signupVbox" alignment="CENTER" prefHeight="510.0" prefWidth="426.0" spacing="30.0" stylesheets="@login-signup.css" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets left="20.0" />
+                </BorderPane.margin>
+                <children>
+                    <TextField prefHeight="50.0" prefWidth="451.0" promptText="First name" />
+               <TextField layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
+               <TextField layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
+               <TextField layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" promptText="Email" />
+               <PasswordField prefHeight="50.0" promptText="Password" />
+               <DatePicker fx:id="birthDatePicker" minHeight="50.0" prefWidth="451.0" promptText="Date of birth">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+               </DatePicker>
+               <HBox alignment="CENTER_RIGHT">
+                  <children>
+                     <Button alignment="CENTER" minHeight="35.0" mnemonicParsing="false" onAction="#login" prefHeight="65.0" prefWidth="85.0" styleClass="conformation-button" text="Sign Up" textAlignment="CENTER" />
+                  </children>
+               </HBox>
+                </children>
+                <padding>
+                    <Insets bottom="30.0" top="40.0" />
+                </padding>
+            </VBox>
+        </right>
+        <padding>
+            <Insets left="20.0" right="20.0" />
+        </padding>
+        <center>
+         <GridPane fx:id="designGridBox" alignment="CENTER">
+            <children>
+                  <VBox alignment="CENTER_LEFT">
+                      <ImageView fitHeight="29.0" fitWidth="181.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                          <image>
+                              <Image url="@youtube-logo-white.png" />
+                          </image>
+                      </ImageView>
+                  <Label fx:id="designLabel" alignment="CENTER" contentDisplay="TEXT_ONLY" styleClass="account-title" stylesheets="@login-signup.css" text="Create a YouTube&#13;Account" textFill="WHITE" />
+                  </VBox>
+            </children>
+            <columnConstraints>
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+            </rowConstraints>
+         </GridPane>
+        </center>
+    </BorderPane>
+   <padding>
+      <Insets top="20.0" />
+   </padding>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+    <!--  <padding>-->
+    <!--    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />-->
+    <!--  </padding>-->
+
+</GridPane>

@@ -8,8 +8,6 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-.idea/workspace.xml
-.idea/usage.statistics.xml
 *.iws
 *.iml
 *.ipr
@@ -39,5 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Server Log ###
-src/main/java/Server/logs/*
+## Extended ###
+/.idea
