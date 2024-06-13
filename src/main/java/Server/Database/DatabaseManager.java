@@ -861,13 +861,18 @@ public class DatabaseManager {
         }
     }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
+        if(getVideo(videoId) == null || getCategory(categoryId) == null)
+        {
+            return null;
+        }
+
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
             TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
+                    "SELECT vc FROM Video_Category vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
             query.setParameter("videoId", videoId);
             query.setParameter("categoryId", categoryId);
             VideoCategory videoCategory = new VideoCategory(videoId, categoryId);
