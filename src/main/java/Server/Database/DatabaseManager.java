@@ -23,7 +23,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedChannel;
     }
-    public static void editChannel(Channel updatedChannel) {
+    public static Channel editChannel(Channel updatedChannel) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -32,6 +32,7 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+        return mergedChannel;
     }
     public static Channel getChannel(Long channelId)
     {
@@ -85,7 +86,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedReaction;
     }
-    public static void editReaction(Reaction reaction)
+    public static Reaction editReaction(Reaction reaction)
     {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -95,6 +96,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return mergedReaction;
     }
     public static Reaction getReaction(Long channelId, Long videoId)
     {
@@ -164,7 +167,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedComment;
     }
-    public static void editComment(Comment comment) {
+    public static Comment editComment(Comment comment) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -173,6 +176,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return mergedComment;
     }
     public static void deleteComment(Long commentId)
     {
@@ -205,7 +210,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedCommentReaction;
     }
-    public static void editCommentReaction(CommentReaction commentReaction) {
+    public static CommentReaction editCommentReaction(CommentReaction commentReaction) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -214,6 +219,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return mergedCommentReaction;
     }
     public static void deleteCommentReaction(Long commentReactionId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -274,7 +281,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedPlaylist;
     }
-    public static void editPlaylist(Playlist playlist) {
+    public static Playlist editPlaylist(Playlist playlist) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -283,6 +290,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return  mergePlaylist;
     }
     public static List<Video> getPlaylistVideos(Long playlistId)
     {
@@ -340,7 +349,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedAccount;
     }
-    public static void editAccount(Account account)
+    public static Account editAccount(Account account)
     {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -350,6 +359,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return mergeAccount;
     }
     //endregion
 
@@ -367,7 +378,7 @@ public class DatabaseManager {
         entityManager.close();
         return savedVideo;
     }
-    public static void editVideo(Video video)
+    public static Video editVideo(Video video)
     {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -377,6 +388,8 @@ public class DatabaseManager {
 
         transaction.commit();
         entityManager.close();
+
+        return mergedVideo;
     }
     public static void deleteVideo(Long videoId)
     {
