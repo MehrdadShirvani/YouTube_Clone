@@ -849,6 +849,17 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
+    public static List<VideoCategory> getVideoCategories(Long videoId) {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<VideoCategory> query = entityManager.createQuery(
+                    "SELECT vc FROM Video_Category vc WHERE vc.videoId = :videoId", VideoCategory.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        }
+    }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
