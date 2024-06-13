@@ -808,6 +808,20 @@ public class DatabaseManager {
             return mergedVideo;
         }
     }
+    public static Video getVideo(Long videoId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Video video = entityManager.find(Video.class, videoId);
+
+            entityManager.close();
+            return video;
+        }
+
+    }
     public static void deleteVideo(Long videoId)
     {
         //TODO
