@@ -129,6 +129,61 @@ public class DatabaseManager {
         }
     }
 
+
+    public static Subscription addSubscription(Long subscriberChannelId ,Long subscribedChannelId)
+    {
+        if(getChannel(subscriberChannelId) == null || getChannel(subscribedChannelId) == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Subscription> query = entityManager.createQuery(
+                    "SELECT s FROM subscriptions s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
+            query.setParameter("SubscriberChannelId", subscriberChannelId);
+            query.setParameter("SubscribedChannelId", subscribedChannelId);
+            Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
+
+            try
+            {
+                query.getSingleResult();
+            }
+            catch (NoResultException e){
+                entityManager.persist(subscription);
+                transaction.commit();
+            }
+
+            entityManager.close();
+            return subscription;
+        }
+    }
+
+    public static void deleteSubscription(Long subscriberChannelId ,Long subscribedChannelId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Subscription> query = entityManager.createQuery(
+                    "SELECT s FROM subscriptions s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
+            query.setParameter("SubscriberChannelId", subscriberChannelId);
+            query.setParameter("SubscribedChannelId", subscribedChannelId);
+
+            try
+            {
+                Subscription subscription = query.getSingleResult();
+                entityManager.remove(subscription);
+                transaction.commit();
+            }
+            catch (NoResultException e){
+            }
+        }
+    }
     //endregion
 
     //region Reactions
