@@ -1,8 +1,10 @@
 package Shared.Models;
 
+import Server.Database.DatabaseManager;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.Iterator;
 
 @Entity
 @Table(name = "Videos")
@@ -19,7 +21,7 @@ public class Video {
     @Column(name = "Description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "Thumbnail", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "Thumbnail",  columnDefinition = "TEXT")
     private String thumbnail;
 
     @Column(name = "ChannelId", nullable = false)
@@ -34,8 +36,14 @@ public class Video {
     @Column(name = "IsAgeRestricted", nullable = false)
     private Boolean isAgeRestricted;
 
-    @Column(name = "VideoAddress", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "VideoAddress", columnDefinition = "TEXT")
     private String videoAddress;
+    @Column(name = "Size")
+    private Integer size;
+    @Column(name = "Duration")
+    private Integer duration;
+    @Column(name = "Dimensions", length = 10)
+    private String dimensions;
 
     @ManyToOne
     @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
@@ -121,15 +129,55 @@ public class Video {
     {
 
     }
-    public Video(String name, String description, String thumbnail, Long channelId, Timestamp createdDateTime, Boolean isPrivate, Boolean isAgeRestricted, String videoAddress)
+    public Video(String name, String description, Long channelId, Timestamp createdDateTime, Boolean isPrivate, Boolean isAgeRestricted)
     {
         this.name = name;
         this.description = description;
-        this.thumbnail = thumbnail;
         this.channelId = channelId;
         this.createdDateTime = createdDateTime;
         this.isPrivate = isPrivate;
         this.isAgeRestricted = isAgeRestricted;
+    }
+
+    public void updateVideoDetails(String thumbnail, String videoAddress, String dimensions, int size, int duration)
+    {
+        if(videoId <= 0)
+        {
+            return;
+        }
+
+        this.thumbnail = thumbnail;
         this.videoAddress = videoAddress;
+        this.dimensions = dimensions;
+        this.size = size;
+        this.duration = duration;
+        try
+        {
+            DatabaseManager.editVideo(this);
+        }
+        catch(Exception ignore)
+        {
+
+        }
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
     }
 }
