@@ -12,51 +12,51 @@ The `DatabaseManager` class provides methods for making connection to database t
 ## Architecture
 
 ### Methods
-- `addChannel(Channel channel)()`:
-- `editChannel(Channel updatedChannel)`:
-- `getChannel(Long channelId)`: finds channel by id
-- `getChannels()`:
-- `getSubscribedChannels(Long channelId)`: returns channels that are subscribed to the channel 
-- `getSubscriberChannels(Long channelId)`: returns channels that are the channel is subscribed to
+- `Channel addChannel(Channel channel)()`: 
+- `Channel editChannel(Channel updatedChannel)`:
+- `Channel getChannel(Long channelId)`: finds and returns channel using channelId. returns null if channel doesn't exist
+- `List<Channel> getChannels()`: returns a list of all channels
+- `List<Channel> getSubscribedChannels(Long channelId)`: returns channels that are subscribed to the channel 
+- `List<Channel> getSubscriberChannels(Long channelId)`: returns channels that are the channel is subscribed to
 
-- `addReaction(Reaction reaction)`
-- `editReaction(Reaction reaction)`
-- `getReaction(Long channelId, Long videoId)`: finds the reaction that the channel has shown to a video if it exists; if not, null will be returned 
-- `deleteReaction(Long reactionId)`
+- `Reaction addReaction(Reaction reaction)`
+- `Reaction editReaction(Reaction reaction)`
+- `Reaction getReaction(Long channelId, Long videoId)`: finds the reaction that the channel has shown to a video if it exists; if not, null will be returned 
+- `void deleteReaction(Long reactionId)`: deletes reaction if found. Does nothing if the channelId does not exist  
 
-- `getComment(Long commentId)`
-- `addComment(Comment comment)`
-- `editComment(Comment comment) `
-- `deleteComment(Long commentId)`
+- `Comment getComment(Long commentId)`: finds and returns comment using commentId. returns null if it doesn't exist
+- `Comment addComment(Comment comment)`
+- `Comment editComment(Comment comment) `
+- `void deleteComment(Long commentId)`
 
-- `addCommentReaction(CommentReaction commentReaction)`
-- `editCommentReaction(CommentReaction commentReaction)`
-- `deleteCommentReaction(Long commentReactionId) `
-- `getCommentReactionsOfComment(Long commentId)`
-- `getCommentReaction(Long channelId, Long commentId)`: finds the comment reaction that the channel has shown to a video if it exists; if not, null will be returned
+- `CommentReaction addCommentReaction(CommentReaction commentReaction)`
+- `CommentReaction editCommentReaction(CommentReaction commentReaction)`
+- `void deleteCommentReaction(Long commentReactionId) `
+- `List<CommentReaction> getCommentReactionsOfComment(Long commentId)`
+- `CommentReaction getCommentReaction(Long channelId, Long commentId)`: finds the comment reaction that the channel has shown to a video if it exists; if not, null will be returned
 
-- `addPlaylist(Playlist playlist)`
-- `editPlaylist(Playlist playlist)`
-- `getPlaylistVideos(Long playlistId)`: returns list of videos that are in the playlist
-- `getPlaylistChannels(Long playlistId)`: returns list of channels that contain the playlist
+- `Playlist addPlaylist(Playlist playlist)`
+- `Playlist editPlaylist(Playlist playlist)`
+- `List<Vidoe> getPlaylistVideos(Long playlistId)`: returns list of videos that are in the playlist
+- `List<Channel> getPlaylistChannels(Long playlistId)`: returns list of channels that contain the playlist
 
-- `getAccount(Long accountId)`
-- `getAccount(String username, String password)`: inputs username and password, returns user if exists, returns null if it does not exist 
-- `addAccount(Account account)`
-- `editAccount(Account account)`
+- `Account getAccount(Long accountId)`
+- `Account getAccount(String username, String password)`: inputs username and password, returns user if exists, returns null if it does not exist 
+- `Account addAccount(Account account)`
+- `Account editAccount(Account account)`
 
-- `addVideo(Video video)`
-- `editVideo(Video video)`
-- `deleteVideo(Long videoId)`
+- `Video addVideo(Video video)`
+- `Video editVideo(Video video)`
+- `void deleteVideo(Long videoId)`
 
-- `getVideoCategories(Long videoId)`
-- `addVideoCategory(Long videoId, int categoryId)`:
+- `List<VideoCategory> getVideoCategories(Long videoId)`: returns the assigned categories related to a video 
+- `VideoCategory addVideoCategory(Long videoId, int categoryId)`: assigns a category to a video. Does nothing if this has already been done 
 
-- `getVideoViewsOfVideo(Long videoId)`: returns all VideoViews of the video
-- `getVideoReactions(Long videoId)`: returns reactions of the video
-- `getVideoComments(Long videoId)`: returns comments of the video
-- `addVideoView(VideoView videoView)`
-- `getWatchHistory(Long channelId)`: returns the 100 recent videos that the user watched
-- `getCategories()`
+- `List<VideoView> getVideoViewsOfVideo(Long videoId)`: returns all VideoViews of the video
+- `List<Reaction> getVideoReactions(Long videoId)`: returns reactions of the video
+- `List<Comment> getVideoComments(Long videoId)`: returns comments of the video
+- `VideoView addVideoView(VideoView videoView)`
+- `List<Video> getWatchHistory(Long channelId)`: returns the 100 recent videos that the user watched
+- `List<Category> getCategories()`
 
 ### Security Risks
