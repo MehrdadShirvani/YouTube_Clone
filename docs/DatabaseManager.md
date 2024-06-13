@@ -18,6 +18,7 @@ The `DatabaseManager` class provides methods for making connection to database t
 - `List<Channel> getChannels()`: returns a list of all channels
 - `List<Channel> getSubscribedChannels(Long channelId)`: returns channels that are subscribed to the channel 
 - `List<Channel> getSubscriberChannels(Long channelId)`: returns channels that are the channel is subscribed to
+- `boolean isChannelNameUnique(String name)`: returns the existence of channel name in database
 
 - `Reaction addReaction(Reaction reaction)`
 - `Reaction editReaction(Reaction reaction)`
@@ -44,6 +45,8 @@ The `DatabaseManager` class provides methods for making connection to database t
 - `Account getAccount(String username, String password)`: inputs username and password, returns user if exists, returns null if it does not exist 
 - `Account addAccount(Account account)`
 - `Account editAccount(Account account)`
+- `boolean isUsernameUnique(String name)`: returns the existence of account username in database
+- `boolean isEmailUnique(String name)`: returns the existence of email in database
 
 - `Video addVideo(Video video)`
 - `Video editVideo(Video video)`

@@ -500,7 +500,7 @@ public class DatabaseManager {
     }
     public static void deleteVideo(Long videoId)
     {
-
+        //TODO
         //Delete VideoViews
         //Delete Comments
         //Delete CommentReactions
