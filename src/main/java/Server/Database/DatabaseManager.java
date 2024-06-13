@@ -378,15 +378,62 @@ public class DatabaseManager {
             return  mergePlaylist;
         }
     }
+    public static Playlist getPlaylist(Long playlistId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Playlist playlist = entityManager.find(Playlist.class, playlistId);
+
+            entityManager.close();
+            return playlist;
+        }
+    }
     public static List<Video> getPlaylistVideos(Long playlistId)
     {
-        return new ArrayList<>();
-        //TODO
+        Playlist playlist = getPlaylist(playlistId);
+        if(playlist == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
+            Root<Video> videoRoot = cq.from(Video.class);
+            Join<Video, VideoPlaylist> vidoePlaylists = videoRoot.join("Video_Playlist", JoinType.INNER);
+
+            cq.select(videoRoot)
+                    .where(cb.equal(vidoePlaylists.get("playlistId"), playlistId));
+
+            TypedQuery<Video> query = entityManager.createQuery(cq);
+            return query.getResultList();
+        }
     }
     public static List<Channel> getPlaylistChannels(Long playlistId)
     {
-        return new ArrayList<>();
-        //TODO
+        Playlist playlist = getPlaylist(playlistId);
+        if(playlist == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
+            Root<Channel> channelRoot = cq.from(Channel.class);
+            Join<Channel, ChannelPlaylist> channelPlaylists = channelRoot.join("Channel_Playlist", JoinType.INNER);
+
+            cq.select(channelRoot)
+                    .where(cb.equal(channelPlaylists.get("playlistId"), playlistId));
+
+            TypedQuery<Channel> query = entityManager.createQuery(cq);
+            return query.getResultList();
+        }
     }
     //endregion
 
