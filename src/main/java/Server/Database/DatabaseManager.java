@@ -480,7 +480,8 @@ public class DatabaseManager {
             return playlist;
         }
     }
-    public static List<Video> getPlaylistVideos(Long playlistId)
+
+    public static List<Video> getVideosOfPlaylist(Long playlistId)
     {
         Playlist playlist = getPlaylist(playlistId);
         if(playlist == null)
