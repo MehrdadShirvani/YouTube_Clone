@@ -303,6 +303,21 @@ public class DatabaseManager {
     }
     public static void deleteComment(Long commentId)
     {
+
+        //Delete CommentReactions
+        List<CommentReaction> commentReactions = getCommentReactionsOfComment(commentId);
+        for(CommentReaction commentReaction : commentReactions)
+        {
+            deleteCommentReaction(commentReaction.getCommentReactionId());
+        }
+        //Delete RepliedComments
+        List<Comment> comments = getCommentsRepliedToComment(commentId);
+        for(Comment comment : comments)
+        {
+            deleteComment(comment.getCommentId());
+        }
+
+
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             EntityTransaction transaction = entityManager.getTransaction();
@@ -316,6 +331,25 @@ public class DatabaseManager {
 
             transaction.commit();
             entityManager.close();
+        }
+    }
+
+    private static List<Comment> getCommentsRepliedToComment(Long commentId)
+    {
+        Comment comment = getComment(commentId);
+        if(comment == null) {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Comment> query = entityManager.createQuery(
+                    "SELECT c FROM Comments c WHERE c.RepliedCommentId = :RepliedCommentId AND r.videoId = :videoId", Comment.class);
+            query.setParameter("RepliedCommentId", commentId);
+            return  query.getResultList();
         }
     }
     //endregion
