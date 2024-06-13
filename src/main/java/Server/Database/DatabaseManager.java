@@ -65,12 +65,46 @@ public class DatabaseManager {
 
     public static List<Channel> getSubscribedChannels(Long channelId)
     {
-        return new ArrayList<>();
-        //TODO
+        Channel channel = getChannel(channelId);
+        if(channel == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
+            Root<Channel> channelRoot = cq.from(Channel.class);
+            Join<Channel, Subscription> subscriptions = channelRoot.join("subscriptions", JoinType.INNER);
+
+            cq.select(channelRoot)
+                    .where(cb.equal(subscriptions.get("SubscriberChannelId"), channelId));
+
+            TypedQuery<Channel> query = entityManager.createQuery(cq);
+            return query.getResultList();
+        }
     }
     public static List<Channel> getSubscriberChannels(Long channelId) {
-        return new ArrayList<>();
-        //TODO
+        Channel channel = getChannel(channelId);
+        if(channel == null)
+        {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
+            Root<Channel> channelRoot = cq.from(Channel.class);
+            Join<Channel, Subscription> subscriptions = channelRoot.join("SubscribedChannelId", JoinType.INNER);
+
+            cq.select(channelRoot)
+                    .where(cb.equal(subscriptions.get("channelId"), channelId));
+
+            TypedQuery<Channel> query = entityManager.createQuery(cq);
+            return query.getResultList();
+        }
     }
     public static boolean isChannelNameUnique(String name)
     {
