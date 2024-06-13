@@ -5,15 +5,19 @@
              version="2.2">
     <persistence-unit name="mainPersistentUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>Shared.Models.Account</class>
+        <class>Shared.Models.Category</class>
         <class>Shared.Models.Channel</class>
-        <class>Shared.Model.Account</class>
-        <class>Shared.Model.Comment</class>
-        <class>Shared.Model.CommentReaction</class>
-        <class>Shared.Model.Playlist</class>
-        <class>Shared.Model.Reaction</class>
-        <class>Shared.Model.Video</class>
-        <class>Shared.Model.VideoView</class>
-        <class>Shared.Model.Category</class>
+        <class>Shared.Models.ChannelPlaylist</class>
+        <class>Shared.Models.Comment</class>
+        <class>Shared.Models.CommentReaction</class>
+        <class>Shared.Models.Playlist</class>
+        <class>Shared.Models.Reaction</class>
+        <class>Shared.Models.Subscription</class>
+        <class>Shared.Models.Video</class>
+        <class>Shared.Models.VideoCategory</class>
+        <class>Shared.Models.VideoPlaylist</class>
+        <class>Shared.Models.VideoView</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/YouTubeDB"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
