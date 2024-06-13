@@ -61,6 +61,8 @@ public class DatabaseManager {
             return channels;
         }
     }
+
+
     public static List<Channel> getSubscribedChannels(Long channelId)
     {
         return new ArrayList<>();
@@ -70,6 +72,29 @@ public class DatabaseManager {
         return new ArrayList<>();
         //TODO
     }
+    public static boolean isChannelNameUnique(String name)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Channel> query = entityManager.createQuery(
+                    "SELECT c FROM Channels c WHERE c.Name = :name", Channel.class);
+            query.setParameter("name", name);
+
+            try
+            {
+                query.getSingleResult();
+                return false;
+            }
+            catch (NoResultException e)
+            {
+                return true;
+            }
+        }
+    }
+
     //endregion
 
     //region Reactions
@@ -393,6 +418,51 @@ public class DatabaseManager {
             entityManager.close();
 
             return mergeAccount;
+        }
+    }
+
+    public static boolean isUsernameUnique(String username)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Account> query = entityManager.createQuery(
+                    "SELECT a FROM Accounts a WHERE a.username = :username", Account.class);
+            query.setParameter("username", username);
+
+            try
+            {
+                query.getSingleResult();
+                return false;
+            }
+            catch (NoResultException e)
+            {
+                return true;
+            }
+        }
+    }
+    public static boolean isEmailUnique(String email)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<Account> query = entityManager.createQuery(
+                    "SELECT a FROM Accounts a WHERE a.email = :email", Account.class);
+            query.setParameter("email", email);
+
+            try
+            {
+                query.getSingleResult();
+                return false;
+            }
+            catch (NoResultException e)
+            {
+                return true;
+            }
         }
     }
     //endregion
