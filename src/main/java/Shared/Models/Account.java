@@ -31,7 +31,7 @@ public class Account {
     @Column(name = "Password", nullable = false, columnDefinition = "TEXT")
     private String password;
 
-    @Column(name = "BirthDate", nullable = false)
+    @Column(name = "BirthDate")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
 
@@ -59,9 +59,9 @@ public class Account {
     {
 
     }
-    public Account(Long channelId, String firstName, String lastName, String username, String email, String password, Date birthDate,  Timestamp createdDateTime,  Timestamp lastSeenAdDateTime, Date premiumExpirationDate, String publicKey)
+    public Account(String firstName, String lastName, String username, String email, String password, Date birthDate,  Timestamp createdDateTime,  Timestamp lastSeenAdDateTime, Date premiumExpirationDate, String publicKey)
     {
-        this.channelId = channelId;
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
