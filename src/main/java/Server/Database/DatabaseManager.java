@@ -824,17 +824,56 @@ public class DatabaseManager {
     }
     public static void deleteVideo(Long videoId)
     {
-        //TODO
-        //Delete VideoViews
-        //Delete Comments
-        //Delete CommentReactions
-        //Delete RepliedComment
-        //Delete Video_Category
-        //Delete Video_Playlist
+        if(getVideo(videoId) == null)
+        {
+            return;
+        }
 
+        List<VideoView> videoViews = getVideoViewsOfVideo(videoId);
+        for(VideoView videoView : videoViews)
+        {
+            deleteVideoView(videoView.getVideoViewId());
+        }
+
+        List<Reaction> reactions = getVideoReactions(videoId);
+        for(Reaction reaction : reactions)
+        {
+            deleteReaction(reaction.getReactionId());
+        }
+
+        List<Comment> comments = getVideoComments(videoId);
+        for(Comment comment : comments)
+        {
+            deleteComment(comment.getCommentId());
+        }
+
+        List<VideoCategory> videoCategories = getVideoCategories(videoId);
+        for(VideoCategory videoCategory : videoCategories)
+        {
+            deleteVideoCategory(videoCategory);
+        }
+
+        List<VideoPlaylist> videoPlaylists = getVideoPlaylists(videoId);
+        for(VideoPlaylist videoPlaylist : videoPlaylists)
+        {
+            deleteVideoPlaylist(videoPlaylist);
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Video video = entityManager.find(Video.class, videoId);
+
+            if (video != null) {
+                entityManager.remove(video);
+            }
+
+            transaction.commit();
+        }
     }
-
-    public static List<Category> getVideoCategories(Long videoId) {
+    public static List<Category> getCategoriesOfVideo(Long videoId) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
