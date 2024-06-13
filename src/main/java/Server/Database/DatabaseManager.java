@@ -333,7 +333,8 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<CommentReaction> query = entityManager.createQuery(
-                    "SELECT cr FROM CommentReactions cr WHERE cr.commentId = :commentId", CommentReaction.class);
+                    "SELECT cr FROM CommentReactions cr WHERE cr.channelId = :channelId AND cr.commentId = :commentId", CommentReaction.class);
+            query.setParameter("channelId", channelId);
             query.setParameter("commentId", commentId);
             try
             {
