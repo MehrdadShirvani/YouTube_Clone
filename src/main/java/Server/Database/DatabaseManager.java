@@ -972,6 +972,23 @@ public class DatabaseManager {
             return savedVideoView;
         }
     }
+
+    public static void deleteVideoView(Long videoViewId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            VideoView videoView = entityManager.find(VideoView.class, videoViewId);
+
+            if (videoView != null) {
+                entityManager.remove(videoView);
+            }
+
+            transaction.commit();
+        }
+    }
     public static List<Video> getWatchHistory(Long channelId) {
 
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
