@@ -540,6 +540,129 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
+
+    public static VideoPlaylist addVideoPlaylist(Long videoId, Long playlistId)
+    {
+        if(getVideo(videoId) == null || getPlaylist(playlistId) == null) {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<VideoPlaylist> query = entityManager.createQuery(
+                    "SELECT v FROM video_playlist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
+            query.setParameter("VideoId", videoId);
+            query.setParameter("PlaylistId", playlistId);
+            VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
+
+            try
+            {
+                return query.getSingleResult();
+            }
+            catch (NoResultException e){
+                entityManager.persist(videoPlaylist);
+                transaction.commit();
+            }
+
+            entityManager.close();
+            return videoPlaylist;
+        }
+    }
+    public static void deleteVideoPlaylist(VideoPlaylist videoPlaylist)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            if (videoPlaylist != null) {
+                entityManager.remove(videoPlaylist);
+            }
+
+            transaction.commit();
+        }
+    }
+
+    public static void deleteVideoPlaylist(Long videoId, Long playlistId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<VideoPlaylist> query = entityManager.createQuery(
+                    "SELECT v FROM video_playlist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
+            query.setParameter("VideoId", videoId);
+            query.setParameter("PlaylistId", playlistId);
+
+
+            try
+            {
+                VideoPlaylist videoPlaylist = query.getSingleResult();
+                entityManager.remove(videoPlaylist);
+                transaction.commit();
+            }
+            catch (NoResultException e){
+            }
+        }
+    }
+
+    public static ChannelPlaylist addChannelPlaylist(Long channelId, Long playlistId)
+    {
+        if(getChannel(channelId) == null || getPlaylist(playlistId) == null) {
+            return null;
+        }
+
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
+                    "SELECT v FROM channel_playlist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
+            query.setParameter("ChannelId", channelId);
+            query.setParameter("PlaylistId", playlistId);
+            ChannelPlaylist channelPlaylist = new ChannelPlaylist(channelId,playlistId);
+
+            try
+            {
+                return query.getSingleResult();
+            }
+            catch (NoResultException e){
+                entityManager.persist(channelPlaylist);
+                transaction.commit();
+            }
+
+            entityManager.close();
+            return channelPlaylist;
+        }
+    }
+    public static void deleteChannelPlaylist(Long channelId, Long playlistId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
+                    "SELECT v FROM channel_playlist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
+            query.setParameter("ChannelId", channelId);
+            query.setParameter("PlaylistId", playlistId);
+
+
+            try
+            {
+                ChannelPlaylist channelPlaylist = query.getSingleResult();
+                entityManager.remove(channelPlaylist);
+                transaction.commit();
+            }
+            catch (NoResultException ignored){
+            }
+        }
+    }
     //endregion
 
     //region Accounts
