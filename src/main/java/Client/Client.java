@@ -284,6 +284,24 @@ public class Client {
         return null;
     }
 
+
+    public void sendUnsubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
+        String endpoint = "/api/account/unsubscribe";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setSubscriberChannelId(subscriberChannelId);
+        requestBody.setSubscribedChannelId(subscribedChannelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+    }
+
     public boolean sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
         String method = "POST";
