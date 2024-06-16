@@ -20,6 +20,7 @@ public class Body {
     private Long commentReactionId;
     private Long subscriberChannelId;
     private Long subscribedChannelId;
+    private Long videoId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -221,5 +222,13 @@ public class Body {
 
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
+    }
+
+    public Long getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(Long videoId) {
+        this.videoId = videoId;
     }
 }
