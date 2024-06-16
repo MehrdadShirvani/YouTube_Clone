@@ -281,6 +281,7 @@ public class Client {
             Subscription subscription = responseBody.getSubscription();
             return subscription;
         }
+        return null;
     }
 
     public boolean sendChannelEditRequest(Channel channel) {
