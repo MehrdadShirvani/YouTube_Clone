@@ -260,6 +260,29 @@ public class Client {
         return null;
     }
 
+
+    public Subscription sendSubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
+        String endpoint = "/api/account/subscribe/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setSubscriberChannelId(subscriberChannelId);
+        requestBody.setSubscribedChannelId(subscribedChannelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            Subscription subscription = responseBody.getSubscription();
+            return subscription;
+        }
+    }
+
     public boolean sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
         String method = "POST";
