@@ -262,7 +262,7 @@ public class Client {
 
 
     public Subscription sendSubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
-        String endpoint = "/api/account/subscribe/add";
+        String endpoint = "/api/account/subscribe";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
