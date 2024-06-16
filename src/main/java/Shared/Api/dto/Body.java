@@ -33,6 +33,7 @@ public class Body {
     private VideoView videoView;
     private List<Channel> subscriberChannels;
     private Subscription subscription;
+    private List<Comment> repliedComments;
 
 
 
@@ -230,5 +231,13 @@ public class Body {
 
     public void setVideoId(Long videoId) {
         this.videoId = videoId;
+    }
+
+    public List<Comment> getRepliedComments() {
+        return repliedComments;
+    }
+
+    public void setRepliedComments(List<Comment> repliedComments) {
+        this.repliedComments = repliedComments;
     }
 }
