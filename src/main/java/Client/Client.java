@@ -417,6 +417,30 @@ public class Client {
     }
 
 
+    public Reaction sendVideoGetReactionRequest(Long channelId , Long videoId) {
+        String endpoint = "/api/video/like/reaction";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+        requestBody.setVideoId(videoId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getReaction();
+        }
+
+        return null;
+    }
+
+
     public boolean sendCommentAddRequest(Comment comment) {
         String endpoint = "/api/comment/add";
         String method = "POST";
