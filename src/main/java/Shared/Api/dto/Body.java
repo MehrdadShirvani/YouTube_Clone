@@ -18,6 +18,8 @@ public class Body {
     private Long reactionId;
     private Long commentId;
     private Long commentReactionId;
+    private Long subscriberChannelId;
+    private Long subscribedChannelId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -194,5 +196,21 @@ public class Body {
 
     public void setCommentReactionId(Long commentReactionId) {
         this.commentReactionId = commentReactionId;
+    }
+
+    public Long getSubscriberChannelId() {
+        return subscriberChannelId;
+    }
+
+    public void setSubscriberChannelId(Long subscriberChannelId) {
+        this.subscriberChannelId = subscriberChannelId;
+    }
+
+    public Long getSubscribedChannelId() {
+        return subscribedChannelId;
+    }
+
+    public void setSubscribedChannelId(Long subscribedChannelId) {
+        this.subscribedChannelId = subscribedChannelId;
     }
 }
