@@ -414,6 +414,25 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleAccountUnsubscribeRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long subscriberChannelId = body.getSubscriberChannelId();
+        Long subscribedChannelId = body.getSubscribedChannelId();
+
+        DatabaseManager.deleteSubscription(subscriberChannelId , subscribedChannelId);
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
+
+
     public void handleChannelEditRequests(Request request) {
         Response response;
         Header header = request.getHeader();
