@@ -544,7 +544,7 @@ public class ClientHandler implements Runnable {
                 return;
             }
 
-            DatabaseManager.deleteComment(reactionId);
+            DatabaseManager.deleteReaction(reactionId);
 
             body = new Body();
             body.setSuccess(true);
