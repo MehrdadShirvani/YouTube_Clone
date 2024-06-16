@@ -155,6 +155,12 @@ public class ClientHandler implements Runnable {
         } else if (endpoint == "info") {
             handleAccountInfoRequests(request);
 
+        } else if (endpoint == "subscribe") {
+            handleAccountSubscribeRequests(request);
+
+        } else if (endpoint == "unsubscribe") {
+            handleAccountUnsubscribeRequests(request);
+
         } else {
             handleBadRequest(header);
         }
