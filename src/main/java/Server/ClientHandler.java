@@ -614,6 +614,25 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleVideoGetReactionRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+
+        Long channelId = body.getChannelId();
+        Long videoId = body.getVideoId();
+
+        Reaction reaction = DatabaseManager.getReaction(channelId , videoId);
+
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setReaction(reaction);
+
+        response = new Response(header , body);
+        sendResponse(response);
+    }
+
+
     public void handleCommentAddRequests(Request request) {
         Response response;
         Header header = request.getHeader();
