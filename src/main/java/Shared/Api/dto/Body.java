@@ -31,6 +31,7 @@ public class Body {
     private VideoCategory videoCategory;
     private VideoView videoView;
     private List<Channel> subscriberChannels;
+    private Subscription subscription;
 
 
 
@@ -212,5 +213,13 @@ public class Body {
 
     public void setSubscribedChannelId(Long subscribedChannelId) {
         this.subscribedChannelId = subscribedChannelId;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
     }
 }
