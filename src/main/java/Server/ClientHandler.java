@@ -384,6 +384,36 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleAccountSubscribeRequests(Request request) {
+        Response response;
+        Header header = request.getHeader();
+        Body body = request.getBody();
+        Long subscriberChannelId = body.getSubscriberChannelId();
+        Long subscribedChannelId = body.getSubscribedChannelId();
+
+        Subscription subscription = DatabaseManager.addSubscription(subscriberChannelId , subscribedChannelId);
+
+        if (Objects.equals(subscription , null)) {
+            body = new Body();
+            body.setSuccess(false);
+            body.setMessage("subscriber channel id or subscribed channel id isn't valid !");
+
+            response = new Response(header , body);
+            sendResponse(response);
+            return;
+        }
+
+        body = new Body();
+        body.setSuccess(true);
+        body.setMessage("200 Ok");
+        body.setSubscription(subscription);
+
+        response = new Response(header , body);
+
+        sendResponse(response);
+    }
+
+
     public void handleChannelEditRequests(Request request) {
         Response response;
         Header header = request.getHeader();
