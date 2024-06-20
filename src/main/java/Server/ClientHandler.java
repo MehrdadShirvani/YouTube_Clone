@@ -6,6 +6,7 @@ import Shared.Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import javafx.beans.binding.NumberExpressionBase;
 import javafx.scene.chart.PieChart;
 
 import java.io.*;
@@ -152,16 +153,22 @@ public class ClientHandler implements Runnable {
         } else if (endpoint == "edit") {
             handleAccountEditRequests(request);
 
-        } else if (endpoint == "info") {
-            handleAccountInfoRequests(request);
-
         } else if (endpoint == "subscribe") {
             handleAccountSubscribeRequests(request);
 
         } else if (endpoint == "unsubscribe") {
             handleAccountUnsubscribeRequests(request);
 
-        } else {
+        } else if (header.getMethod() == "GET") {
+            try {
+                Long accountId = Long.parseLong(endpoint);
+                handleAccountInfoRequests(request , accountId);
+            } catch (NumberFormatException e) {
+                handleBadRequest(header);
+            }
+        }
+
+        else {
             handleBadRequest(header);
         }
     }
@@ -350,14 +357,12 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void handleAccountInfoRequests(Request request) {
+    public void handleAccountInfoRequests(Request request , Long accountId) {
         Response response;
         Header header = request.getHeader();
-        Body body = request.getBody();
-        Long accountId = body.getAccountId();
 
         if (Objects.equals(accountId , null)) {
-            body = new Body();
+            Body body = new Body();
             body.setSuccess(false);
             body.setMessage("The accountId is null !");
 
@@ -369,7 +374,7 @@ public class ClientHandler implements Runnable {
         Account account = DatabaseManager.getAccount(accountId);
 
         if (Objects.equals(account , null)) {
-            body = new Body();
+            Body body = new Body();
             body.setSuccess(false);
             body.setMessage("There is no Account with this accountId ! [" + accountId + "]");
 
@@ -379,7 +384,7 @@ public class ClientHandler implements Runnable {
 
         }
 
-        body = new Body();
+        Body body = new Body();
         body.setSuccess(true);
         body.setMessage("200 Ok");
         body.setAccount(account);
