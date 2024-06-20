@@ -183,19 +183,26 @@ public class ClientHandler implements Runnable {
             if (endpoint == "edit") {
                 handleChannelEditRequests(request);
 
-            } else if (endpoint == "subscribers") {
-                handleChannelSubscribersRequests(request);
-
             } else {
                 handleBadRequest(header);
 
             }
         } else if (header.getMethod() == "GET") {
-            try {
-                Long channelId = Long.parseLong(endpoint);
-                handleChannelInfoRequests(request , channelId);
-            } catch (NumberFormatException e) {
-                handleBadRequest(header);
+            if (endpoint == "subscribers") {
+                String channelIdString = header.endpointParser()[4];
+                try {
+                    Long channelId = Long.parseLong(channelIdString);
+                    handleChannelSubscribersRequests(request , channelId);
+                } catch (NumberFormatException e) {
+                    handleBadRequest(header);
+                }
+            } else {
+                try {
+                    Long channelId = Long.parseLong(endpoint);
+                    handleChannelInfoRequests(request , channelId);
+                } catch (NumberFormatException e) {
+                    handleBadRequest(header);
+                }
             }
         }
     }
@@ -517,11 +524,10 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void handleChannelSubscribersRequests(Request request) {
+    public void handleChannelSubscribersRequests(Request request , Long channelId) {
         Response response;
         Header header = request.getHeader();
-        Body body = request.getBody();
-        Long channelId = body.getChannelId();
+        Body body;
 
         if (Objects.equals(channelId , null)) {
             body = new Body();
