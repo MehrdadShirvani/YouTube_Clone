@@ -236,12 +236,10 @@ public class Client {
 
 
     public Account getAccountInfo(Long accountId) {
-        String endpoint = "/api/account/info";
+        String endpoint = "/api/account/" + accountId;
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-
-        requestBody.setAccountId(accountId);
 
         Request request = new Request(requestHeader , requestBody);
 
