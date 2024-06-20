@@ -345,7 +345,7 @@ public class Client {
 
 
     public List<Channel> getChannelSubscribers(Long channelId) {
-        String endpoint = "/api/channel/subscriber" + channelId;
+        String endpoint = "/api/channel/subscribers" + channelId;
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
