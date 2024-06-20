@@ -144,21 +144,26 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (endpoint == "login") {
-            handleLoginRequests(request);
+        if (header.getMethod() == "POST") {
+            if (endpoint == "login") {
+                handleLoginRequests(request);
 
-        } else if (endpoint == "signup") {
-            handleSignupRequests(request);
+            } else if (endpoint == "signup") {
+                handleSignupRequests(request);
 
-        } else if (endpoint == "edit") {
-            handleAccountEditRequests(request);
+            } else if (endpoint == "edit") {
+                handleAccountEditRequests(request);
 
-        } else if (endpoint == "subscribe") {
-            handleAccountSubscribeRequests(request);
+            } else if (endpoint == "subscribe") {
+                handleAccountSubscribeRequests(request);
 
-        } else if (endpoint == "unsubscribe") {
-            handleAccountUnsubscribeRequests(request);
+            } else if (endpoint == "unsubscribe") {
+                handleAccountUnsubscribeRequests(request);
 
+            } else {
+                handleBadRequest(header);
+
+            }
         } else if (header.getMethod() == "GET") {
             try {
                 Long accountId = Long.parseLong(endpoint);
@@ -166,10 +171,6 @@ public class ClientHandler implements Runnable {
             } catch (NumberFormatException e) {
                 handleBadRequest(header);
             }
-        }
-
-        else {
-            handleBadRequest(header);
         }
     }
 
