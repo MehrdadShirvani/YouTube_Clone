@@ -2,6 +2,7 @@
     -fx-black-color: #121212;
     -fx-gray-color: #212121;
     -fx-semi-gray-color: #303030;
+    -fx-border-gray-color: #6C6C6C;
     -fx-bright-gray-color: #AAAAAA;
     -fx-blue-color: #065fd4;
 }
@@ -19,10 +20,15 @@ TextField, PasswordField, DatePicker{
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-background-color: -fx-black-color;
-    -fx-border-width: 1;
+    /*-fx-border-width: 1;*/
     -fx-text-fill: white;
-    -fx-prompt-text-fill: #AAAAAA;
+    -fx-prompt-text-fill: -fx-bright-gray-color;
     -fx-selection-bar: -fx-blue-color;
+    /*-fx-border-color: -fx-border-gray-color;*/
+    -fx-border-width: 0.5;
+}
+TextField:hover, PasswordField:hover, DatePicker:hover{
+    -fx-background-color: -fx-border-gray-color;
 }
 TextField:focused, PasswordField:focused, DatePicker:focused{
     -fx-border-color: -fx-blue-color;
@@ -30,7 +36,7 @@ TextField:focused, PasswordField:focused, DatePicker:focused{
 .account-title
 {
     -fx-font-family: "Product Sans";
-    -fx-font-size: 45;
+    /*-fx-font-size: 45;*/
 }
 DatePicker .text-field{
     -fx-control-inner-background: -fx-black-color;
@@ -49,10 +55,20 @@ DatePicker .month-year-pane .spinner {
 .conformation-button{
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    /*-fx-background-color: -fx-blue-color;*/
-    -fx-background-color: #0b57d0;
+    -fx-background-color: -fx-blue-color;
+    /*-fx-background-color: #0b57d0;*/
     /*-fx-background-color: #075FDE;*/
     -fx-text-fill: white;
+    -fx-font-family: Roboto;
+    -fx-font-weight: Bold;
+    -fx-font-size: 14;
+}
+.secondary-button{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    /*-fx-text-fill: #0b57d0;*/
+    -fx-text-fill: -fx-blue-color;
     -fx-font-family: Roboto;
     -fx-font-weight: Bold;
     -fx-font-size: 14;
@@ -64,6 +80,11 @@ DatePicker .month-year-pane .spinner {
     /*-fx-background-size: stretch,stretch;*/
 }
 .conformation-button:hover{
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box,#0b57d0, 20, 0, 0, 0);
+}
+.secondary-button:hover{
+    /*-fx-background-color: rgba(170, 170, 170, 0.1);*/
+    -fx-background-color: rgba(108, 108, 108, 0.5);
 }
