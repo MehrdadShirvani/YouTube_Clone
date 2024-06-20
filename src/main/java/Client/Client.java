@@ -345,12 +345,10 @@ public class Client {
 
 
     public List<Channel> getChannelSubscribers(Long channelId) {
-        String endpoint = "/api/channel/subscriber";
+        String endpoint = "/api/channel/subscriber" + channelId;
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-
-        requestBody.setChannelId(channelId);
 
         Request request = new Request(requestHeader , requestBody);
 
