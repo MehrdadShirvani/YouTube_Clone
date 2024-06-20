@@ -178,17 +178,24 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (endpoint == "edit") {
-            handleChannelEditRequests(request);
+        if (header.getMethod() == "POST") {
+            if (endpoint == "edit") {
+                handleChannelEditRequests(request);
 
-        } else if (endpoint == "info") {
-            handleChannelInfoRequests(request);
+            } else if (endpoint == "subscribers") {
+                handleChannelSubscribersRequests(request);
 
-        } else if (endpoint == "subscribers") {
-            handleChannelSubscribersRequests(request);
+            } else {
+                handleBadRequest(header);
 
-        } else {
-            handleBadRequest(header);
+            }
+        } else if (header.getMethod() == "GET") {
+            try {
+                Long channelId = Long.parseLong(endpoint);
+                handleChannelInfoRequests(request , channelId);
+            } catch (NumberFormatException e) {
+                handleBadRequest(header);
+            }
         }
     }
 
@@ -473,14 +480,12 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void handleChannelInfoRequests(Request request) {
+    public void handleChannelInfoRequests(Request request , Long channelId) {
         Response response;
         Header header = request.getHeader();
-        Body body = request.getBody();
-        Long channelId = body.getChannelId();
 
         if (Objects.equals(channelId , null)) {
-            body = new Body();
+            Body body = new Body();
             body.setSuccess(false);
             body.setMessage("The channel id that sent is null !");
 
@@ -492,7 +497,7 @@ public class ClientHandler implements Runnable {
         Channel channel = DatabaseManager.getChannel(channelId);
 
         if (Objects.equals(channel , null)) {
-            body = new Body();
+            Body body = new Body();
             body.setSuccess(false);
             body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
 
@@ -501,7 +506,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        body = new Body();
+        Body body = new Body();
         body.setSuccess(true);
         body.setMessage("200 Ok");
         body.setChannel(channel);
