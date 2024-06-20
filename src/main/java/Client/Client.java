@@ -323,12 +323,10 @@ public class Client {
     }
 
     public Channel getChannelInfo(Long channelId) {
-        String endpoint = "/api/channel/info";
+        String endpoint = "/api/channel/" + channelId;
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-
-        requestBody.setChannelId(channelId);
 
         Request request = new Request(requestHeader , requestBody);
 
