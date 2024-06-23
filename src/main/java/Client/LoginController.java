@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -25,6 +27,10 @@ public class LoginController {
     BorderPane backgroundBorderPane;
     @FXML
     GridPane backgroundGridPane;
+    @FXML
+    TextField emailTextField;
+    @FXML
+    PasswordField passwordField;
 
     public void initialize() {
         //Bindings
@@ -69,6 +75,15 @@ public class LoginController {
     }
 
     public void login(ActionEvent event) {
+
+        //TODO login
+        if(false)
+        {
+            //TODO Ehsasn
+            return;
+        }
+
+
     }
 
     public void signup(ActionEvent event) {

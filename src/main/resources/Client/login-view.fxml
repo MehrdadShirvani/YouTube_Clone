@@ -18,8 +18,8 @@
                     <Insets left="20.0" />
                 </BorderPane.margin>
                 <children>
-               <TextField layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" promptText="Email or username" />
-               <PasswordField prefHeight="50.0" promptText="Password" />
+               <TextField fx:id="emailTextField" layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" promptText="Email or username" />
+               <PasswordField fx:id="passwordField" prefHeight="50.0" promptText="Password" />
                <HBox alignment="CENTER_RIGHT">
                   <children>
                       <Button alignment="CENTER" layoutX="345.0" layoutY="20.0" minHeight="34.0" mnemonicParsing="false" onAction="#signup" prefHeight="41.0" styleClass="secondary-button" text="Create account" textAlignment="CENTER">
