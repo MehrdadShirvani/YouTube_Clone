@@ -142,6 +142,7 @@ public class SignUpController {
 
         Account account = new Account(firstNameTextField.getText(),lastNameTextField.getText(),usernameTextField.getText() ,emailTextField.getText(), passwordField.getText(), null);
         //TODO Create Channel
+        YouTube.client.sendSignupRequest(account);
 
         YouTube.changeScene("home-view.fxml");
     }
