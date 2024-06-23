@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class YouTube extends Application {
     public static Stage primaryStage;
+    public static Client client;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -50,6 +51,7 @@ public class YouTube extends Application {
     }
 
     public static void main(String[] args) {
+        client = new Client();
         launch();
     }
 }
