@@ -2,6 +2,7 @@ package Shared.Models;
 
 import jakarta.persistence.*;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -59,19 +60,18 @@ public class Account {
     {
 
     }
-    public Account(String firstName, String lastName, String username, String email, String password, Date birthDate,  Timestamp createdDateTime,  Timestamp lastSeenAdDateTime, Date premiumExpirationDate, String publicKey)
+    public Account(String firstName, String lastName, String username, String email, String password, Date birthDate)
     {
-
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
         this.birthDate = birthDate;
-        this.createdDateTime = createdDateTime;
-        this.lastSeenAdDateTime = lastSeenAdDateTime;
-        this.premiumExpirationDate = premiumExpirationDate;
-        this.publicKey = publicKey;
+        this.createdDateTime = new Timestamp(System.currentTimeMillis());
+        this.lastSeenAdDateTime = null;
+        this.premiumExpirationDate = null;
+
     }
 
     public Long getAccountId() {
