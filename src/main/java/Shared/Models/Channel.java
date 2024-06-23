@@ -29,12 +29,12 @@ public class Channel {
     {
 
     }
-    public Channel(String name, String description, String location, String picture, Timestamp createdDateTime) {
+    public Channel(String name, String description, String location, String picture) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.picture = picture;
-        this.createdDateTime = createdDateTime;
+        this.createdDateTime = new Timestamp(System.currentTimeMillis());
     }
 
     public Long getChannelId() {
