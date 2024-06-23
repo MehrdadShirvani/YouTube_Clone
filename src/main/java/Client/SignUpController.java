@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Models.Account;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -7,9 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -40,6 +43,10 @@ public class SignUpController {
     GridPane designGridBox;
     @FXML
     VBox designVBox;
+    Label firstNameLabel;
+    Label usernameLabel;
+    Label passwordLabel;
+    Label emailLabel;
 
     public void initialize() {
         backgroundBorderPane.prefWidthProperty().bind(backgroundGridPane.widthProperty().multiply((double) 892 / 1007));
@@ -93,10 +100,49 @@ public class SignUpController {
 //            translate.setOnFinished(event ->YouTube.changeScene("login-view.fxml"));
 //            node.managedProperty().bind(node.visibleProperty());
         }
+
         lastTranslate.setOnFinished(event -> YouTube.changeScene("login-view.fxml"));
     }
 
     public void signup(ActionEvent event) {
+
+        if(firstNameTextField.getText().isBlank() || usernameTextField.getText().isBlank())
+        {
+            return;
+        }
+
+        if(!Shared.Utils.TextValidator.validateEmail(emailTextField.getText()))
+        {
+            return;
+        }
+
+        String passwordMessage = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
+        if(!passwordMessage.isBlank())
+        {
+            return;
+        }
+
+        //Username Uniqueness
+        if(false)//TODO Check Username Uniqueness
+        {
+            //TODO Ehsan -> Style the Message Box
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Username is not unique");
+            return;
+        }
+
+        //email Uniqueness
+        if(false)//TODO Check Email Uniqueness
+        {
+            //TODO Ehsan -> Style the Message Box
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Email is not unique");
+            return;
+        }
+
+        Account account = new Account(firstNameTextField.getText(),lastNameTextField.getText(),usernameTextField.getText() ,emailTextField.getText(), passwordField.getText(), null);
+        //TODO Create Channel
+
         YouTube.changeScene("home-view.fxml");
     }
 
@@ -105,6 +151,78 @@ public class SignUpController {
         nodes.add(designVBox);
         nodes.add(signupVbox);
         fadeOut(nodes);
+    }
 
+    public void firstNameChanged(KeyEvent keyEvent) {
+        if(firstNameTextField.getText().isBlank() )
+        {
+            if(signupVbox.getChildren().contains(firstNameLabel))
+            {
+                return;
+            }
+
+            firstNameLabel = new Label();
+            firstNameLabel.setText("Shouldn't be empty");
+            firstNameLabel.setTextFill(Paint.valueOf("#ffffff"));
+            signupVbox.getChildren().add(signupVbox.getChildren().indexOf(firstNameTextField) + 1, firstNameLabel);
+        }
+        else{
+            signupVbox.getChildren().remove(firstNameLabel);
+        }
+    }
+
+    public void emailChanged(KeyEvent keyEvent) {
+        if(!Shared.Utils.TextValidator.validateEmail(emailTextField.getText()))
+        {
+            if(signupVbox.getChildren().contains(emailLabel))
+            {
+                return;
+            }
+
+            emailLabel = new Label();
+            emailLabel.setText("Should be valid");
+            emailLabel.setTextFill(Paint.valueOf("#ffffff"));
+            signupVbox.getChildren().add(signupVbox.getChildren().indexOf(emailTextField) + 1, emailLabel);
+        }
+        else{
+            signupVbox.getChildren().remove(emailLabel);
+        }
+    }
+
+    public void usernameChanged(KeyEvent keyEvent) {
+        if(usernameTextField.getText().isBlank())
+        {
+            if(signupVbox.getChildren().contains(usernameLabel))
+            {
+                return;
+            }
+
+            usernameLabel = new Label();
+            usernameLabel.setText("Shouldn't be empty");
+            usernameLabel.setTextFill(Paint.valueOf("#ffffff"));
+            signupVbox.getChildren().add(signupVbox.getChildren().indexOf(usernameTextField) + 1, usernameLabel);
+        }
+        else{
+            signupVbox.getChildren().remove(usernameLabel);
+        }
+    }
+
+    public void passwordChanged(KeyEvent keyEvent) {
+        String error = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
+        if(!error.isBlank())
+        {
+            if(signupVbox.getChildren().contains(passwordLabel))
+            {
+                return;
+            }
+
+            passwordLabel = new Label();
+            passwordLabel.setText(error);//TODO Fix it to show all the text
+            passwordLabel.setTextFill(Paint.valueOf("#ffffff"));
+            signupVbox.getChildren().add(signupVbox.getChildren().indexOf(passwordField) + 1, passwordLabel);
+        }
+        else{
+            signupVbox.getChildren().remove(passwordLabel);
+        }
     }
 }

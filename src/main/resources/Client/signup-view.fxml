@@ -18,11 +18,11 @@
                     <Insets left="20.0" />
                 </BorderPane.margin>
                 <children>
-                    <TextField fx:id="firstNameTextField" prefHeight="50.0" prefWidth="451.0" promptText="First name" />
-               <TextField fx:id="lastNameTextField" layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
-               <TextField fx:id="usernameTextField" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
-               <TextField fx:id="emailTextField" layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" promptText="Email" />
-               <PasswordField fx:id="passwordField" prefHeight="50.0" promptText="Password" />
+                    <TextField fx:id="firstNameTextField" onKeyReleased="#firstNameChanged" prefHeight="50.0" prefWidth="451.0" promptText="First name" />
+               <TextField fx:id="lastNameTextField"  layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
+               <TextField fx:id="usernameTextField"  onKeyReleased="#usernameChanged" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
+               <TextField fx:id="emailTextField" onKeyReleased="#emailChanged" layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" promptText="Email" />
+               <PasswordField fx:id="passwordField" onKeyReleased="#passwordChanged" prefHeight="50.0" promptText="Password" />
                <HBox alignment="CENTER_RIGHT">
                   <children>
                      <Button fx:id="login" alignment="CENTER" layoutX="345.0" layoutY="20.0" minHeight="34.0" mnemonicParsing="false" onAction="#login" prefHeight="41.0" prefWidth="192.0" styleClass="secondary-button" text="I already have an account" textAlignment="CENTER">
