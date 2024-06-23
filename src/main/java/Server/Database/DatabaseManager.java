@@ -712,6 +712,11 @@ public class DatabaseManager {
             Account savedAccount = entityManager.find(Account.class, account.getAccountId());
 
             entityManager.close();
+
+            Channel channel = addChannel(new Channel(account.getUsername(),"Welcome to " + account.getUsername() +"'s Channel!", "",""));
+            savedAccount.setChannelId(channel.getChannelId());
+            editAccount(savedAccount);
+
             return savedAccount;
         }
     }
