@@ -2,6 +2,7 @@ package Server;
 
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -66,7 +67,19 @@ public class Server {
     }
 
     public void writeLog(String log) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS, true))) {
+        try {
+            File logFile = new File(LOG_FILE_ADDRESS);
+            File logDir = logFile.getParentFile();
+
+            if (!logDir.exists()) {
+                logDir.mkdir();
+            }
+
+            if (!logFile.exists()) {
+                logFile.createNewFile();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS , true));
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             writer.write("[" + timestamp + "] " + log);
             writer.newLine();
