@@ -10,6 +10,7 @@ import java.util.Base64;
 public class ServerEncryption {
     private final PublicKey serverRSApublicKey;
     private final PrivateKey serverRSAprivateKey;
+    private final SecretKey AesKey;
     private final int AES_KEY_SIZE = 128;
     private final int RSA_KEY_SIZE = 2048;
 
@@ -17,6 +18,7 @@ public class ServerEncryption {
         KeyPair keyPair =  generateRSAkeyPair() ;
         this.serverRSApublicKey = keyPair.getPublic();
         this.serverRSAprivateKey = keyPair.getPrivate();
+        this.AesKey = this.generateAESsecretKey();
     }
 
     public KeyPair generateRSAkeyPair() {
@@ -59,11 +61,11 @@ public class ServerEncryption {
     }
 
 
-    public byte[] encryptDataAES(byte[] fileBytes , SecretKey secretKey) {
+    public byte[] encryptDataAES(byte[] jsonByte) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE , secretKey);
-            return cipher.doFinal(fileBytes);
+            cipher.init(Cipher.ENCRYPT_MODE , this.AesKey);
+            return cipher.doFinal(jsonByte);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data with AES algorithm inside the server");
             e.printStackTrace();
@@ -71,11 +73,11 @@ public class ServerEncryption {
         }
     }
 
-    public byte[] decryptDataAES(byte[] encryptedFileBytes , SecretKey secretKey) {
+    public byte[] decryptDataAES(byte[] jsonEncryptedByte) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(cipher.DECRYPT_MODE , secretKey);
-            return cipher.doFinal(encryptedFileBytes);
+            cipher.init(cipher.DECRYPT_MODE , this.AesKey);
+            return cipher.doFinal(jsonEncryptedByte);
         } catch (Exception e) {
             System.err.println("Error : while decrypting the data with AES algorithm inside the server");
             e.printStackTrace();
@@ -97,5 +99,9 @@ public class ServerEncryption {
 
     public PublicKey getServerRSApublicKey() {
         return serverRSApublicKey;
+    }
+
+    public SecretKey getAesKey() {
+        return AesKey;
     }
 }
