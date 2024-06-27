@@ -14,6 +14,14 @@ public class Response {
     }
 
 
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
     public Header getHeader() {
         return header;
     }
