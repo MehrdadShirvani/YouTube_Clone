@@ -19,6 +19,7 @@ module org.example.youtube {
     opens Client to javafx.fxml;
     exports Client;
 
-    exports Shared.Api.dto to com.fasterxml.jackson.databind;
-    exports Shared.Models to com.fasterxml.jackson.databind;
+    opens Shared.Models to com.fasterxml.jackson.databind;
+
+    opens Shared.Api.dto to com.fasterxml.jackson.databind;
 }
