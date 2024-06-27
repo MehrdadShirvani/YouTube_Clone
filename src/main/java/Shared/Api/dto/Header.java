@@ -1,11 +1,22 @@
 package Shared.Api.dto;
 
 public class Header {
-    private final String method;
-    private final String endpoint;
+    private String method;
+    private String endpoint;
 
     public Header(String method , String endpoint) {
         this.method = method;
+        this.endpoint = endpoint;
+    }
+
+    public Header() {
+
+    }
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 
