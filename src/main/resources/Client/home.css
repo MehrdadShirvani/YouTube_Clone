@@ -54,5 +54,8 @@
 
 .menu-toggle-button:hover {
     -fx-background-color: rgba(170,170,170,0.3);
-
+}
+#homeScrollPane .viewport
+{
+    -fx-background-color:-fx-gray-color;
 }

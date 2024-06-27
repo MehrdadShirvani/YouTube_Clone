@@ -106,24 +106,24 @@ public class SignUpController {
 
     public void signup(ActionEvent event) {
 
-        if(firstNameTextField.getText().isBlank() || usernameTextField.getText().isBlank())
-        {
+        YouTube.changeScene("home-view.fxml");
+        if(true)
+            return;
+        if (firstNameTextField.getText().isBlank() || usernameTextField.getText().isBlank()) {
             return;
         }
 
-        if(!Shared.Utils.TextValidator.validateEmail(emailTextField.getText()))
-        {
+        if (!Shared.Utils.TextValidator.validateEmail(emailTextField.getText())) {
             return;
         }
 
         String passwordMessage = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
-        if(!passwordMessage.isBlank())
-        {
+        if (!passwordMessage.isBlank()) {
             return;
         }
 
         //Username Uniqueness
-        if(false)//TODO Check Username Uniqueness
+        if (false)//TODO Check Username Uniqueness
         {
             //TODO Ehsan -> Style the Message Box
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -132,7 +132,7 @@ public class SignUpController {
         }
 
         //email Uniqueness
-        if(false)//TODO Check Email Uniqueness
+        if (false)//TODO Check Email Uniqueness
         {
             //TODO Ehsan -> Style the Message Box
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -140,11 +140,10 @@ public class SignUpController {
             return;
         }
 
-        Account account = new Account(firstNameTextField.getText(),lastNameTextField.getText(),usernameTextField.getText() ,emailTextField.getText(), passwordField.getText(), null);
+        Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
         //TODO Create Channel
         YouTube.client.sendSignupRequest(account);
 
-        YouTube.changeScene("home-view.fxml");
     }
 
     public void login(ActionEvent event) {
@@ -155,10 +154,8 @@ public class SignUpController {
     }
 
     public void firstNameChanged(KeyEvent keyEvent) {
-        if(firstNameTextField.getText().isBlank() )
-        {
-            if(signupVbox.getChildren().contains(firstNameLabel))
-            {
+        if (firstNameTextField.getText().isBlank()) {
+            if (signupVbox.getChildren().contains(firstNameLabel)) {
                 return;
             }
 
@@ -166,17 +163,14 @@ public class SignUpController {
             firstNameLabel.setText("Shouldn't be empty");
             firstNameLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(firstNameTextField) + 1, firstNameLabel);
-        }
-        else{
+        } else {
             signupVbox.getChildren().remove(firstNameLabel);
         }
     }
 
     public void emailChanged(KeyEvent keyEvent) {
-        if(!Shared.Utils.TextValidator.validateEmail(emailTextField.getText()))
-        {
-            if(signupVbox.getChildren().contains(emailLabel))
-            {
+        if (!Shared.Utils.TextValidator.validateEmail(emailTextField.getText())) {
+            if (signupVbox.getChildren().contains(emailLabel)) {
                 return;
             }
 
@@ -184,17 +178,14 @@ public class SignUpController {
             emailLabel.setText("Should be valid");
             emailLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(emailTextField) + 1, emailLabel);
-        }
-        else{
+        } else {
             signupVbox.getChildren().remove(emailLabel);
         }
     }
 
     public void usernameChanged(KeyEvent keyEvent) {
-        if(usernameTextField.getText().isBlank())
-        {
-            if(signupVbox.getChildren().contains(usernameLabel))
-            {
+        if (usernameTextField.getText().isBlank()) {
+            if (signupVbox.getChildren().contains(usernameLabel)) {
                 return;
             }
 
@@ -202,18 +193,15 @@ public class SignUpController {
             usernameLabel.setText("Shouldn't be empty");
             usernameLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(usernameTextField) + 1, usernameLabel);
-        }
-        else{
+        } else {
             signupVbox.getChildren().remove(usernameLabel);
         }
     }
 
     public void passwordChanged(KeyEvent keyEvent) {
         String error = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
-        if(!error.isBlank())
-        {
-            if(signupVbox.getChildren().contains(passwordLabel))
-            {
+        if (!error.isBlank()) {
+            if (signupVbox.getChildren().contains(passwordLabel)) {
                 return;
             }
 
@@ -221,8 +209,7 @@ public class SignUpController {
             passwordLabel.setText(error);//TODO Fix it to show all the text
             passwordLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(passwordField) + 1, passwordLabel);
-        }
-        else{
+        } else {
             signupVbox.getChildren().remove(passwordLabel);
         }
     }

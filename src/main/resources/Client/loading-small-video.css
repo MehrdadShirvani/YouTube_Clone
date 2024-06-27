@@ -1,0 +1,20 @@
+/*body {*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    overflow: hidden; !* Hide overflow to prevent scrollbars *!*/
+/*    background-image: linear-gradient(160deg, #eee 0%, #fafafa 25%, #eee 100%);*/
+/*    background-size: 500% 100%; !* Adjust the size as needed *!*/
+/*    animation: shimmerBackground 2s infinite linear;*/
+/*}*/
+
+/*@keyframes shimmerBackground {*/
+/*    0% {*/
+/*        background-position: -5000px 0;*/
+/*    }*/
+/*    100% {*/
+/*        background-position: 5000px 0;*/
+/*    }*/
+/*}*/
+body{
+    background-color: #6C6C6C;
+}
