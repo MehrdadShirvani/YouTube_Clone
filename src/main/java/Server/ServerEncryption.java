@@ -37,7 +37,7 @@ public class ServerEncryption {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
-            byte[] encryptedBytes = cipher.doFinal(jsonData.getBytes());
+            byte[] encryptedBytes = cipher.doFinal(Base64.getDecoder().decode(jsonData));
             return Base64.getEncoder().encodeToString(encryptedBytes);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data inside the server ! :");
@@ -73,11 +73,14 @@ public class ServerEncryption {
         }
     }
 
-    public byte[] decryptDataAES(byte[] jsonEncryptedByte) {
+    public String decryptDataAES(String jsonEncrypted) {
         try {
+            byte[] jsonEncryptedByte = Base64.getDecoder().decode(jsonEncrypted);
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(cipher.DECRYPT_MODE , this.AesKey);
-            return cipher.doFinal(jsonEncryptedByte);
+            cipher.init(Cipher.DECRYPT_MODE, this.AesKey);
+            byte[] test = cipher.doFinal(jsonEncryptedByte);
+            cipher.init(Cipher.ENCRYPT_MODE , this.AesKey);
+            return new String(test , "UTF-8");
         } catch (Exception e) {
             System.err.println("Error : while decrypting the data with AES algorithm inside the server");
             e.printStackTrace();
