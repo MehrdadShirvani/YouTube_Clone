@@ -10,6 +10,7 @@ import javafx.beans.binding.NumberExpressionBase;
 import javafx.scene.chart.PieChart;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.Socket;
 import java.security.KeyFactory;
@@ -19,10 +20,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ClientHandler implements Runnable {
     private static final String LOG_FILE_ADDRESS = "src/main/java/Server/logs/ClientHandler_Log.txt";
@@ -35,7 +33,7 @@ public class ClientHandler implements Runnable {
 
 
     public ClientHandler(Socket socket) {
-        ServerEncryption serverEncryption = new ServerEncryption();
+        serverEncryption = new ServerEncryption();
 
         try {
             this.socket = socket;
@@ -62,8 +60,8 @@ public class ClientHandler implements Runnable {
         Header header;
         String endpoint;
 
-        sendServerPublicKeyRSA();
-        receiveClientPublicKeyRSA();
+//        sendServerPublicKeyRSA();
+//        receiveClientPublicKeyRSA();
 
 
         sendAesKey();
@@ -72,7 +70,7 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected()) {
             try {
                 encryptedJson =  this.bufferedReader.readLine();
-                json = Server.serverEncryption.decryptDataRSA(encryptedJson);
+                json = this.serverEncryption.decryptDataAES(encryptedJson);
                 request = objectMapper.readValue(json , Request.class);
                 header = request.getHeader();
                 endpoint = header.endpointParser()[1];
@@ -795,7 +793,7 @@ public class ClientHandler implements Runnable {
 
     public void sendServerPublicKeyRSA() {
         try {
-            PublicKey serverPublicKey = Server.serverEncryption.getServerRSApublicKey();
+            PublicKey serverPublicKey = this.serverEncryption.getServerRSApublicKey();
             String encodedServerPublicKey = Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
             this.bufferedWriter.write(encodedServerPublicKey);
             this.bufferedWriter.newLine();
@@ -812,7 +810,11 @@ public class ClientHandler implements Runnable {
     public void sendAesKey() {
         try {
             SecretKey AesKey = this.serverEncryption.getAesKey();
-            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
+            System.out.println("IN CLIENT HANDELR : " + Arrays.toString(AesKey.getEncoded()));
+//            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
+            String encodedAesKey = Base64.getEncoder().encodeToString(AesKey.getEncoded());
+
+            System.out.println("ENCORDEDD AES KEY IN CLIENTHASNDLER : " + encodedAesKey);
             this.bufferedWriter.write(encodedAesKey);
             this.bufferedWriter.newLine();
             this.bufferedWriter.flush();
