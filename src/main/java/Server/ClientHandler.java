@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import javafx.beans.binding.NumberExpressionBase;
 import javafx.scene.chart.PieChart;
 
+import javax.crypto.SecretKey;
 import java.io.*;
 import java.net.Socket;
 import java.security.KeyFactory;
@@ -30,9 +31,12 @@ public class ClientHandler implements Runnable {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private PublicKey clientPublicKey;
+    private ServerEncryption serverEncryption;
 
 
     public ClientHandler(Socket socket) {
+        ServerEncryption serverEncryption = new ServerEncryption();
+
         try {
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -58,8 +62,12 @@ public class ClientHandler implements Runnable {
         Header header;
         String endpoint;
 
-        sendServerPublicKeyRSA();
-        receiveClientPublicKeyRSA();
+//        sendServerPublicKeyRSA();
+//        receiveClientPublicKeyRSA();
+
+
+        sendAesKey();
+
 
         while (socket.isConnected()) {
             try {
@@ -794,6 +802,24 @@ public class ClientHandler implements Runnable {
             this.bufferedWriter.flush();
         } catch (IOException e) {
             String errorLog = "Error : while encoding the RSA public key and send to client in sendServerPublicKeyRSA function";
+            System.err.println(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void sendAesKey() {
+        try {
+            SecretKey AesKey = this.serverEncryption.getAesKey();
+            String encodedAesKey = Base64.getEncoder().encodeToString(serverEncryption.encryptDataAES(AesKey.getEncoded()));
+            this.bufferedWriter.write(encodedAesKey);
+            this.bufferedWriter.newLine();
+            this.bufferedWriter.flush();
+
+
+        } catch (IOException e) {
+            String errorLog = "Error : while encoding the Aes key and send to client in sendAesKey function";
             System.err.println(errorLog);
             e.printStackTrace();
             throw new RuntimeException(e);
