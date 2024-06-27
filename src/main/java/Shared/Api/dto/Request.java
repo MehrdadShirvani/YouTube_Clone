@@ -13,6 +13,10 @@ public class Request {
         this.body = body;
     }
 
+    public Request() {
+
+    }
+
 
     public Header getHeader() {
         return header;
@@ -20,5 +24,13 @@ public class Request {
 
     public Body getBody() {
         return body;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 }
