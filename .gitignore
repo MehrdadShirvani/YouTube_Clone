@@ -39,3 +39,7 @@ build/
 
 ## Extended ###
 /.idea
+
+### Log ###
+src/main/java/Server/logs
+
