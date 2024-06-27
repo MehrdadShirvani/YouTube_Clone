@@ -7,6 +7,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class ClientEncryption {
@@ -53,6 +54,7 @@ public class ClientEncryption {
             cipher.init(Cipher.DECRYPT_MODE, this.clientRSAprivateKey);
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            System.out.println(Arrays.asList(decryptedBytes));
             return new String(decryptedBytes);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data inside the client ! :");
@@ -74,11 +76,12 @@ public class ClientEncryption {
         }
     }
 
-    public byte[] encryptDataAES(byte[] jsonByte) {
+    public String encryptDataAES(String json) {
         try {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE , this.AesKey);
-            return cipher.doFinal(jsonByte);
+            String encryptedJson = Base64.getEncoder().encodeToString(cipher.doFinal(json.getBytes()));
+            return encryptedJson;
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data with AES algorithm inside the client !");
             e.printStackTrace();
