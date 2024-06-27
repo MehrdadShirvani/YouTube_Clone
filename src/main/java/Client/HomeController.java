@@ -1,21 +1,24 @@
 package Client;
 
 import javafx.animation.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+
+import java.io.IOException;
 
 public class HomeController {
     @FXML
@@ -46,9 +49,15 @@ public class HomeController {
     SVGPath channelIcon;
     @FXML
     SVGPath historyIcon;
+    @FXML
+    ScrollPane homeScrollPane;
+    @FXML
+    WebView webView;
+    @FXML
+    FlowPane homeVideosFlowPane;
     Boolean isMinimized;
 
-    public void initialize() {
+    public void initialize() throws IOException {
         isMinimized = false;
         //Search transition
         ScaleTransition st = new ScaleTransition(Duration.millis(200), searchTextField);
@@ -100,6 +109,11 @@ public class HomeController {
                 historyIcon.setContent("M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM22 12c0 5.51-4.49 10-10 10S2 17.51 2 12h1c0 4.96 4.04 9 9 9s9-4.04 9-9-4.04-9-9-9C8.81 3 5.92 4.64 4.28 7.38c-.11.18-.22.37-.31.56L3.94 8H8v1H1.96V3h1v4.74c.04-.09.07-.17.11-.25.11-.22.23-.42.35-.63C5.22 3.86 8.51 2 12 2c5.51 0 10 4.49 10 10z");
             }
         });
+        for (int i = 0; i < 11; ++i) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            Parent smallVideo = fxmlLoader.load();
+            homeVideosFlowPane.getChildren().add(smallVideo);
+        }
     }
 
     public void menuSwip(MouseEvent mouseEvent) {
@@ -134,18 +148,17 @@ public class HomeController {
         isMinimized = !isMinimized;
     }
 
-    public void checkLetter(KeyEvent keyEvent) {
+    public void checkLetter(KeyEvent keyEvent){
         // slash for search
-        if(keyEvent.getCode() == KeyCode.SLASH)
-        {
+        if (keyEvent.getCode() == KeyCode.SLASH) {
             searchTextField.requestFocus();
+            System.out.println(homeScrollPane.getWidth()+" "+homeScrollPane.getHeight());
         }
     }
 
     public void checkLetterSearch(KeyEvent keyEvent) {
         // esc for search canceling
-        if(keyEvent.getCode() == KeyCode.ESCAPE)
-        {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
             searchTextField.setText("");
             searchButton.requestFocus();
         }

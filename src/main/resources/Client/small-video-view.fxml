@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<VBox alignment="TOP_CENTER" prefHeight="221.61" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
+    <stylesheets>
+        <URL value="@small-video-view.css" />
+    </stylesheets>
+
+    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" />
+    <HBox>
+        <children>
+            <Circle fx:id="profileCircle" fill="#6c6c6c" radius="26.36">
+                <HBox.margin>
+                    <Insets right="10.0" top="5.0" />
+                </HBox.margin>
+            </Circle>
+         <VBox>
+            <children>
+                  <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="Lorem ipsum dolor sit amet, consecte adipiscing elit." wrapText="true">
+                  <font>
+                     <Font size="11.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </Label>
+               <VBox spacing="2.0">
+                  <children>
+                     <Label fx:id="authorLabel" styleClass="caption-loading" text="James Gouse" />
+                     <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
+                  </children>
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </VBox>
+            </children>
+            <HBox.margin>
+               <Insets right="10.0" top="5.0" />
+            </HBox.margin>
+         </VBox>
+        </children>
+    </HBox>
+</VBox>
