@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -38,6 +40,7 @@ public class Client {
 
             receiveServerPublicKeyRSA();
             sendClientPublicKeyRSA();
+            receiveAesKey();
 
         } catch (UnknownHostException e) {
             closeEverything(socket , bufferedReader , bufferedWriter);
@@ -102,6 +105,19 @@ public class Client {
             throw new RuntimeException(e);
         }
     }
+
+    public void receiveAesKey() {
+        try {
+            String encodedAesKey = this.bufferedReader.readLine();
+            String decodedAesKey = this.clientEncryption.decryptDataRSA(encodedAesKey);
+            SecretKey AesKey = new SecretKeySpec(decodedAesKey.getBytes() , "AES");
+            this.clientEncryption.setAesKey(AesKey);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     public void sendRequest(Request request) {
