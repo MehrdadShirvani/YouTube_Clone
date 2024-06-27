@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -38,8 +39,8 @@ public class Client {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.clientEncryption = new ClientEncryption();
 
-            receiveServerPublicKeyRSA();
-            sendClientPublicKeyRSA();
+//            receiveServerPublicKeyRSA();
+//            sendClientPublicKeyRSA();
             receiveAesKey();
 
         } catch (UnknownHostException e) {
@@ -109,8 +110,9 @@ public class Client {
     public void receiveAesKey() {
         try {
             String encodedAesKey = this.bufferedReader.readLine();
-            String decodedAesKey = this.clientEncryption.decryptDataRSA(encodedAesKey);
-            SecretKey AesKey = new SecretKeySpec(decodedAesKey.getBytes() , "AES");
+//            String decodedAesKey = this.clientEncryption.decryptDataRSA((encodedAesKey));
+            byte[] decodedAesKey = Base64.getDecoder().decode(encodedAesKey);
+            SecretKey AesKey = new SecretKeySpec(decodedAesKey , "AES");
             this.clientEncryption.setAesKey(AesKey);
 
         } catch (IOException e) {
@@ -125,8 +127,7 @@ public class Client {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectWriter objectWriter = objectMapper.writer();
             String json = objectWriter.writeValueAsString(request);
-            String encryptedJson = this.clientEncryption.encryptDataRSA(json , this.serverPublicKey);
-
+            String encryptedJson = this.clientEncryption.encryptDataAES(json);
             this.bufferedWriter.write(encryptedJson);
             this.bufferedWriter.newLine();
             this.bufferedWriter.flush();
@@ -151,7 +152,7 @@ public class Client {
 
         try {
             encryptedJson = this.bufferedReader.readLine();
-            decryptedJson = this.clientEncryption.decryptDataRSA(encryptedJson);
+            decryptedJson = Base64.getEncoder().encodeToString(this.clientEncryption.decryptDataAES(Base64.getDecoder().decode(encryptedJson)));
             response = objectMapper.readValue(decryptedJson , Response.class);
 
             return response;
