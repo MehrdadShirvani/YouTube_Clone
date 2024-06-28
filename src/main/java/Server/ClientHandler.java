@@ -184,11 +184,19 @@ public class ClientHandler implements Runnable {
 
             }
         } else if (header.getMethod().equals("GET")) {
-            try {
-                Long accountId = Long.parseLong(endpoint);
-                handleAccountInfoRequests(request , accountId);
-            } catch (NumberFormatException e) {
-                handleBadRequest(header);
+            if (endpoint.equals("homepage")) {
+                handleHomepageVideosRequest(request);
+
+            } else if (endpoint.equals("subscriptions")) {
+                handleGetSubscriptionsRequest(request);
+
+            } else {
+                try {
+                    Long accountId = Long.parseLong(endpoint);
+                    handleAccountInfoRequests(request , accountId);
+                } catch (NumberFormatException e) {
+                    handleBadRequest(header);
+                }
             }
         }
     }
@@ -233,6 +241,9 @@ public class ClientHandler implements Runnable {
 
         if (endpoint.equals("like")) {
             handleVideoLikeRequests(request);
+
+        } else if (endpoint.equals("comments")) {
+            handleCommentsOfVideoRequest(request);
 
         } else {
             handleBadRequest(header);
