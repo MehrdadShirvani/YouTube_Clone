@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -21,6 +22,8 @@ import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientHandler implements Runnable {
     private static final String LOG_FILE_ADDRESS = "src/main/java/Server/logs/ClientHandler_Log.txt";
@@ -985,6 +988,43 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setVideo(video);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleSearchVideoRequest(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long accountId = requestBody.getAccountId();
+        List<Category> categories = requestBody.getCategories();
+        String searchKeywords;
+
+        try {
+            String regex = "query" + "=([^&]*)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(requestHeader.getEndpoint());
+
+            if (matcher.find()) {
+                searchKeywords = URLDecoder.decode(matcher.group(1), "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            String errorLog = "Error : error while running regex on a endpoint for finding search keywords !";
+            System.err.println(errorLog);
+            writeLog(errorLog);
+            throw new RuntimeException(e);
+        }
+
+        //TODO use database search function
+        List<Video> searchVideos = new ArrayList<>();
+
+
+        Body responseBody = new Body();
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setSearchVideos(searchVideos);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
