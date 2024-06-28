@@ -153,6 +153,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("comment")) {
             handleCommentRequests(request);
 
+        } else if (endpoint.equals("isUnique")) {
+            handleIsUniqueRequests(request);
+
         } else {
             handleBadRequest(header);
         }
@@ -266,6 +269,22 @@ public class ClientHandler implements Runnable {
         } else {
             handleBadRequest(header);
 
+        }
+    }
+
+
+    public void handleIsUniqueRequests(Request request) {
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
+
+        if (endpoint.equals("username")) {
+            handleCheckUsernameUnique(request);
+
+        } else if (endpoint.equals("email")) {
+            handleCheckEmailUnique(request);
+
+        } else {
+            handleBadRequest(header);
         }
     }
 
