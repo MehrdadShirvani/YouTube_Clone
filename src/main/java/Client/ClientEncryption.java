@@ -64,7 +64,7 @@ public class ClientEncryption {
     }
 
 
-    public byte[] decryptDataAES(String jsonEncrypted) {
+    public String decryptDataAES(String jsonEncrypted) {
         try {
             byte[] jsonEncryptedByte = Base64.getDecoder().decode(jsonEncrypted);
             Cipher cipher = Cipher.getInstance("AES");
