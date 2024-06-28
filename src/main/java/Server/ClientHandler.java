@@ -61,7 +61,7 @@ public class ClientHandler implements Runnable {
         String endpoint;
 
 //        sendServerPublicKeyRSA();
-//        receiveClientPublicKeyRSA();
+        receiveClientPublicKeyRSA();
 
 
         sendAesKey();
@@ -810,11 +810,8 @@ public class ClientHandler implements Runnable {
     public void sendAesKey() {
         try {
             SecretKey AesKey = this.serverEncryption.getAesKey();
-            System.out.println("IN CLIENT HANDELR : " + Arrays.toString(AesKey.getEncoded()));
-//            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
-            String encodedAesKey = Base64.getEncoder().encodeToString(AesKey.getEncoded());
+            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
 
-            System.out.println("ENCORDEDD AES KEY IN CLIENTHASNDLER : " + encodedAesKey);
             this.bufferedWriter.write(encodedAesKey);
             this.bufferedWriter.newLine();
             this.bufferedWriter.flush();
