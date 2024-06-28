@@ -659,4 +659,26 @@ public class Client {
         }
         return null;
     }
+
+
+    public Video getVideo(Long videoId) {
+        String endpoint = "/api/video/info";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideo();
+        }
+        return null;
+    }
 }
