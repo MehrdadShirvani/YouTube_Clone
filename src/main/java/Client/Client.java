@@ -685,6 +685,30 @@ public class Client {
     }
 
 
+    public List<Video> searchVideo(Long accountId , List<Category> categories , String searchKeywords) {
+        String searchKeywordsUrlForm = searchKeywords.replace(" " , "%20");
+        String endpoint = "/api/video/search?query=" + searchKeywordsUrlForm;
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setAccountId(accountId);
+        requestBody.setCategories(categories);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getSearchVideos();
+        }
+        return null;
+    }
+
+
     public void saveSearchHistory(ArrayList<String> searchHistory) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
