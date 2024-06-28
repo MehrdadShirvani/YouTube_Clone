@@ -12,8 +12,10 @@ public class Body {
     private String message;
 
     private String username;
+    private boolean isUsernameUnique;
     private String password;
     private String emailAddress;
+    private boolean isEmailUnique;
     private Long accountId;
     private Long channelId;
     private Long reactionId;
@@ -248,5 +250,21 @@ public class Body {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public boolean isUsernameUnique() {
+        return isUsernameUnique;
+    }
+
+    public void setUsernameUnique(boolean usernameUnique) {
+        isUsernameUnique = usernameUnique;
+    }
+
+    public boolean isEmailUnique() {
+        return isEmailUnique;
+    }
+
+    public void setEmailUnique(boolean emailUnique) {
+        isEmailUnique = emailUnique;
     }
 }
