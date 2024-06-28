@@ -905,6 +905,34 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetSubscriptionsRequest(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+
+        Body responseBody = new Body();
+
+        if (channelId.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("the channel id that sent is null");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Channel> subscriptions = DatabaseManager.getSubscribedChannels(channelId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setSubscriptions(subscriptions);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public void sendServerPublicKeyRSA() {
         try {
             PublicKey serverPublicKey = this.serverEncryption.getServerRSApublicKey();
