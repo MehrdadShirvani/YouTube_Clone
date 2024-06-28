@@ -105,10 +105,6 @@ public class SignUpController {
     }
 
     public void signup(ActionEvent event) {
-
-        YouTube.changeScene("home-view.fxml");
-        if(true)
-            return;
         if (firstNameTextField.getText().isBlank() || usernameTextField.getText().isBlank()) {
             return;
         }
@@ -141,8 +137,10 @@ public class SignUpController {
         }
 
         Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
-        //TODO Create Channel
-        YouTube.client.sendSignupRequest(account);
+        if(YouTube.client.sendSignupRequest(account))
+        {
+            YouTube.changeScene("home-view.fxml");
+        }
 
     }
 
