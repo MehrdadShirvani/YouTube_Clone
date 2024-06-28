@@ -17,10 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Client {
     private Socket socket;
@@ -589,6 +586,33 @@ public class Client {
             }
         }
         return false;
+    }
+
+
+    public List<Video> getHomepageVideos() {
+        String endpoint = "/api/account/homepage";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+        ArrayList<String> searchHistory = new ArrayList<>();
+        //TODO add search history later
+        searchHistory.add("test");
+
+        requestBody.setAccountId(this.account.getAccountId());
+        requestBody.setSearchHistory(searchHistory);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getHomepageVideos();
+        }
+
+        return null;
     }
 
 }
