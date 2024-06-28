@@ -40,7 +40,7 @@ public class Client {
             this.clientEncryption = new ClientEncryption();
 
 //            receiveServerPublicKeyRSA();
-            sendClientPublicKeyRSA();
+//            sendClientPublicKeyRSA();
             receiveAesKey();
 
         } catch (UnknownHostException e) {
@@ -110,7 +110,7 @@ public class Client {
     public void receiveAesKey() {
         try {
             String encodedAesKey = this.bufferedReader.readLine();
-            String decodedAesKey = this.clientEncryption.decryptDataRSA((encodedAesKey));
+//            String decodedAesKey = this.clientEncryption.decryptDataRSA((encodedAesKey));
             byte[] decodedAesKeyByte = Base64.getDecoder().decode(encodedAesKey);
             SecretKey AesKey = new SecretKeySpec(decodedAesKeyByte , "AES");
             this.clientEncryption.setAesKey(AesKey);
