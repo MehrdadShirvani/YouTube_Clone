@@ -51,7 +51,7 @@ public class YouTube extends Application {
     }
 
     public static void main(String[] args) {
-//        client = new Client();
+        client = new Client();
         launch();
     }
 }
