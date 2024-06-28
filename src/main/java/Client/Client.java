@@ -598,9 +598,7 @@ public class Client {
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-        ArrayList<String> searchHistory = new ArrayList<>();
-        //TODO add search history later
-        searchHistory.add("test");
+        ArrayList<String> searchHistory = readSearchHistory();
 
         requestBody.setAccountId(this.account.getAccountId());
         requestBody.setSearchHistory(searchHistory);
@@ -687,7 +685,7 @@ public class Client {
     }
 
 
-    public void saveSearchHistory(List<String> searchHistory) {
+    public void saveSearchHistory(ArrayList<String> searchHistory) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -709,7 +707,7 @@ public class Client {
     }
 
 
-    public List<String> readSearchHistory() {
+    public ArrayList<String> readSearchHistory() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -723,7 +721,7 @@ public class Client {
                 file.createNewFile();
                 return new ArrayList<>();
             }
-            return objectMapper.readValue(file , new TypeReference<List<String>>() {});
+            return objectMapper.readValue(file , new TypeReference<ArrayList<String>>() {});
 
         } catch (IOException e) {
             System.err.println("Error : while read search history!");
