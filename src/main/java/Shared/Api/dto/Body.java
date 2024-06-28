@@ -239,11 +239,11 @@ public class Body {
         this.videoId = videoId;
     }
 
-    public List<Comment> getRepliedComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setRepliedComments(List<Comment> repliedComments) {
+    public void setComments(List<Comment> repliedComments) {
         this.comments = repliedComments;
     }
 
