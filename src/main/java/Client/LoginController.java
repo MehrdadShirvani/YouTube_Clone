@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -75,18 +76,15 @@ public class LoginController {
     }
 
     public void login(ActionEvent event) {
-
-        //TODO login
-        if(false)
+        if(!YouTube.client.sendLoginRequest(emailTextField.getText(), passwordField.getText()))
         {
-            //TODO Ehsasn
+            //TODO Ehsasn Stylize
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Login Failed");
+            alert.showAndWait();
             return;
         }
-
-        //TODO EHSAN/MEHRDAD :
-        //  change usesrname and passwrod with given data
-        YouTube.client.sendLoginRequest("username" , "password");
-
+        YouTube.changeScene("home-view.fxml");
 
     }
 
