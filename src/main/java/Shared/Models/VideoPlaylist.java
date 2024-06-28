@@ -1,6 +1,8 @@
 package Shared.Models;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -60,6 +62,19 @@ public class VideoPlaylist {
     public static class VideoPlaylistId implements Serializable {
         private Long videoId;
         private Long playlistId;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            VideoPlaylist.VideoPlaylistId that = (VideoPlaylist.VideoPlaylistId) o;
+            return Objects.equals(videoId, that.videoId) && Objects.equals(playlistId, that.playlistId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(videoId, playlistId);
+        }
+
 
     }
 }
