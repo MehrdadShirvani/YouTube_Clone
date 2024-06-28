@@ -846,6 +846,37 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleHomepageVideosRequest(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        ArrayList<String> searchHistory = requestBody.getSearchHistory();
+        Long accountId = requestBody.getAccountId();
+
+        Body responseBody = new Body();
+
+        if (accountId.equals(null) | searchHistory.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The account id or searchHistory that sent is null !");
+
+            response = new Response(requestHeader , requestBody);
+            sendResponse(response);
+            return;
+        }
+
+        //TODO implement some random function for basic home page videos
+
+        ArrayList<Video> homepageVideos = new ArrayList<>();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setHomepageVideos(homepageVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public void sendServerPublicKeyRSA() {
         try {
             PublicKey serverPublicKey = this.serverEncryption.getServerRSApublicKey();
