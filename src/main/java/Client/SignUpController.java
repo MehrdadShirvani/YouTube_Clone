@@ -140,6 +140,9 @@ public class SignUpController {
         if(YouTube.client.sendSignupRequest(account))
         {
             YouTube.changeScene("home-view.fxml");
+        } else {
+            //TODO Ehsan / Mehrdad make a notif pop up for having trouble something like that
+
         }
 
     }
