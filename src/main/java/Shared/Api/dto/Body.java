@@ -32,6 +32,7 @@ public class Body {
     private Playlist playlist;
     private Reaction reaction;
     private Video video;
+    private List<Video> homepageVideos;
     private VideoCategory videoCategory;
     private VideoView videoView;
     private List<Channel> subscriberChannels;
@@ -266,5 +267,13 @@ public class Body {
 
     public void setEmailUnique(boolean emailUnique) {
         isEmailUnique = emailUnique;
+    }
+
+    public List<Video> getHomepageVideos() {
+        return homepageVideos;
+    }
+
+    public void setHomepageVideos(List<Video> homepageVideos) {
+        this.homepageVideos = homepageVideos;
     }
 }
