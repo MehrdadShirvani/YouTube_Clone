@@ -251,6 +251,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("comments")) {
             handleCommentsOfVideoRequest(request);
 
+        } else if (header.isValidSearchQuery()) {
+            handleSearchVideoRequest(request);
+
         } else {
             handleBadRequest(header);
         }
