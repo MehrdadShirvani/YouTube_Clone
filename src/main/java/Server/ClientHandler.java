@@ -818,7 +818,7 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void hadnleCheckEmailUnique(Request request) {
+    public void handleCheckEmailUnique(Request request) {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
