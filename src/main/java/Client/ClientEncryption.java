@@ -64,11 +64,12 @@ public class ClientEncryption {
     }
 
 
-    public byte[] decryptDataAES(byte[] jsonEncryptedByte) {
+    public byte[] decryptDataAES(String jsonEncrypted) {
         try {
+            byte[] jsonEncryptedByte = Base64.getDecoder().decode(jsonEncrypted);
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(cipher.DECRYPT_MODE , this.AesKey);
-            return cipher.doFinal(jsonEncryptedByte);
+            return new String(cipher.doFinal(jsonEncryptedByte) , "UTF-8");
         } catch (Exception e) {
             System.err.println("Error : while decrypting the data with AES algorithm inside the client !");
             e.printStackTrace();
