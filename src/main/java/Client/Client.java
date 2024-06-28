@@ -152,7 +152,7 @@ public class Client {
 
         try {
             encryptedJson = this.bufferedReader.readLine();
-            decryptedJson = Base64.getEncoder().encodeToString(this.clientEncryption.decryptDataAES(Base64.getDecoder().decode(encryptedJson)));
+            decryptedJson = this.clientEncryption.decryptDataAES(encryptedJson);
             response = objectMapper.readValue(decryptedJson , Response.class);
 
             return response;
