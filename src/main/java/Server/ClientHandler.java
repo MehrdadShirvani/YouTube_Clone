@@ -859,7 +859,7 @@ public class ClientHandler implements Runnable {
             responseBody.setSuccess(false);
             responseBody.setMessage("The account id or searchHistory that sent is null !");
 
-            response = new Response(requestHeader , requestBody);
+            response = new Response(requestHeader , responseBody);
             sendResponse(response);
             return;
         }
@@ -871,6 +871,34 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setHomepageVideos(homepageVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleCommentsOfVideoRequest(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The video id that sent is null");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Comment> commentsOfVideo = DatabaseManager.getVideoComments(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setComments(commentsOfVideo);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
