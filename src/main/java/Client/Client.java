@@ -567,4 +567,28 @@ public class Client {
         return false;
     }
 
+
+    public boolean sendCheckEmailUnique(String emailAddress) {
+        String endpoint = "/api/email/isUnique";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setEmailAddress(emailAddress);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            if (responseBody.isEmailUnique()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
