@@ -2,6 +2,7 @@ package Shared.Models;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "channel_playlist")
@@ -62,5 +63,17 @@ public class ChannelPlaylist {
     public static class ChannelPlaylistId implements Serializable {
         private Long channelId;
         private Long playlistId;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ChannelPlaylistId that = (ChannelPlaylistId) o;
+            return Objects.equals(channelId, that.channelId) && Objects.equals(playlistId, that.playlistId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(channelId, playlistId);
+        }
     }
 }
