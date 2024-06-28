@@ -61,7 +61,7 @@ public class ClientHandler implements Runnable {
         String endpoint;
 
 //        sendServerPublicKeyRSA();
-        receiveClientPublicKeyRSA();
+//        receiveClientPublicKeyRSA();
 
 
         sendAesKey();
@@ -811,8 +811,8 @@ public class ClientHandler implements Runnable {
     public void sendAesKey() {
         try {
             SecretKey AesKey = this.serverEncryption.getAesKey();
-            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
-
+//            String encodedAesKey = this.serverEncryption.encryptDataRSA(Base64.getEncoder().encodeToString(AesKey.getEncoded()) , this.clientPublicKey);
+            String encodedAesKey = Base64.getEncoder().encodeToString(AesKey.getEncoded());
             this.bufferedWriter.write(encodedAesKey);
             this.bufferedWriter.newLine();
             this.bufferedWriter.flush();
@@ -834,6 +834,7 @@ public class ClientHandler implements Runnable {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedClientPublicKey);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             this.clientPublicKey = keyFactory.generatePublic(keySpec);
+            System.out.println("this.clientPublicKey = " + this.clientPublicKey);
 
         } catch (IOException e) {
             String errorLog = "Error : while reading data from client in recive ClientPublicKeyRSA function !";
