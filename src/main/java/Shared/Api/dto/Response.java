@@ -13,7 +13,9 @@ public class Response {
         this.body = body;
     }
 
+    public Response() {
 
+    }
     public void setHeader(Header header) {
         this.header = header;
     }
