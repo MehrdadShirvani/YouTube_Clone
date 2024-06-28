@@ -41,6 +41,7 @@ public class Body {
     private List<Comment> comments;
     private ArrayList<String> searchHistory;
     private List<Channel> subscriptions;
+    private List<Category> categories;
 
 
 
@@ -294,5 +295,13 @@ public class Body {
 
     public void setSubscriptions(List<Channel> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }
