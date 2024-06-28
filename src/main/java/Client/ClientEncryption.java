@@ -54,7 +54,6 @@ public class ClientEncryption {
             cipher.init(Cipher.DECRYPT_MODE, this.clientRSAprivateKey);
             byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-            System.out.println(Arrays.asList(decryptedBytes));
             return new String(decryptedBytes);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data inside the client ! :");
