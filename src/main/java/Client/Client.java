@@ -17,6 +17,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Client {
@@ -28,6 +30,7 @@ public class Client {
     private final ClientEncryption clientEncryption;
     private PublicKey serverPublicKey;
     private Account account;
+    private final String SEARCH_HISTORY_ADDRESS = ".cache/Search_History.json" ;
 
     public Client() {
         try {
@@ -680,5 +683,27 @@ public class Client {
             return responseBody.getVideo();
         }
         return null;
+    }
+
+
+    public void saveSearchHistory(List<String> searchHistory) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File(SEARCH_HISTORY_ADDRESS);
+            File fileDir = file.getParentFile();
+
+            if (!fileDir.exists()) {
+                fileDir.mkdir();
+            }
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            objectMapper.writeValue(file , searchHistory);
+        } catch (IOException e) {
+            System.err.println("Error : while save search history!");
+            e.printStackTrace();
+        }
     }
 }
