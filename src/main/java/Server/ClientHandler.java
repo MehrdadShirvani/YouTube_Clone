@@ -103,10 +103,11 @@ public class ClientHandler implements Runnable {
                 logFile.createNewFile();
             }
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS , true));
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            writer.write("[" + timestamp + "] " + log);
-            writer.newLine();
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS , true))) {
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                writer.write("[" + timestamp + "] " + log);
+                writer.newLine();
+            }
         } catch (IOException e) {
             System.err.println("Error : while logging inside writeLog function !");
             e.printStackTrace();
