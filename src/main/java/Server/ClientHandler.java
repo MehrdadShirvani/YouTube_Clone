@@ -75,7 +75,7 @@ public class ClientHandler implements Runnable {
                 header = request.getHeader();
                 endpoint = header.endpointParser()[1];
 
-                if (endpoint == "api") {
+                if (endpoint.equals("api")) {
                     handleApiRequests(request);
 
                 } else {
@@ -139,18 +139,18 @@ public class ClientHandler implements Runnable {
 
     public void handleApiRequests(Request request) {
         Header header = request.getHeader();
-        String endpoint = header.endpointParser()[3];
+        String endpoint = header.endpointParser()[2];
 
-        if (endpoint == "account") {
+        if (endpoint.equals("account")) {
             handleAccountRequests(request);
 
-        } else if (endpoint == "channel") {
+        } else if (endpoint.equals("channel")) {
             handleChannelRequests(request);
 
-        } else if (endpoint == "video") {
+        } else if (endpoint.equals("video")) {
             handleVideoRequests(request);
 
-        } else if (endpoint == "comment") {
+        } else if (endpoint.equals("comment")) {
             handleCommentRequests(request);
 
         } else {
@@ -163,27 +163,27 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (header.getMethod() == "POST") {
-            if (endpoint == "login") {
+        if (header.getMethod().equals("POST")) {
+            if (endpoint.equals("login")) {
                 handleLoginRequests(request);
 
-            } else if (endpoint == "signup") {
+            } else if (endpoint.equals("signup")) {
                 handleSignupRequests(request);
 
-            } else if (endpoint == "edit") {
+            } else if (endpoint.equals("edit")) {
                 handleAccountEditRequests(request);
 
-            } else if (endpoint == "subscribe") {
+            } else if (endpoint.equals("subscribe")) {
                 handleAccountSubscribeRequests(request);
 
-            } else if (endpoint == "unsubscribe") {
+            } else if (endpoint.equals("unsubscribe")) {
                 handleAccountUnsubscribeRequests(request);
 
             } else {
                 handleBadRequest(header);
 
             }
-        } else if (header.getMethod() == "GET") {
+        } else if (header.getMethod().equals("GET")) {
             try {
                 Long accountId = Long.parseLong(endpoint);
                 handleAccountInfoRequests(request , accountId);
@@ -198,16 +198,16 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (header.getMethod() == "POST") {
-            if (endpoint == "edit") {
+        if (header.getMethod().equals("POST")) {
+            if (endpoint.equals("edit")) {
                 handleChannelEditRequests(request);
 
             } else {
                 handleBadRequest(header);
 
             }
-        } else if (header.getMethod() == "GET") {
-            if (endpoint == "subscribers") {
+        } else if (header.getMethod().equals("GET")) {
+            if (endpoint.equals("subscribers")) {
                 String channelIdString = header.endpointParser()[4];
                 try {
                     Long channelId = Long.parseLong(channelIdString);
@@ -231,7 +231,7 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (endpoint == "like") {
+        if (endpoint.equals("like")) {
             handleVideoLikeRequests(request);
 
         } else {
@@ -243,13 +243,13 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (endpoint == "add") {
+        if (endpoint.equals("add")) {
             handleCommentAddRequests(request);
 
-        } else if (endpoint == "delete") {
+        } else if (endpoint.equals("delete")) {
             handleCommentDeleteRequests(request);
 
-        } else if (endpoint == "like") {
+        } else if (endpoint.equals("like")) {
             handleCommentLikeRequests(request);
 
         } else {
@@ -348,9 +348,7 @@ public class ClientHandler implements Runnable {
             sendResponse(response);
             return;
         }
-
         account = DatabaseManager.addAccount(account);
-
         body = new Body();
         body.setSuccess(true);
         body.setMessage("200 Ok");
@@ -586,7 +584,7 @@ public class ClientHandler implements Runnable {
         Body body = request.getBody();
         String endpoint = header.endpointParser()[4];
 
-        if (endpoint == "add") {
+        if (endpoint.equals("add")) {
             Reaction reaction = body.getReaction();
 
             if (Objects.equals(reaction , null)) {
@@ -622,7 +620,7 @@ public class ClientHandler implements Runnable {
             }
 
 
-        } else if (endpoint == "delete") {
+        } else if (endpoint.equals("delete")) {
             Long reactionId = body.getReactionId();
 
             if (Objects.equals(reactionId , null)) {
@@ -728,7 +726,7 @@ public class ClientHandler implements Runnable {
         Body body = request.getBody();
         String endpoint = header.endpointParser()[4];
 
-        if (endpoint == "add") {
+        if (endpoint.equals("add")) {
             CommentReaction commentReaction = body.getCommentReaction();
 
             if (Objects.equals(commentReaction, null)) {
@@ -764,7 +762,7 @@ public class ClientHandler implements Runnable {
             }
 
 
-        } else if (endpoint == "delete") {
+        } else if (endpoint.equals("delete")) {
             Long commentReactionId = body.getCommentReactionId();
 
             if (Objects.equals(commentReactionId, null)) {
@@ -834,7 +832,6 @@ public class ClientHandler implements Runnable {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedClientPublicKey);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             this.clientPublicKey = keyFactory.generatePublic(keySpec);
-            System.out.println("this.clientPublicKey = " + this.clientPublicKey);
 
         } catch (IOException e) {
             String errorLog = "Error : while reading data from client in recive ClientPublicKeyRSA function !";
