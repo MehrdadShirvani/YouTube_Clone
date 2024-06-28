@@ -1,5 +1,8 @@
 package Shared.Api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Header {
     private String method;
     private String endpoint;
