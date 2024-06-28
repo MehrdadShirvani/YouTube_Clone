@@ -42,6 +42,7 @@ public class Body {
     private ArrayList<String> searchHistory;
     private List<Channel> subscriptions;
     private List<Category> categories;
+    private List<Video> searchVideos;
 
 
 
@@ -303,5 +304,13 @@ public class Body {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public List<Video> getSearchVideos() {
+        return searchVideos;
+    }
+
+    public void setSearchVideos(List<Video> searchVideos) {
+        this.searchVideos = searchVideos;
     }
 }
