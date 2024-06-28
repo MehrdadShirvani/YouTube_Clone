@@ -790,6 +790,34 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleCheckUsernameUnique(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String username = requestBody.getUsername();
+
+        Body responseBody = new Body();
+
+        if (username.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The username that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isUsernameUnique = DatabaseManager.isUsernameUnique(username);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setUsernameUnique(true);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public void sendServerPublicKeyRSA() {
         try {
             PublicKey serverPublicKey = this.serverEncryption.getServerRSApublicKey();
