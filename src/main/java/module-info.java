@@ -12,6 +12,8 @@ module org.example.youtube {
     requires com.almasb.fxgl.all;
     requires jakarta.persistence;
     requires com.fasterxml.jackson.databind;
+    requires java.sql;
+    requires org.hibernate.orm.core;
 
     opens Server to javafx.fxml;
     exports Server;
@@ -19,7 +21,8 @@ module org.example.youtube {
     opens Client to javafx.fxml;
     exports Client;
 
-    opens Shared.Models to com.fasterxml.jackson.databind;
+    opens Shared.Models to com.fasterxml.jackson.databind, org.hibernate.orm.core;
 
     opens Shared.Api.dto to com.fasterxml.jackson.databind;
+
 }
