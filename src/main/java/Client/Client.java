@@ -542,7 +542,7 @@ public class Client {
 
 
     public boolean sendCheckUsernameUnique(String username) {
-        String endpoint = "/api/username/isUnique";
+        String endpoint = "/api/isUnique/username";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
@@ -566,7 +566,7 @@ public class Client {
 
 
     public boolean sendCheckEmailUnique(String emailAddress) {
-        String endpoint = "/api/email/isUnique";
+        String endpoint = "/api/isUnique/email";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
