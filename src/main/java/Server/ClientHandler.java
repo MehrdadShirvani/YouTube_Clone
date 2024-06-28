@@ -933,6 +933,34 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetVideoRequest(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The video id that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Video video = DatabaseManager.getVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVideo(video);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public void sendServerPublicKeyRSA() {
         try {
             PublicKey serverPublicKey = this.serverEncryption.getServerRSApublicKey();
