@@ -263,7 +263,7 @@ public class ClientHandler implements Runnable {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectWriter objectWriter = objectMapper.writer();
             String json = objectWriter.writeValueAsString(response);
-            String encryptedJson = Server.serverEncryption.encryptDataRSA(json , this.clientPublicKey);
+            String encryptedJson = this.serverEncryption.encryptDataAES(json);
 
             this.bufferedWriter.write(encryptedJson);
             this.bufferedWriter.newLine();
