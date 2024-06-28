@@ -31,4 +31,9 @@ public class Header {
     public String[] endpointParser() {
         return this.endpoint.split("/");
     }
+
+    public boolean isValidSearchQuery() {
+        String endpointPattern = ".*/api/videos/search.*";
+        return this.endpoint.matches(endpointPattern);
+    }
 }
