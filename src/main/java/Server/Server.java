@@ -14,12 +14,13 @@ public class Server {
     private static final int PORT = 12345;
     private static final String LOG_FILE_ADDRESS = "src/main/java/Server/logs/Server_Log.txt";
     private ServerSocket serverSocket;
-    public static ServerEncryption serverEncryption;
 
     public Server() {
         try {
-            serverEncryption = new ServerEncryption();
             this.serverSocket = new ServerSocket(PORT);
+            String log = "Server has started";
+            System.out.println(log);
+            writeLog(log);
             startServer();
         } catch (IOException e) {
             String errorLog = "Error : while Server class constructor started !";
@@ -55,6 +56,9 @@ public class Server {
     public void closeServer() {
         try {
             if (serverSocket != null) {
+                String log = "Server has closed";
+                System.out.println(log);
+                writeLog(log);
                 serverSocket.close();
             }
         } catch (IOException e) {
@@ -79,14 +83,20 @@ public class Server {
                 logFile.createNewFile();
             }
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS , true));
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            writer.write("[" + timestamp + "] " + log);
-            writer.newLine();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_ADDRESS , true))) {
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                writer.write("[" + timestamp + "] " + log);
+                writer.newLine();
+            }
         } catch (IOException e) {
-            System.err.println("Error : while logging inside writeLog function !");
+            System.err.println("Error : while opening the File (Server_Log.txt) !");
             e.printStackTrace();
         }
+    }
+
+
+    public static void main(String[] args) {
+        Server server = new Server();
     }
 
 }
