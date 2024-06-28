@@ -3,6 +3,7 @@ package Client;
 import Shared.Api.dto.*;
 import Shared.Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -693,7 +694,7 @@ public class Client {
             File fileDir = file.getParentFile();
 
             if (!fileDir.exists()) {
-                fileDir.mkdir();
+                fileDir.mkdirs();
             }
 
             if (!file.exists()) {
@@ -704,6 +705,30 @@ public class Client {
         } catch (IOException e) {
             System.err.println("Error : while save search history!");
             e.printStackTrace();
+        }
+    }
+
+
+    public List<String> readSearchHistory() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File(SEARCH_HISTORY_ADDRESS);
+            File fileDir = file.getParentFile();
+
+            if (!fileDir.exists()) {
+                fileDir.mkdirs();
+            }
+
+            if (!file.exists()) {
+                file.createNewFile();
+                return new ArrayList<>();
+            }
+            return objectMapper.readValue(file , new TypeReference<List<String>>() {});
+
+        } catch (IOException e) {
+            System.err.println("Error : while read search history!");
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }
