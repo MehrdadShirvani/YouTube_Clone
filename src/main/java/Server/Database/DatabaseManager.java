@@ -678,7 +678,7 @@ public class DatabaseManager {
             return account;
         }
     }
-    public static Account getAccount(String username, String password)
+    public static Account getAccount(String usernameOrEmail, String password)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
@@ -687,8 +687,9 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Account> query = entityManager.createQuery(
-                    "SELECT a FROM Accounts a WHERE a.username = :username AND a.password = :password", Account.class);
-            query.setParameter("username", username);
+                    "SELECT a FROM Account a WHERE (a.username = :username OR a.email = :email) AND a.password = :password", Account.class);
+            query.setParameter("username", usernameOrEmail);
+            query.setParameter("email", usernameOrEmail);
             query.setParameter("password", password);
             try
             {
