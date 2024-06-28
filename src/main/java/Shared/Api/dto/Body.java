@@ -13,6 +13,7 @@ public class Body {
 
     private String username;
     private String password;
+    private String emailAddress;
     private Long accountId;
     private Long channelId;
     private Long reactionId;
@@ -239,5 +240,13 @@ public class Body {
 
     public void setRepliedComments(List<Comment> repliedComments) {
         this.repliedComments = repliedComments;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 }
