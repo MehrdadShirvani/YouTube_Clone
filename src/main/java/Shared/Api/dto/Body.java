@@ -40,6 +40,7 @@ public class Body {
     private Subscription subscription;
     private List<Comment> comments;
     private ArrayList<String> searchHistory;
+    private List<Channel> subscriptions;
 
 
 
@@ -285,5 +286,13 @@ public class Body {
 
     public void setSearchHistory(ArrayList<String> searchHistory) {
         this.searchHistory = searchHistory;
+    }
+
+    public List<Channel> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Channel> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 }
