@@ -637,4 +637,26 @@ public class Client {
 
         return null;
     }
+
+
+    public List<Channel> getSubscriptions() {
+        String endpoint = "/api/account/subscriptions";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(this.account.getChannelId());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getSubscriptions();
+        }
+        return null;
+    }
 }
