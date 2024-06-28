@@ -811,7 +811,35 @@ public class ClientHandler implements Runnable {
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setUsernameUnique(true);
+        responseBody.setUsernameUnique(isUsernameUnique);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void hadnleCheckEmailUnique(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String emailAddress = requestBody.getEmailAddress();
+
+        Body responseBody = new Body();
+
+        if (emailAddress.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The email address that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isEmailUnique = DatabaseManager.isEmailUnique(emailAddress);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setEmailUnique(isEmailUnique);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
