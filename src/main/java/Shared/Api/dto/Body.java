@@ -38,7 +38,7 @@ public class Body {
     private VideoView videoView;
     private List<Channel> subscriberChannels;
     private Subscription subscription;
-    private List<Comment> repliedComments;
+    private List<Comment> comments;
     private ArrayList<String> searchHistory;
 
 
@@ -240,11 +240,11 @@ public class Body {
     }
 
     public List<Comment> getRepliedComments() {
-        return repliedComments;
+        return comments;
     }
 
     public void setRepliedComments(List<Comment> repliedComments) {
-        this.repliedComments = repliedComments;
+        this.comments = repliedComments;
     }
 
     public String getEmailAddress() {
