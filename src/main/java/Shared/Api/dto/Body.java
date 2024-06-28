@@ -4,6 +4,7 @@ package Shared.Api.dto;
 import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
@@ -38,6 +39,7 @@ public class Body {
     private List<Channel> subscriberChannels;
     private Subscription subscription;
     private List<Comment> repliedComments;
+    private ArrayList<String> searchHistory;
 
 
 
@@ -275,5 +277,13 @@ public class Body {
 
     public void setHomepageVideos(List<Video> homepageVideos) {
         this.homepageVideos = homepageVideos;
+    }
+
+    public ArrayList<String> getSearchHistory() {
+        return searchHistory;
+    }
+
+    public void setSearchHistory(ArrayList<String> searchHistory) {
+        this.searchHistory = searchHistory;
     }
 }
