@@ -1,6 +1,8 @@
 package Server;
 
 
+import com.sun.net.httpserver.HttpServer;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -97,6 +99,7 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
+        MediaServer.run();
     }
 
 }
