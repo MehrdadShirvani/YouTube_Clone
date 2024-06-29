@@ -14,6 +14,8 @@ module org.example.youtube {
     requires com.fasterxml.jackson.databind;
     requires java.sql;
     requires org.hibernate.orm.core;
+    requires jdk.httpserver;
+    requires java.desktop;
 
     opens Server to javafx.fxml;
     exports Server;
