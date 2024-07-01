@@ -1098,12 +1098,46 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public static HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
+    public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
             result.put(set.getKey(), (set.getValue() / (double) data.get("sum")) * percentage);
 
         }
         return result;
+    }
+
+    public HashMap<String , Double> videoSuggest() {
+        //TODO complete here after database manager method is created
+        try {
+            HashMap<String , Integer> daily = new HashMap<String , Integer>();
+            HashMap<String , Double> normalizedDailyValue = dataConversion(daily , 0.5);
+
+            HashMap<String , Integer> weekly = new HashMap<String , Integer>();
+            HashMap<String , Double> normalizedWeeklyValue = dataConversion(weekly , 0.2);
+
+            HashMap<String , Integer> monthly = new HashMap<String , Integer>();
+            HashMap<String , Double> normalizedMonthlyValue = dataConversion(monthly , 0.2);
+
+            HashMap<String , Integer> allTime = new HashMap<String , Integer>();
+            HashMap<String , Double> normalizedAllTimeValue = dataConversion(allTime , 0.1);
+
+            HashMap<String , Double> result = new HashMap<>();
+
+            for (Map.Entry<String , Double> entry : normalizedAllTimeValue.entrySet()) {
+                String key = entry.getKey();
+                double sum = entry.getValue() + normalizedDailyValue.get(key) + normalizedWeeklyValue.get(key) + normalizedMonthlyValue.get(key);
+                result.put(entry.getKey() , sum);
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            String errorLog = "Error : while converting data in videoSuggest !";
+            System.err.println(errorLog);
+            writeLog(errorLog);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }
