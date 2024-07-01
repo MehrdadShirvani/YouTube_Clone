@@ -2,6 +2,7 @@ package Server.Database;
 import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
@@ -103,6 +104,23 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
+    public static boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)
+    {
+        List<Channel> list = getSubscribedChannels(subscriberChannelId);
+        for(Channel channel : list)
+        {
+            if(channel.getChannelId() == targetChannelId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static long getNumberOfViews(long videoId)
+    {
+        return getVideoViewsOfVideo(videoId).size();
+    }
+
     public static boolean isChannelNameUnique(String name)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())

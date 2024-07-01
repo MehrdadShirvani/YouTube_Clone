@@ -16,11 +16,13 @@
     <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" />
     <HBox>
         <children>
-            <Circle fx:id="profileCircle" fill="#6c6c6c" radius="26.36">
+            <Circle fx:id="profileCircle" >
                 <HBox.margin>
                     <Insets right="10.0" top="5.0" />
                 </HBox.margin>
             </Circle>
+            <WebView fx:id="profileWebView" prefHeight="50" prefWidth="50" /> <!--fill="#6c6c6c" radius="26.36"-->
+
          <VBox>
             <children>
                   <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="Lorem ipsum dolor sit amet, consecte adipiscing elit." wrapText="true">
