@@ -798,6 +798,24 @@ public class DatabaseManager {
             }
         }
     }
+
+    public List<Category> getMostViewedCategoriesOfUsers(long channelId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String jpql = "SELECT vc.categoryId, COUNT(vv.videoId) AS viewCount " +
+                "FROM VideoView vv " +
+                "JOIN VideoCategory vc ON vv.videoId = vc.videoId " +
+                "WHERE vv.accountId = :accountId " +
+                "GROUP BY vc.categoryId " +
+                "ORDER BY viewCount DESC";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("channelId", channelId);
+
+        List<Category> result = query.getResultList();
+        entityManager.close();
+        return result;
+    }
     //endregion
 
     //region Videos
