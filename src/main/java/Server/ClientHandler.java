@@ -1096,4 +1096,14 @@ public class ClientHandler implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
+
+    public static HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
+        HashMap<String, Double> result = new HashMap<>();
+        for (Map.Entry<String, Integer> set : data.entrySet()) {
+            result.put(set.getKey(), (set.getValue() / (double) data.get("sum")) * percentage);
+
+        }
+        return result;
+    }
 }
