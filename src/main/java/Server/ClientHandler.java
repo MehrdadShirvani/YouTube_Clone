@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import javafx.beans.binding.NumberExpressionBase;
 import javafx.scene.chart.PieChart;
+import org.hibernate.dialect.Database;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -1154,6 +1155,33 @@ public class ClientHandler implements Runnable {
 
        response = new Response(requestHeader , responseBody);
        sendResponse(response);
+    }
+
+
+    public void handleIsCommentLikedRequest(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long commentId = requestBody.getCommentId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null | channelId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The commentId or channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isCommentLiked = DatabaseManager.getCommentReaction(channelId , commentId) != null;
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCommentLiked(isCommentLiked);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
     }
 
 
