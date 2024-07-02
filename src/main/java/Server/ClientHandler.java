@@ -1300,7 +1300,8 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Long numberOfCommentLikes = (long) DatabaseManager.getCommentReactionsOfComment(commentId).size();
+        List<CommentReaction> commentReactions = DatabaseManager.getCommentReactionsOfComment(commentId);
+        Long numberOfCommentLikes = commentReactions.stream().filter(commentReaction -> commentReaction.getCommentReactionTypeId() == -1).count();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
