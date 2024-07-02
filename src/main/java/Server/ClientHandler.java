@@ -1035,8 +1035,10 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long accountId = requestBody.getAccountId();
+        Long channelId = requestBody.getChannelId();
         List<Category> categories = requestBody.getCategories();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
         String searchKeywords;
 
         try {
@@ -1049,7 +1051,7 @@ public class ClientHandler implements Runnable {
         }
 
         //TODO use database search function
-        List<Video> searchVideos = new ArrayList<>();
+        List<Video> searchVideos = DatabaseManager.searchVideo(channelId , categories , searchKeywords , perPage , pageNumber);
 
 
         Body responseBody = new Body();
