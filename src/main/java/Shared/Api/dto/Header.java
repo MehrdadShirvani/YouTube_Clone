@@ -65,6 +65,11 @@ public class Header {
         return this.endpoint.matches(endpointPattern);
     }
 
+    public boolean isValidVideoLikedQuery() {
+        String endpointPattern = "^/api/video/is-liked\\?channelId=\\d+$";
+        return this.endpoint.matches(endpointPattern);
+    }
+
 
     public String parseSearchKeywords() throws UnsupportedEncodingException {
         String regex = "query" + "=([^&]*)";
