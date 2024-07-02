@@ -1,10 +1,13 @@
 package Shared.Models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity
+@Table(name = "Video_Category")
+@IdClass(VideoCategory.VideoCategoryId.class)
 public class VideoCategory {
     @Id
     @Column(name = "VideoId", nullable = false)
@@ -47,6 +50,22 @@ public class VideoCategory {
     {
         this.videoId = videoId;
         this.categoryId = categoryId;
-    }
 
+    }
+    public static class VideoCategoryId implements Serializable {
+        private Long videoId;
+        private Integer categoryId;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            VideoCategory.VideoCategoryId that = (VideoCategory.VideoCategoryId) o;
+            return Objects.equals(videoId, that.videoId) && Objects.equals(categoryId, that.categoryId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(videoId, categoryId);
+        }
+    }
 }
