@@ -1281,7 +1281,7 @@ public class ClientHandler implements Runnable {
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setNumberOfLikes(numberOfLikes);
+        responseBody.setNumberOfDislikes(numberOfLikes);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
