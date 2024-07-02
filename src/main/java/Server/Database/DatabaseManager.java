@@ -824,7 +824,7 @@ public class DatabaseManager {
 
         return categories;
     }
-    public List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
+    public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
     {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String jpql = "SELECT v.videoId, v.title, COUNT(vv.videoId) AS viewCount " +
