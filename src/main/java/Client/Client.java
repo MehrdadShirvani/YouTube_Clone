@@ -688,7 +688,7 @@ public class Client {
     }
 
 
-    public List<Video> searchVideo(Long accountId , List<Category> categories , String searchKeywords) {
+    public List<Video> searchVideo(Long accountId , List<Category> categories , String searchKeywords , int perPage , int pageNumber) {
         String searchKeywordsUrlForm = searchKeywords.replace(" " , "%20");
         String endpoint = "/api/video/search?query=" + searchKeywordsUrlForm;
         String method = "GET";
@@ -697,6 +697,8 @@ public class Client {
 
         requestBody.setAccountId(accountId);
         requestBody.setCategories(categories);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
 
         Request request = new Request(requestHeader , requestBody);
 
