@@ -70,4 +70,22 @@ public class Header {
         }
         return null;
     }
+
+    public Long parseChannelId() {
+        String regex = "^/api/channel/(\\d+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.endpoint);
+
+        if (matcher.matches()) {
+            String idAsStr = matcher.group(1);
+
+            try {
+                Long idAsInt = Long.parseLong(idAsStr);
+                return idAsInt;
+
+            } catch (Exception ignored) {
+            }
+        }
+        return null;
+    }
 }
