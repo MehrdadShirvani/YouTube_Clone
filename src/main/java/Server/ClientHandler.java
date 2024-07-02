@@ -266,6 +266,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("likes")) {
             handleGetLikesOfVideo(request);
 
+        } else if (endpoint.equals("dislikes")) {
+            handleGetDislikesOfVideo(request);
+
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
@@ -1246,6 +1249,35 @@ public class ClientHandler implements Runnable {
 
         List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
         Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfLikes(numberOfLikes);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetDislikesOfVideo(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+        Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
