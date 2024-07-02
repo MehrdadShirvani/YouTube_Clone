@@ -197,9 +197,16 @@ public class ClientHandler implements Runnable {
                 handleGetSubscriptionsRequest(request);
 
             } else if (header.isValidAccountInfoQuery()){
-                Long account = header.parseAccountId();
-                if (!account.equals(null)) {
-                    handleAccountInfoRequests(request , account);
+                Long accountId = header.parseAccountId();
+                if (!accountId.equals(null)) {
+                    handleAccountInfoRequests(request , accountId);
+                } else {
+                    handleBadRequest(header);
+                }
+            } else if (header.isValidSubscribedToChannelQuery()) {
+                Long channelId = header.parseIsSubscribedChannelId();
+                if (!channelId.equals(null)) {
+                    handleIsSubscribedToChannelRequest(request , channelId);
                 } else {
                     handleBadRequest(header);
                 }
