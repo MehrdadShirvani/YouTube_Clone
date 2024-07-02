@@ -731,7 +731,7 @@ public class DatabaseManager {
 
             entityManager.close();
 
-            Channel channel = addChannel(new Channel(account.getUsername(),"Welcome to " + account.getUsername() +"'s Channel!", "",""));
+            Channel channel = addChannel(new Channel(account.getUsername(),"Welcome to " + account.getUsername() +"'s Channel!", ""));
             savedAccount.setChannelId(channel.getChannelId());
             editAccount(savedAccount);
 
