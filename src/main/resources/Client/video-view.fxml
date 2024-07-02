@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.web.*?>
+
+<BorderPane fx:id="mainBorderPane" prefHeight="664.0" prefWidth="1084.0" style="-fx-border-color: purple; -fx-border-image-width: 2; -fx-border-style: dotted;" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.VideoViewController">
+    <stylesheets>
+        <URL value="@video-view.css" />
+    </stylesheets>
+    <right>
+        <VBox fx:id="rightVBox" prefHeight="662.0" prefWidth="271.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" onAction="#hi" text="Button" />
+            </children>
+        </VBox>
+    </right>
+    <center>
+        <VBox fx:id="leftVBox" prefHeight="662.0" prefWidth="827.0" style="-fx-border-color: green;" BorderPane.alignment="CENTER">
+            <children>
+            <StackPane fx:id="stack">
+               <children>
+                      <WebView fx:id="videoWebView" prefHeight="431.6" prefWidth="-1.0">
+                </WebView>
+               </children>
+               <effect>
+                  <Reflection fraction="0.28" />
+               </effect>
+            </StackPane>
+                <Label fx:id="titleLabel" stylesheets="@video-view.css" text="Blind Woodturner: Turning passion into fine art">
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Label>
+                <BorderPane>
+                    <left>
+                        <Label fx:id="viewsLabel" text="576,969 views . Oct 8, 2021" BorderPane.alignment="CENTER" />
+                    </left>
+                    <right>
+                        <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <HBox alignment="CENTER" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #303030; -fx-border-radius: 20; -fx-background-radius: 20;">
+                                    <children>
+                                        <ToggleButton fx:id="likeButton" graphicTextGap="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="12">
+                                            <graphic>
+                                                <SVGPath content="M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z" fill="#f1f1f1" />
+                                            </graphic>
+                                            <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                            </padding>
+                                        </ToggleButton>
+                                        <Line endY="-12.0" fill="#f1f1f1" opacity="0.5" startY="12.0" stroke="#f1f1f1" />
+                                        <ToggleButton fx:id="dislikeButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+                                            <graphic>
+                                                <SVGPath content="M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z" fill="#f1f1f1" />
+                                            </graphic>
+                                            <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                            </padding>
+                                        </ToggleButton>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="shareButton" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Share">
+                                    <graphic>
+                                        <SVGPath content="M15 5.63 20.66 12 15 18.37V14h-1c-3.96 0-7.14 1-9.75 3.09 1.84-4.07 5.11-6.4 9.89-7.1l.86-.13V5.63M14 3v6C6.22 10.13 3.11 15.33 2 21c2.78-3.97 6.44-6 12-6v6l8-9-8-9z" fill="#f1f1f1" />
+                                    </graphic>
+                                    <padding>
+                                        <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
+                                    </padding>
+                                </Button>
+                                <Button contentDisplay="GRAPHIC_ONLY" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="caption-button" text="..." textAlignment="CENTER">
+                                    <graphic>
+                                        <SVGPath content="M7.5 12c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm4.5-1.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z" fill="#f1f1f1" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </right>
+                </BorderPane>
+            </children>
+            <padding>
+                <Insets left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -2,6 +2,7 @@
 
 <?import java.net.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -12,13 +13,19 @@
         <URL value="@small-video-view.css" />
     </stylesheets>
 
-    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" />
+    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></WebView>
     <HBox fx:id="downHBox">
         <children>
          <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
             <HBox.margin>
                <Insets right="10.0" top="5.0" />
             </HBox.margin>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
          </WebView>
             <VBox>
                 <children>
@@ -29,6 +36,9 @@
                         <VBox.margin>
                             <Insets />
                         </VBox.margin>
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
                     </Label>
                     <VBox spacing="2.0">
                         <children>

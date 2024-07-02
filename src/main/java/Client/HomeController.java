@@ -52,12 +52,12 @@ public class HomeController {
     @FXML
     ScrollPane homeScrollPane;
     @FXML
-    WebView webView;
-    @FXML
     FlowPane homeVideosFlowPane;
+    @FXML
+    BorderPane mainBorderPane;
     Boolean isMinimized;
 
-    public void initialize() throws IOException {
+    public void initialize() {
         isMinimized = false;
         //Search transition
         ScaleTransition st = new ScaleTransition(Duration.millis(200), searchTextField);
@@ -65,9 +65,13 @@ public class HomeController {
         searchTextField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (isNowFocused) {
                 st.playFromStart();
+                searchTextField.setOpacity(1);
+                searchButton.setOpacity(1);
             } else {
                 st.stop();
                 searchTextField.setScaleX(1.0);
+                searchButton.setOpacity(0.7);
+                searchTextField.setOpacity(0.7);
             }
         });
         searchTextField.scaleXProperty().addListener((obs, oldScale, newScale) -> {
@@ -84,6 +88,7 @@ public class HomeController {
         homeMenuButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
             if (isSelected) {
                 homeIcon.setContent("M0 7V18H6V12H10V18H16V7L8 0L0 7Z");
+                setHome();
             } else {
                 homeIcon.setContent("M12 4.33L19 10.45V20H15V14H9V20H5V10.45L12 4.33ZM12 3L4 10V21H10V15H14V21H20V10L12 3Z");
             }
@@ -91,6 +96,7 @@ public class HomeController {
         shortsMenuButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
             if (isSelected) {
                 shortsIcon.setContent("m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.65v-5.3L15 12l-5 2.65z");
+                setShorts();
             } else {
                 shortsIcon.setContent("M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.33-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zm-.23 5.86-8.5 4.5c-1.34.71-3.01.2-3.72-1.14-.71-1.34-.2-3.01 1.14-3.72l2.04-1.08v-1.21l-.69-.28-1.11-.46c-.99-.41-1.65-1.35-1.7-2.41-.05-1.06.52-2.06 1.46-2.56l8.5-4.5c1.34-.71 3.01-.2 3.72 1.14.71 1.34.2 3.01-1.14 3.72L15.5 9.26v1.21l1.8.74c.99.41 1.65 1.35 1.7 2.41.05 1.06-.52 2.06-1.46 2.56z");
             }
@@ -109,9 +115,32 @@ public class HomeController {
                 historyIcon.setContent("M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM22 12c0 5.51-4.49 10-10 10S2 17.51 2 12h1c0 4.96 4.04 9 9 9s9-4.04 9-9-4.04-9-9-9C8.81 3 5.92 4.64 4.28 7.38c-.11.18-.22.37-.31.56L3.94 8H8v1H1.96V3h1v4.74c.04-.09.07-.17.11-.25.11-.22.23-.42.35-.63C5.22 3.86 8.51 2 12 2c5.51 0 10 4.49 10 10z");
             }
         });
+        setHome();
+    }
+
+    private void setShorts() {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
+
+    private void setHome() {
+        mainBorderPane.setCenter(homeScrollPane);
+        homeVideosFlowPane.getChildren().clear();
         for (int i = 0; i < 11; ++i) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
-            Parent smallVideo = fxmlLoader.load();
+            Parent smallVideo = null;
+            try {
+                smallVideo = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
@@ -148,11 +177,11 @@ public class HomeController {
         isMinimized = !isMinimized;
     }
 
-    public void checkLetter(KeyEvent keyEvent){
+    public void checkLetter(KeyEvent keyEvent) {
         // slash for search
         if (keyEvent.getCode() == KeyCode.SLASH) {
             searchTextField.requestFocus();
-            System.out.println(homeScrollPane.getWidth()+" "+homeScrollPane.getHeight());
+//            System.out.println(homeScrollPane.getWidth() + " " + homeScrollPane.getHeight());
         }
     }
 

@@ -5,6 +5,7 @@
     -fx-border-gray-color: #6C6C6C;
     -fx-bright-gray-color: #AAAAAA;
     -fx-blue-color: #065fd4;
+    -fx-white: #f1f1f1;
 }
 .title-loading{
     -fx-text-fill: transparent;
@@ -15,11 +16,10 @@
     -fx-background-radius: 20;
 }
 .title{
-    -fx-text-fill: white;
-    -fx-background-color: linear-gradient(to right, transparent, #6C6C6C, transparent);
+    -fx-text-fill: -fx-white;
     -fx-background-size: 200% 100%;
-    -fx-animation: shimmer 1s infinite;
     -fx-font-family: Roboto;
+    /*-fx-font-weight: bold;*/
     -fx-background-radius: 20;
 }
 .caption-loading{

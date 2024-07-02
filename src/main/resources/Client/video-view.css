@@ -1,0 +1,45 @@
+.root {
+    -fx-black-color: #121212;
+    -fx-gray-color: #212121;
+    -fx-semi-gray-color: #303030;
+    -fx-border-gray-color: #6C6C6C;
+    -fx-bright-gray-color: #AAAAAA;
+    -fx-blue-color: #065fd4;
+    -fx-white-color: #f1f1f1;
+}
+
+.side-bar {
+    -fx-background-color: -fx-gray-color;
+}
+
+#titleLabel {
+    -fx-text-fill: #f1f1f1;
+    -fx-font-family: Roboto;
+    -fx-font-size: 18;
+}
+
+#likeButton {
+    -fx-background-color: transparent;
+    -fx-font-family: Roboto;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 14;
+}
+
+#dislikeButton {
+    -fx-background-color: transparent;
+}
+
+.caption-button {
+    -fx-background-color: -fx-semi-gray-color;
+    -fx-border-width: 0;
+    -fx-background-radius: 20;
+    -fx-text-fill: #f1f1f1;
+}
+.caption-button:hover{
+    -fx-background-color:  rgba(170,170,170,0.3);
+}
+#viewsLabel{
+    -fx-text-fill: #AAAAAA;
+    -fx-font-size: 14;
+
+}

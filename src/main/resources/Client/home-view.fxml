@@ -9,7 +9,7 @@
 
 <!--900 - 1600-->
 
-<BorderPane onKeyReleased="#checkLetter" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0f0f0f;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.HomeController">
+<BorderPane fx:id="mainBorderPane" onKeyReleased="#checkLetter" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0f0f0f;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.HomeController">
     <stylesheets>
         <URL value="@home.css" />
     </stylesheets>
@@ -43,7 +43,7 @@
             <center>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <TextField fx:id="searchTextField" focusTraversable="false" onKeyReleased="#checkLetterSearch" prefHeight="33.0" prefWidth="348.0" promptText="Search">
+                        <TextField fx:id="searchTextField" focusTraversable="false" onKeyReleased="#checkLetterSearch" opacity="0.7" prefHeight="33.0" prefWidth="348.0" promptText="Search">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
@@ -51,7 +51,7 @@
                                 <Insets left="15.0" right="10.0" />
                             </padding>
                         </TextField>
-                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="31.0" prefWidth="54.0" text="Button">
+                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" opacity="0.7" prefHeight="32.0" prefWidth="54.0" text="Button">
                             <graphic>
                                 <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
