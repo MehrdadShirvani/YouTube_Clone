@@ -39,4 +39,9 @@ public class Header {
         String endpointPattern = ".*/api/videos/search.*";
         return this.endpoint.matches(endpointPattern);
     }
+
+    public boolean isValidAccountInfoQuery(String endpoint) {
+        String endpointPattern = "^/api/account/\\d+$";
+        return endpoint.matches(endpointPattern);
+    }
 }
