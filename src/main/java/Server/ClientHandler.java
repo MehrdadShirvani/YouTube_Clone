@@ -222,12 +222,13 @@ public class ClientHandler implements Runnable {
             }
         } else if (header.getMethod().equals("GET")) {
             if (endpoint.equals("subscribers")) {
-                String channelIdString = header.endpointParser()[4];
-                try {
-                    Long channelId = Long.parseLong(channelIdString);
-                    handleChannelSubscribersRequests(request , channelId);
-                } catch (NumberFormatException e) {
-                    handleBadRequest(header);
+                if (header.isValidSubscribersQuery()) {
+                   Long channelId = header.parseChannelIdInSubscribers();
+                   if (channelId != null) {
+                        handleChannelSubscribersRequests(request , channelId);
+                   } else {
+                        handleBadRequest(header);
+                   }
                 }
             } else if (header.isValidChannelInfoQuery()){
                 Long channelId = header.parseChannelId();
