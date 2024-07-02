@@ -1248,6 +1248,33 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetRepliesOfComment(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long commentId = requestBody.getCommentId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The commentId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Comment> comments = DatabaseManager.getCommentsRepliedToComment(commentId);
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setComments(comments);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
