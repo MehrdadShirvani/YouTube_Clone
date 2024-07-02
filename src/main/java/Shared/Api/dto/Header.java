@@ -48,7 +48,7 @@ public class Header {
         return this.endpoint.matches(endpointPattern);
     }
 
-    public int parseAccountId() {
+    public Long parseAccountId() {
         String regex = "^/api/account/(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
@@ -57,12 +57,12 @@ public class Header {
             String numberAsStr = matcher.group(1);
 
             try {
-                int numberAsInt = Integer.parseInt(numberAsStr);
+                Long numberAsInt = Long.parseLong(numberAsStr);
                 return numberAsInt;
 
             } catch (Exception ignored) {
             }
         }
-        return 0;
+        return null;
     }
 }
