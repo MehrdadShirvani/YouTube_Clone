@@ -61,19 +61,15 @@ public class Header {
     }
 
 
-    public String parseSearchKeywords() {
+    public String parseSearchKeywords() throws UnsupportedEncodingException {
         String regex = "query" + "=([^&]*)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
         String searchKeywords;
 
-        try {
-            if (matcher.find()) {
-                searchKeywords = URLDecoder.decode(matcher.group(1), "UTF-8");
-                return searchKeywords;
-            }
-        } catch(UnsupportedEncodingException e){
-            throw new RuntimeException(e);
+        if (matcher.find()) {
+            searchKeywords = URLDecoder.decode(matcher.group(1), "UTF-8");
+            return searchKeywords;
         }
 
         return null;
