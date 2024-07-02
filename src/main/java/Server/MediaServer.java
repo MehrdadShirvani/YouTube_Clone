@@ -53,7 +53,7 @@ public class MediaServer {
         }
 
         public byte[] getPhotoBytes(String photoId) {
-            File file = new File("src/main/resources/Server/Images/" + photoId + ".png");
+            File file = new File("src/main/resources/Server/Images/" + photoId + ".jpg");
             try {
                 return Files.readAllBytes(file.toPath());
             } catch (IOException e) {
@@ -69,7 +69,7 @@ public class MediaServer {
                 return;
             }
 
-            exchange.getResponseHeaders().set("Content-Type", "image/png");
+            exchange.getResponseHeaders().set("Content-Type", "image/jpeg");
             exchange.sendResponseHeaders(200, -1);
             exchange.close();
         }
@@ -99,7 +99,7 @@ public class MediaServer {
         }
 
         private void sendFullResponse(HttpExchange exchange, byte[] photoBytes) throws IOException {
-            exchange.getResponseHeaders().set("Content-Type", "image/png");
+            exchange.getResponseHeaders().set("Content-Type", "image/jpeg");
             exchange.getResponseHeaders().set("Content-Length", String.valueOf(photoBytes.length));
             exchange.sendResponseHeaders(200, photoBytes.length);
 
