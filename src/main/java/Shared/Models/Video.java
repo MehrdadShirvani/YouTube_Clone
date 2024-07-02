@@ -36,15 +36,10 @@ public class Video {
     @Column(name = "IsAgeRestricted", nullable = false)
     private Boolean isAgeRestricted;
 
-    @Column(name = "VideoAddress", columnDefinition = "TEXT")
-    private String videoAddress;
-    @Column(name = "Size")
-    private Integer size;
     @Column(name = "Duration")
     private Integer duration;
-    @Column(name = "Dimensions", length = 10)
-    private String dimensions;
-
+    @Column(name = "VideoTypeId")
+    private Integer videoTypeId;
     @ManyToOne
     @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
     private Channel channel;
@@ -109,13 +104,6 @@ public class Video {
         isAgeRestricted = ageRestricted;
     }
 
-    public String getVideoAddress() {
-        return videoAddress;
-    }
-
-    public void setVideoAddress(String videoAddress) {
-        this.videoAddress = videoAddress;
-    }
 
     public Channel getChannel() {
         return channel;
@@ -139,7 +127,7 @@ public class Video {
         this.isAgeRestricted = isAgeRestricted;
     }
 
-    public void updateVideoDetails(String thumbnail, String videoAddress, String dimensions, int size, int duration)
+    public void updateVideoDetails(String thumbnail, int duration)
     {
         if(videoId <= 0)
         {
@@ -147,9 +135,6 @@ public class Video {
         }
 
         this.thumbnail = thumbnail;
-        this.videoAddress = videoAddress;
-        this.dimensions = dimensions;
-        this.size = size;
         this.duration = duration;
         try
         {
@@ -161,9 +146,6 @@ public class Video {
         }
     }
 
-    public Integer getSize() {
-        return size;
-    }
 
     public void setDuration(Integer duration) {
         this.duration = duration;
@@ -171,13 +153,5 @@ public class Video {
 
     public Integer getDuration() {
         return duration;
-    }
-
-    public String getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(String dimensions) {
-        this.dimensions = dimensions;
     }
 }

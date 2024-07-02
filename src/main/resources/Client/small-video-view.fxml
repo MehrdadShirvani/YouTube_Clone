@@ -4,7 +4,6 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
@@ -14,39 +13,37 @@
     </stylesheets>
 
     <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" />
-    <HBox>
+    <HBox fx:id="downHBox">
         <children>
-            <Circle fx:id="profileCircle" >
-                <HBox.margin>
-                    <Insets right="10.0" top="5.0" />
-                </HBox.margin>
-            </Circle>
-            <WebView fx:id="profileWebView" prefHeight="50" prefWidth="50" /> <!--fill="#6c6c6c" radius="26.36"-->
-
-         <VBox>
-            <children>
-                  <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="Lorem ipsum dolor sit amet, consecte adipiscing elit." wrapText="true">
-                  <font>
-                     <Font size="11.0" />
-                  </font>
-                  <VBox.margin>
-                     <Insets />
-                  </VBox.margin>
-               </Label>
-               <VBox spacing="2.0">
-                  <children>
-                     <Label fx:id="authorLabel" styleClass="caption-loading" text="James Gouse" />
-                     <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
-                  </children>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
-               </VBox>
-            </children>
+         <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
             <HBox.margin>
                <Insets right="10.0" top="5.0" />
             </HBox.margin>
-         </VBox>
+         </WebView>
+            <VBox>
+                <children>
+                    <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="Lorem ipsum dolor sit amet, consecte adipiscing elit." wrapText="true">
+                        <font>
+                            <Font size="11.0" />
+                        </font>
+                        <VBox.margin>
+                            <Insets />
+                        </VBox.margin>
+                    </Label>
+                    <VBox spacing="2.0">
+                        <children>
+                            <Label fx:id="authorLabel" styleClass="caption-loading" text="James Gouse" />
+                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
+                        </children>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </VBox>
+                </children>
+                <HBox.margin>
+                    <Insets right="10.0" top="5.0" />
+                </HBox.margin>
+            </VBox>
         </children>
     </HBox>
 </VBox>

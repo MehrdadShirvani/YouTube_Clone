@@ -15,8 +15,9 @@ public class YouTube extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource("signup-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1007, 641);
+        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource("home-view.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load(), 1007, 641);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.setMinWidth(1007);
         stage.setMinHeight(641);
         stage.setTitle("YouTube");
@@ -51,7 +52,7 @@ public class YouTube extends Application {
     }
 
     public static void main(String[] args) {
-        client = new Client();
+//        client = new Client();
         launch();
     }
 }
