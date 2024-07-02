@@ -229,11 +229,11 @@ public class ClientHandler implements Runnable {
                 } catch (NumberFormatException e) {
                     handleBadRequest(header);
                 }
-            } else {
-                try {
-                    Long channelId = Long.parseLong(endpoint);
+            } else if (header.isValidChannelInfoQuery()){
+                Long channelId = header.parseChannelId();
+                if (channelId != null) {
                     handleChannelInfoRequests(request , channelId);
-                } catch (NumberFormatException e) {
+                } else {
                     handleBadRequest(header);
                 }
             }
