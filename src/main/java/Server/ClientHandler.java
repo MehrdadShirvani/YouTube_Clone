@@ -293,6 +293,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("replies")) {
             handleGetRepliesOfComment(request);
 
+        } else if (endpoint.equals("likes")) {
+            handleGetLikesOfComment(request);
+
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
             handleIsCommentLikedRequest(request , channelId);
@@ -1272,6 +1275,35 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setComments(comments);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetLikesOfComment(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long commentId = requestBody.getCommentId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The commentId taht sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Long numberOfCommentLikes = (long) DatabaseManager.getCommentReactionsOfComment(commentId).size();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfCommentLikes(numberOfCommentLikes);
+
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
