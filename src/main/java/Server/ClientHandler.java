@@ -1140,4 +1140,68 @@ public class ClientHandler implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
+
+    public List<Video> homepageRecommendation() {
+        final int NUMBER_OF_SUBSCRIBED_AND_INTERESTED_VIDEO = 6;
+        final int NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO = 2;
+        final int NUMBER_OF_SUBSCRIBED_AND_TRENDING_VIDEO = 2;
+
+        List<Video> recommendedVideos = new ArrayList<>();
+        // subbed and intrested
+        HashMap<String , Double> videoSuggestionMap = videoSuggest();
+        List<Map.Entry<String , Double>> videoSuggestEntry = new ArrayList<>(videoSuggestionMap.entrySet());
+
+        Collections.sort(videoSuggestEntry , Map.Entry.comparingByValue());
+
+        int totalVideos= 0;
+        for (Map.Entry<String , Double> entry : videoSuggestEntry.reversed()) {
+            if (entry.getKey() == "key") {
+                continue;
+            }
+
+            int numberOfVideo = (int)Math.ceil(entry.getValue() * NUMBER_OF_SUBSCRIBED_AND_INTERESTED_VIDEO);
+            totalVideos += numberOfVideo;
+
+            if (numberOfVideo == 0 | totalVideos > NUMBER_OF_SUBSCRIBED_AND_INTERESTED_VIDEO) {
+                break;
+            }
+
+            //TODO : add database manager method
+            //OUTPUT of video category based must be sorted with trending
+            List<Video> videoBasedCategoryAndSubbed = new ArrayList<>();
+
+            for (int i = 0 ; i < numberOfVideo ; i++) {
+                recommendedVideos.add(videoBasedCategoryAndSubbed.get(i));
+            }
+        }
+
+        totalVideos = 0;
+        for (Map.Entry<String , Double> entry : videoSuggestEntry.reversed()) {
+            if (entry.getKey() == "key") {
+                continue;
+            }
+
+            int numberOfVideo = (int)Math.ceil(entry.getValue()) * NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO);
+            totalVideos += numberOfVideo;
+
+            if (numberOfVideo == 0 | totalVideos > NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO) {
+                break;
+            }
+
+            //TODO : add database manager method
+            //Must be sorted !
+            List<Video> videoBasedCategoryAndNotSubbed = new ArrayList<>();
+
+            for (int i = 0 ; i < numberOfVideo ; i++) {
+                recommendedVideos.add(videoBasedCategoryAndNotSubbed.get(i));
+            }
+        }
+
+        //TODO : use trending function
+        List<Video> videoTrending = new ArrayList<>();
+        recommendedVideos.addAll(videoTrending);
+
+        return recommendedVideos;
+    }
 }
