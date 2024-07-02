@@ -48,10 +48,6 @@ public class Account {
     @Temporal(TemporalType.DATE)
     private Date premiumExpirationDate;
 
-    @Column(name = "PublicKey", nullable = false, unique = true, length = 700)
-    private String publicKey;
-
-
 //    @ManyToOne
 //    @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
 //    private Channel channel;
@@ -71,7 +67,6 @@ public class Account {
         this.createdDateTime = new Timestamp(System.currentTimeMillis());
         this.lastSeenAdDateTime = null;
         this.premiumExpirationDate = null;
-        this.publicKey = ""; //TODO Mohsen
     }
 
     public Long getAccountId() {
@@ -154,14 +149,6 @@ public class Account {
 
     public void setPremiumExpirationDate(Timestamp premiumExpirationDate) {
         this.premiumExpirationDate = premiumExpirationDate;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
     }
 
 //    public Channel getChannel() {
