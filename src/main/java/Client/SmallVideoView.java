@@ -43,7 +43,7 @@ public class SmallVideoView {
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
-        numberOfViews = YouTube.client.getVideoViewsOfVideo(video.getVideoId()).count();
+        Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
         viewsLabel.setText(formatter.format(numberOfViews));
 
         try {
