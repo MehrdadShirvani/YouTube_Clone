@@ -1244,7 +1244,9 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Long numberOfLikes = (long) DatabaseManager.getVideoReactions(videoId).size();
+        List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+        Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count();
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setNumberOfLikes(numberOfLikes);
