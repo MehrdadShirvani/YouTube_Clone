@@ -43,6 +43,7 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
+    private boolean isSubscribedToChannel;
 
 
 
@@ -312,5 +313,13 @@ public class Body {
 
     public void setSearchVideos(List<Video> searchVideos) {
         this.searchVideos = searchVideos;
+    }
+
+    public boolean isSubscribedToChannel() {
+        return isSubscribedToChannel;
+    }
+
+    public void setSubscribedToChannel(boolean subscribedToChannel) {
+        isSubscribedToChannel = subscribedToChannel;
     }
 }
