@@ -98,8 +98,8 @@ public class Server {
 
 
     public static void main(String[] args) {
-        Server server = new Server();
         MediaServer.run();
+        Server server = new Server();
     }
 
 }
