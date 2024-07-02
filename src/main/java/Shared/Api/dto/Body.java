@@ -52,6 +52,8 @@ public class Body {
     private Long numberOfCommentLikes;
     private Long numberOfDislikes;
     private Long numberOfCommentDislikes;
+    private int perPage;
+    private int pageNumber;
 
 
 
@@ -385,5 +387,21 @@ public class Body {
 
     public void setNumberOfCommentDislikes(Long numberOfCommentDislikes) {
         this.numberOfCommentDislikes = numberOfCommentDislikes;
+    }
+
+    public int getPerPage() {
+        return perPage;
+    }
+
+    public void setPerPage(int perPage) {
+        this.perPage = perPage;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
     }
 }
