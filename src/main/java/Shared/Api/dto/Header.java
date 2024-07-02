@@ -60,6 +60,11 @@ public class Header {
         return this.endpoint.matches(endpointPattern);
     }
 
+    public boolean isValidSubscribedToChannelQuery() {
+        String endpointPattern = "^/api/account/is-subscribed\\?channelId=\\d+$";
+        return this.endpoint.matches(endpointPattern);
+    }
+
 
     public String parseSearchKeywords() throws UnsupportedEncodingException {
         String regex = "query" + "=([^&]*)";
