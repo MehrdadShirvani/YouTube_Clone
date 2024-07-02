@@ -19,8 +19,7 @@ public class Channel {
     private String description;
     @Column(name = "Location", nullable = false,  length = 50)
     private String location;
-    @Column(name = "Picture", nullable = false, columnDefinition = "TEXT")
-    private String picture;
+
     @Column(name = "CreatedDateTime", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp createdDateTime;
@@ -29,11 +28,10 @@ public class Channel {
     {
 
     }
-    public Channel(String name, String description, String location, String picture) {
+    public Channel(String name, String description, String location) {
         this.name = name;
         this.description = description;
         this.location = location;
-        this.picture = picture;
         this.createdDateTime = new Timestamp(System.currentTimeMillis());
     }
 
@@ -62,14 +60,6 @@ public class Channel {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
     }
 
     public Timestamp getCreatedDateTime() {
