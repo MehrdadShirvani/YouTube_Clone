@@ -5,6 +5,7 @@ import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
@@ -44,8 +45,8 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private boolean isSubscribedToChannel;
-    private boolean isVideoLiked;
-    private boolean isCommentLiked;
+    private HashMap<Boolean , Integer> isVideoLiked;
+    private HashMap<Boolean , Integer> isCommentLiked;
     private Long numberOfViews;
     private Long numberOfLikes;
     private Long numberOfCommentLikes;
@@ -330,20 +331,20 @@ public class Body {
         isSubscribedToChannel = subscribedToChannel;
     }
 
-    public boolean isVideoLiked() {
+    public HashMap<Boolean, Integer> getIsVideoLiked() {
         return isVideoLiked;
     }
 
-    public void setVideoLiked(boolean liked) {
-        isVideoLiked = liked;
+    public void setIsVideoLiked(HashMap<Boolean, Integer> isVideoLiked) {
+        this.isVideoLiked = isVideoLiked;
     }
 
-    public boolean isCommentLiked() {
+    public HashMap<Boolean, Integer> getIsCommentLiked() {
         return isCommentLiked;
     }
 
-    public void setCommentLiked(boolean commentLiked) {
-        isCommentLiked = commentLiked;
+    public void setIsCommentLiked(HashMap<Boolean, Integer> isCommentLiked) {
+        this.isCommentLiked = isCommentLiked;
     }
 
     public Long getNumberOfViews() {
