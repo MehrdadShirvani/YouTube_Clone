@@ -2,6 +2,8 @@ package Shared.Api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +58,25 @@ public class Header {
     public boolean isValidSubscribersQuery() {
         String endpointPattern = "^/api/channel/subscribers/\\d+$";
         return this.endpoint.matches(endpointPattern);
+    }
+
+
+    public String parseSearchKeywords() {
+        String regex = "query" + "=([^&]*)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.endpoint);
+        String searchKeywords;
+
+        try {
+            if (matcher.find()) {
+                searchKeywords = URLDecoder.decode(matcher.group(1), "UTF-8");
+                return searchKeywords;
+            }
+        } catch(UnsupportedEncodingException e){
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
 
     public Long parseAccountId() {
