@@ -47,6 +47,7 @@ public class Body {
     private boolean isVideoLiked;
     private boolean isCommentLiked;
     private Long numberOfViews;
+    private Long numberOfLikes;
 
 
 
@@ -348,5 +349,13 @@ public class Body {
 
     public void setNumberOfViews(Long numberOfViews) {
         this.numberOfViews = numberOfViews;
+    }
+
+    public Long getNumberOfLikes() {
+        return numberOfLikes;
+    }
+
+    public void setNumberOfLikes(Long numberOfLikes) {
+        this.numberOfLikes = numberOfLikes;
     }
 }
