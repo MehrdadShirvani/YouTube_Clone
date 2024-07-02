@@ -850,8 +850,8 @@ public class DatabaseManager {
         }
 
 
-        jpql += " GROUP BY v.videoId " +
-                "ORDER BY COUNT(vc.categoryId) DESC, viewCount DESC";
+        jpql += " GROUP BY v.videoId, v.name " +
+                "ORDER BY categoryCount DESC, viewCount DESC";
 
 
         Query query = entityManager.createQuery(jpql);
@@ -864,11 +864,12 @@ public class DatabaseManager {
                 query.setParameter("categoryIds", categoryIds);
             }
         }
+        if (!searchTerms.isEmpty()) {
 
-        for (int i = 0; i < searchTermsList.size(); i++) {
-            query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
+            for (int i = 0; i < searchTermsList.size(); i++) {
+                query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
+            }
         }
-
         query.setParameter("channelId", channelId);
         query.setFirstResult((pageNumber - 1) * perPage);
         query.setMaxResults(perPage);
