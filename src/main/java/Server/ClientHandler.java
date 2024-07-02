@@ -262,6 +262,9 @@ public class ClientHandler implements Runnable {
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
+        } else if (header.isValidVideoLikedQuery()) {
+            Long channelId = header.parseVideoLikedChannelId();
+            handleIsVideoLikedRequest(request , channelId);
         } else {
             handleBadRequest(header);
         }
