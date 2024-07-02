@@ -39,15 +39,8 @@ public class MediaServer {
                 return;
             }
 
-            long photoId;
-            try {
-                photoId = Long.parseLong(parts[2]);
-            }
-            catch(Exception ignore) {
-                exchange.sendResponseHeaders(400, 0);
-                exchange.close();
-                return;
-            }
+            String photoId = parts[2];
+
 
             if ("HEAD".equalsIgnoreCase(exchange.getRequestMethod())) {
                 handleHeadRequest(exchange, photoId);
@@ -59,7 +52,7 @@ public class MediaServer {
             }
         }
 
-        public byte[] getPhotoBytes(long photoId) {
+        public byte[] getPhotoBytes(String photoId) {
             File file = new File("src/main/resources/Server/Images/" + photoId + ".png");
             try {
                 return Files.readAllBytes(file.toPath());
@@ -68,7 +61,7 @@ public class MediaServer {
             }
         }
 
-        private void handleHeadRequest(HttpExchange exchange, long photoId) throws IOException {
+        private void handleHeadRequest(HttpExchange exchange, String photoId) throws IOException {
             byte[] photoBytes = getPhotoBytes(photoId);
             if (photoBytes == null) {
                 exchange.sendResponseHeaders(404, 0);
@@ -82,7 +75,7 @@ public class MediaServer {
         }
 
 
-        private void handleGetRequest(HttpExchange exchange, long photoId) throws IOException {
+        private void handleGetRequest(HttpExchange exchange, String photoId) throws IOException {
             new Thread(() -> {
                 try {
                     byte[] photoBytes = getPhotoBytes(photoId);
