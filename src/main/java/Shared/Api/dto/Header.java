@@ -71,6 +71,11 @@ public class Header {
     }
 
 
+    public boolean isValidCommentLikedQuery() {
+        String endpointPattern = "^/api/comment/is-liked\\?channelId=\\d+$";
+        return this.endpoint.matches(endpointPattern);
+    }
+
     public String parseSearchKeywords() throws UnsupportedEncodingException {
         String regex = "query" + "=([^&]*)";
         Pattern pattern = Pattern.compile(regex);
