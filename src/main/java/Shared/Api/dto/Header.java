@@ -48,6 +48,11 @@ public class Header {
         return this.endpoint.matches(endpointPattern);
     }
 
+    public boolean isValidChannelInfoQuery() {
+        String endpointPattern = "^/api/channel/\\d+$";
+        return this.endpoint.matches(endpointPattern);
+    }
+
     public Long parseAccountId() {
         String regex = "^/api/account/(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
