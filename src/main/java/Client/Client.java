@@ -753,4 +753,27 @@ public class Client {
             return new ArrayList<>();
         }
     }
+
+
+    public boolean isSubscribedToChannel(Long targetChannelId) {
+        String endpoint = "/api/account/is-subscribed?channelId=" + targetChannelId;
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setAccountId(this.account.getChannelId());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isSubscribedToChannel();
+        }
+
+        return false;
+    }
 }
