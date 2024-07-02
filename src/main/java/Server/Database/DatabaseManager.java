@@ -800,13 +800,13 @@ public class DatabaseManager {
         }
     }
 
-    public List<Category> getMostViewedCategoriesOfUsers(long channelId)
+    public static List<Category> getMostViewedCategoriesOfUsers(long channelId)
     {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         String jpql = "SELECT vc.categoryId, COUNT(vv.videoId) AS viewCount " +
                 "FROM VideoView vv " +
                 "JOIN VideoCategory vc ON vv.videoId = vc.videoId " +
-                "WHERE vv.accountId = :accountId " +
+                "WHERE vv.channelId = :channelId " +
                 "GROUP BY vc.categoryId " +
                 "ORDER BY viewCount DESC";
 
