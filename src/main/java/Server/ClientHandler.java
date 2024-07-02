@@ -284,6 +284,10 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("like")) {
             handleCommentLikeRequests(request);
 
+        } else if (header.isValidCommentLikedQuery()) {
+            Long channelId = header.parseCommentLikedChannelId();
+            handleIsCommentLikedRequest(request , channelId);
+
         } else {
             handleBadRequest(header);
 
