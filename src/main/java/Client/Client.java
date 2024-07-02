@@ -936,4 +936,27 @@ public class Client {
 
         return null;
     }
+
+
+    public Long getDislikesOfComment(Long commentId) {
+        String endpoint = "/api/comment/dislikes";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setCommentId(commentId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getNumberOfCommentDislikes();
+        }
+
+        return null;
+    }
 }
