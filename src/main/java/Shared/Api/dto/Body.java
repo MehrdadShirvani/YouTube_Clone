@@ -48,6 +48,7 @@ public class Body {
     private boolean isCommentLiked;
     private Long numberOfViews;
     private Long numberOfLikes;
+    private Long numberOfCommentLikes;
 
 
 
@@ -357,5 +358,13 @@ public class Body {
 
     public void setNumberOfLikes(Long numberOfLikes) {
         this.numberOfLikes = numberOfLikes;
+    }
+
+    public Long getNumberOfCommentLikes() {
+        return numberOfCommentLikes;
+    }
+
+    public void setNumberOfCommentLikes(Long numberOfCommentLikes) {
+        this.numberOfCommentLikes = numberOfCommentLikes;
     }
 }
