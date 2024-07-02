@@ -3,6 +3,7 @@ import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseManager {
@@ -810,12 +811,80 @@ public class DatabaseManager {
                 "ORDER BY viewCount DESC";
 
         Query query = entityManager.createQuery(jpql);
+        query.setMaxResults(5);
         query.setParameter("channelId", channelId);
 
-        List<Category> result = query.getResultList();
+        List<Object[]> result = query.getResultList();
         entityManager.close();
-        return result;
+        List<Category> categories = new ArrayList<>();
+        for(Object[] item : result)
+        {
+            categories.add(getCategory(Integer.parseInt(item[0].toString())));
+        }
+
+        return categories;
     }
+    public List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String jpql = "SELECT v.videoId, v.title, COUNT(vv.videoId) AS viewCount " +
+                "FROM Video v " +
+                "JOIN VideoCategory vc ON v.videoId = vc.videoId " +
+                "LEFT JOIN VideoView vv ON v.videoId = vv.videoId " +
+                "WHERE v.channelId != :channelId";
+        if(categories != null && !categories.isEmpty())
+        {
+            jpql += "AND vc.categoryId IN :categoryIds ";
+        }
+
+        List<String> searchTermsList = Arrays.asList(searchTerms.split("[ +]"));
+        if (!searchTerms.isEmpty()) {
+            jpql += " AND (";
+            for (int i = 0; i < searchTermsList.size(); i++) {
+                jpql += "LOWER(v.title) LIKE LOWER(:term" + i + ")";
+                if (i < searchTermsList.size() - 1) {
+                    jpql += " OR ";
+                }
+            }
+            jpql += ") ";
+        }
+
+
+        jpql += " GROUP BY v.videoId " +
+                "ORDER BY COUNT(vc.categoryId) DESC, viewCount DESC";
+
+
+        Query query = entityManager.createQuery(jpql);
+        if(categories != null && !categories.isEmpty())
+        {
+            List<Integer> categoryIds = new ArrayList<>();
+            for(Category category : categories)
+            {
+                categoryIds.add(category.getCategoryId());
+                query.setParameter("categoryIds", categoryIds);
+            }
+        }
+
+        for (int i = 0; i < searchTermsList.size(); i++) {
+            query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
+        }
+
+        query.setParameter("channelId", channelId);
+        query.setFirstResult((pageNumber - 1) * perPage);
+        query.setMaxResults(perPage);
+
+        List<Object[]> result = query.getResultList();
+        entityManager.close();
+
+        List<Video> videos = new ArrayList<>();
+        for(Object[] item : result)
+        {
+            videos.add(getVideo(Long.parseLong(item[0].toString())));
+        }
+
+        return videos;
+    }
+
     //endregion
 
     //region Videos
