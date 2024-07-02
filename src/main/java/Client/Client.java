@@ -762,7 +762,7 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setAccountId(this.account.getChannelId());
+        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 
