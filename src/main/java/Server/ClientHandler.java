@@ -263,6 +263,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("views")) {
             handleGetViewsOfVideo(request);
 
+        } else if (endpoint.equals("likes")) {
+            handleGetLikesOfVideo(request);
+
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
