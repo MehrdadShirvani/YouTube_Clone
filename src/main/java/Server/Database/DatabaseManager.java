@@ -349,7 +349,7 @@ public class DatabaseManager {
         }
     }
 
-    private static List<Comment> getCommentsRepliedToComment(Long commentId)
+    public static List<Comment> getCommentsRepliedToComment(Long commentId)
     {
         Comment comment = getComment(commentId);
         if(comment == null) {
