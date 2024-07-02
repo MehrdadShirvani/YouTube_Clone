@@ -21,7 +21,7 @@
                     <Insets right="10.0" top="5.0" />
                 </HBox.margin>
             </Circle>
-            <WebView fx:id="profileWebView" prefHeight="50" prefWidth="50" /> <!--fill="#6c6c6c" radius="26.36"-->
+<!--            <WebView fx:id="profileWebView" prefHeight="50" prefWidth="50" /> &lt;!&ndash;fill="#6c6c6c" radius="26.36"&ndash;&gt;-->
 
          <VBox>
             <children>

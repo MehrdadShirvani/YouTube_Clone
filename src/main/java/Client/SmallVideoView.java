@@ -56,8 +56,7 @@ public class SmallVideoView {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
         }
-        String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
-        webView.getEngine().load(url);
+
     }
     public void initialize(){
         //Loading Animation
@@ -93,8 +92,8 @@ public class SmallVideoView {
 //        shimmerTimeLineProfile.play();
         // Webview
         webView.setPageFill(Color.TRANSPARENT);
-
-
+        String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
+        webView.getEngine().load(url);
 
     }
 }
