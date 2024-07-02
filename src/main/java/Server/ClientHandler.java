@@ -299,6 +299,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("likes")) {
             handleGetLikesOfComment(request);
 
+        } else if (endpoint.equals("dislikes")) {
+            handleGetDislikesOfComment(request);
+
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
             handleIsCommentLikedRequest(request , channelId);
@@ -1325,7 +1328,37 @@ public class ClientHandler implements Runnable {
 
         if (commentId == null) {
             responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId taht sent is null !");
+            responseBody.setMessage("The commentId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<CommentReaction> commentReactions = DatabaseManager.getCommentReactionsOfComment(commentId);
+        Long numberOfCommentLikes = commentReactions.stream().filter(commentReaction -> commentReaction.getCommentReactionTypeId() == 1).count();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfCommentLikes(numberOfCommentLikes);
+
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetDislikesOfComment(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long commentId = requestBody.getCommentId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The commentId that sent is null !");
 
             response = new Response(requestHeader , responseBody);
             sendResponse(response);
