@@ -1093,6 +1093,33 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleIsSubscribedToChannelRequest(Request request , Long targetChannelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long userChannelId = requestBody.getChannelId();
+
+        Body responseBody = new Body();
+
+        if (userChannelId.equals(null) | targetChannelId.equals(null)) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The UserChannelId  or targetChannelId is null!");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isSubscribed = DatabaseManager.isSubscribedToChannel(userChannelId , targetChannelId);
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setSubscribedToChannel(isSubscribed);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
