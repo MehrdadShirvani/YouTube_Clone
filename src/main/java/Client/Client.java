@@ -795,9 +795,31 @@ public class Client {
        Body responseBody = response.getBody();
 
        if (responseBody.isSuccess()) {
-            return responseBody.isLiked();
+            return responseBody.isVideoLiked();
        }
 
        return false;
+    }
+
+    public boolean isCommentLiked(Long commentId) {
+        String endpoint = "/api/comment/is-liked?channelId=" + this.account.getChannelId();
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setCommentId(commentId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isCommentLiked();
+        }
+
+        return false;
     }
 }
