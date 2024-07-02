@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
@@ -775,5 +776,28 @@ public class Client {
         }
 
         return false;
+    }
+
+
+    public boolean isVideoLiked(Long videoId) {
+       String endpoint = "/api/video/is-liked?channelId=" + this.account.getChannelId();
+       String method = "GET";
+       Header requestHeader = new Header(method , endpoint);
+       Body requestBody = new Body();
+
+       requestBody.setVideoId(videoId);
+
+       Request request = new Request(requestHeader , requestBody);
+
+       sendRequest(request);
+       Response response = handleResponse();
+
+       Body responseBody = response.getBody();
+
+       if (responseBody.isSuccess()) {
+            return responseBody.isLiked();
+       }
+
+       return false;
     }
 }
