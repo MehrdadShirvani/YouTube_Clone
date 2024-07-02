@@ -196,11 +196,11 @@ public class ClientHandler implements Runnable {
             } else if (endpoint.equals("subscriptions")) {
                 handleGetSubscriptionsRequest(request);
 
-            } else {
-                try {
-                    Long accountId = Long.parseLong(endpoint);
-                    handleAccountInfoRequests(request , accountId);
-                } catch (NumberFormatException e) {
+            } else if (header.isValidAccountInfoQuery()){
+                Long account = header.parseAccountId();
+                if (!account.equals(null)) {
+                    handleAccountInfoRequests(request , account);
+                } else {
                     handleBadRequest(header);
                 }
             }
