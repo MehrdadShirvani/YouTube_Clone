@@ -4,6 +4,8 @@ import Shared.Models.Video;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -20,6 +22,8 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 
@@ -42,22 +46,50 @@ public class SmallVideoView {
     }
 
     public void setVideo(Video video) {
-        titleLabel.setText(video.getName());
-        authorLabel.setText(video.getChannel().getName());
-        DecimalFormat formatter = new DecimalFormat("#,###");
-        Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
-        viewsLabel.setText(formatter.format(numberOfViews));
+        //titleLabel.setText(video.getName());
+        //authorLabel.setText(video.getChannel().getName());
+        //DecimalFormat formatter = new DecimalFormat("#,###");
+        //Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
+        //viewsLabel.setText(formatter.format(numberOfViews));
+        Task<Void> loaderTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-        }
-        String urlPhoto = HomeController.class.getResource("loading-small-video.html").toExternalForm();
-        webView.getEngine().load(urlPhoto);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-        }
+                Platform.runLater(() -> {
+
+                    String urlThumbnail = HomeController.class.getResource("small-video-thumbnail.html").toExternalForm();
+
+                    try {
+                        Path path = new File("src/main/resources/Client/small-video-thumbnail.html").toPath();
+                        String htmlContent = new String(Files.readAllBytes(path));
+                        webView.getEngine().loadContent(htmlContent.replace("@id","37088"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    String urlPhoto = HomeController.class.getResource("profile.html").toExternalForm();
+                    try {
+                        Path path = new File("src/main/resources/Client/profile.html").toPath();
+                        String htmlContent = new String(Files.readAllBytes(path));
+                        profileWebView.getEngine().loadContent(htmlContent.replace("@id", "37088"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+                return  null;
+            }
+        };
+        Thread loaderThread = new Thread(loaderTask);
+        loaderThread.setDaemon(true); // Allow the thread to exit when the application exits
+        loaderThread.start();
 
     }
 
