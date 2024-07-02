@@ -688,14 +688,14 @@ public class Client {
     }
 
 
-    public List<Video> searchVideo(Long accountId , List<Category> categories , String searchKeywords , int perPage , int pageNumber) {
+    public List<Video> searchVideo(List<Category> categories , String searchKeywords , int perPage , int pageNumber) {
         String searchKeywordsUrlForm = searchKeywords.replace(" " , "%20");
         String endpoint = "/api/video/search?query=" + searchKeywordsUrlForm;
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setAccountId(accountId);
+        requestBody.setChannelId(this.account.getChannelId());
         requestBody.setCategories(categories);
         requestBody.setPerPage(perPage);
         requestBody.setPageNumber(pageNumber);
