@@ -1007,13 +1007,7 @@ public class ClientHandler implements Runnable {
         String searchKeywords;
 
         try {
-            String regex = "query" + "=([^&]*)";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(requestHeader.getEndpoint());
-
-            if (matcher.find()) {
-                searchKeywords = URLDecoder.decode(matcher.group(1), "UTF-8");
-            }
+            searchKeywords = requestHeader.parseSearchKeywords();
         } catch (UnsupportedEncodingException e) {
             String errorLog = "Error : error while running regex on a endpoint for finding search keywords !";
             System.err.println(errorLog);
