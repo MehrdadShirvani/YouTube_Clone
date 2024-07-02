@@ -1205,10 +1205,18 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        boolean isCommentLiked = DatabaseManager.getCommentReaction(channelId , commentId) != null;
+        CommentReaction commentReaction = DatabaseManager.getCommentReaction(channelId, commentId);
+        HashMap<Boolean , Short> isCommentLiked = new HashMap<>();
+
+        if (commentReaction != null) {
+            isCommentLiked.put(true , commentReaction.getCommentReactionTypeId());
+        } else {
+            isCommentLiked.put(false , null);
+        }
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setCommentLiked(isCommentLiked);
+        responseBody.setIsCommentLiked(isCommentLiked);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
