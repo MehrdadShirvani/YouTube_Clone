@@ -106,44 +106,53 @@ public class SignUpController {
 
     public void signup(ActionEvent event) {
         if (firstNameTextField.getText().isBlank() || usernameTextField.getText().isBlank()) {
+            firstNameChanged(null);
+            usernameChanged(null);
             return;
         }
 
         if (!Shared.Utils.TextValidator.validateEmail(emailTextField.getText())) {
+            emailChanged(null);
             return;
         }
 
         String passwordMessage = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
         if (!passwordMessage.isBlank()) {
+            passwordChanged(null);
             return;
         }
 
         //Username Uniqueness
-        if (false)//TODO Check Username Uniqueness
+        if (!YouTube.client.sendCheckEmailUnique(usernameTextField.getText()))
         {
             //TODO Ehsan -> Style the Message Box
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Username is not unique");
+            alert.showAndWait();
             return;
         }
 
         //email Uniqueness
-        if (false)//TODO Check Email Uniqueness
+        if (!YouTube.client.sendCheckEmailUnique(emailTextField.getText()))
         {
             //TODO Ehsan -> Style the Message Box
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Email is not unique");
+            alert.showAndWait();
             return;
         }
 
         Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
         if(YouTube.client.sendSignupRequest(account))
         {
-            YouTube.changeScene("home-view.fxml");
-        } else {
-            //TODO Ehsan / Mehrdad make a notif pop up for having trouble something like that
-
+            //TODO Stylize
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Sign Up Failed. Please contact our support team");
+            alert.showAndWait();
+            return;
         }
+
+        YouTube.changeScene("home-view.fxml");
 
     }
 

@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Models.Video;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -18,8 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 
 public class SmallVideoView {
+    public WebView profileWebView;
     @FXML
     WebView webView;
     @FXML
@@ -33,6 +36,28 @@ public class SmallVideoView {
     public SmallVideoView()
     {
 
+    }
+
+    public void setVideo(Video video)
+    {
+        titleLabel.setText(video.getName());
+        authorLabel.setText(video.getChannel().getName());
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        numberOfViews = YouTube.client.getVideoViewsOfVideo(video.getVideoId()).count();
+        viewsLabel.setText(formatter.format(numberOfViews));
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
+        String urlPhoto = HomeController.class.getResource("loading-small-video.html").toExternalForm();
+        webView.getEngine().load(urlPhoto);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
+        String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
+        webView.getEngine().load(url);
     }
     public void initialize(){
         //Loading Animation
@@ -68,7 +93,8 @@ public class SmallVideoView {
 //        shimmerTimeLineProfile.play();
         // Webview
         webView.setPageFill(Color.TRANSPARENT);
-        String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
-        webView.getEngine().load(url);
+
+
+
     }
 }

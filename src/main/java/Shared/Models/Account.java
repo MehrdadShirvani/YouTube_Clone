@@ -52,9 +52,9 @@ public class Account {
     private String publicKey;
 
 
-    @ManyToOne
-    @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
-    private Channel channel;
+//    @ManyToOne
+//    @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
+//    private Channel channel;
 
     public Account()
     {
@@ -71,7 +71,7 @@ public class Account {
         this.createdDateTime = new Timestamp(System.currentTimeMillis());
         this.lastSeenAdDateTime = null;
         this.premiumExpirationDate = null;
-
+        this.publicKey = ""; //TODO Mohsen
     }
 
     public Long getAccountId() {
@@ -164,7 +164,7 @@ public class Account {
         this.publicKey = publicKey;
     }
 
-    public Channel getChannel() {
-        return channel;
-    }
+//    public Channel getChannel() {
+//        return channel;
+//    }
 }

@@ -1,8 +1,8 @@
 package Server.Database;
-
 import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
@@ -54,7 +54,7 @@ public class DatabaseManager {
         {
             entityManager.getTransaction().begin();
             List<Channel> channels = entityManager.createQuery(
-                            "SELECT c FROM Channels c", Channel.class).getResultList();
+                            "SELECT c FROM Channel c", Channel.class).getResultList();
             entityManager.getTransaction().commit();
             return channels;
         }
@@ -104,6 +104,23 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
+    public static boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)
+    {
+        List<Channel> list = getSubscribedChannels(subscriberChannelId);
+        for(Channel channel : list)
+        {
+            if(channel.getChannelId() == targetChannelId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public static long getNumberOfViews(long videoId)
+    {
+        return getVideoViewsOfVideo(videoId).size();
+    }
+
     public static boolean isChannelNameUnique(String name)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
@@ -112,7 +129,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Channel> query = entityManager.createQuery(
-                    "SELECT c FROM Channels c WHERE c.Name = :name", Channel.class);
+                    "SELECT c FROM Channel c WHERE c.Name = :name", Channel.class);
             query.setParameter("name", name);
 
             try
@@ -141,7 +158,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM subscriptions s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
+                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
             query.setParameter("SubscriberChannelId", subscriberChannelId);
             query.setParameter("SubscribedChannelId", subscribedChannelId);
             Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
@@ -168,7 +185,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM subscriptions s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
+                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
             query.setParameter("SubscriberChannelId", subscriberChannelId);
             query.setParameter("SubscribedChannelId", subscribedChannelId);
 
@@ -223,7 +240,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Reaction> query = entityManager.createQuery(
-                    "SELECT r FROM Reactions r WHERE r.channelId = :channelId AND r.videoId = :videoId", Reaction.class);
+                    "SELECT r FROM Reaction r WHERE r.channelId = :channelId AND r.videoId = :videoId", Reaction.class);
             query.setParameter("videoId", videoId);
             query.setParameter("channelId", channelId);
 
@@ -345,7 +362,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Comment> query = entityManager.createQuery(
-                    "SELECT c FROM Comments c WHERE c.RepliedCommentId = :RepliedCommentId AND r.videoId = :videoId", Comment.class);
+                    "SELECT c FROM Comment c WHERE c.RepliedCommentId = :RepliedCommentId AND r.videoId = :videoId", Comment.class);
             query.setParameter("RepliedCommentId", commentId);
             return  query.getResultList();
         }
@@ -407,7 +424,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<CommentReaction> query = entityManager.createQuery(
-                    "SELECT cr FROM CommentReactions cr WHERE cr.commentId = :commentId", CommentReaction.class);
+                    "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
             query.setParameter("commentId", commentId);
             return  query.getResultList();
         }
@@ -420,7 +437,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<CommentReaction> query = entityManager.createQuery(
-                    "SELECT cr FROM CommentReactions cr WHERE cr.channelId = :channelId AND cr.commentId = :commentId", CommentReaction.class);
+                    "SELECT cr FROM CommentReaction cr WHERE cr.channelId = :channelId AND cr.commentId = :commentId", CommentReaction.class);
             query.setParameter("channelId", channelId);
             query.setParameter("commentId", commentId);
             try
@@ -492,7 +509,7 @@ public class DatabaseManager {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
             Root<Video> videoRoot = cq.from(Video.class);
-            Join<Video, VideoPlaylist> vidoePlaylists = videoRoot.join("Video_Playlist", JoinType.INNER);
+            Join<Video, VideoPlaylist> vidoePlaylists = videoRoot.join("VideoPlaylist", JoinType.INNER);
 
             cq.select(videoRoot)
                     .where(cb.equal(vidoePlaylists.get("playlistId"), playlistId));
@@ -513,7 +530,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoPlaylist> query = entityManager.createQuery(
-                    "SELECT vc FROM Video_Playlist vc WHERE vc.videoId = :videoId", VideoPlaylist.class);
+                    "SELECT vc FROM VideoPlaylist vc WHERE vc.videoId = :videoId", VideoPlaylist.class);
             query.setParameter("videoId", videoId);
             return query.getResultList();
         }
@@ -531,7 +548,7 @@ public class DatabaseManager {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
             Root<Channel> channelRoot = cq.from(Channel.class);
-            Join<Channel, ChannelPlaylist> channelPlaylists = channelRoot.join("Channel_Playlist", JoinType.INNER);
+            Join<Channel, ChannelPlaylist> channelPlaylists = channelRoot.join("ChannelPlaylist", JoinType.INNER);
 
             cq.select(channelRoot)
                     .where(cb.equal(channelPlaylists.get("playlistId"), playlistId));
@@ -553,7 +570,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM video_playlist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
+                    "SELECT v FROM VideoPlaylist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
             query.setParameter("VideoId", videoId);
             query.setParameter("PlaylistId", playlistId);
             VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
@@ -594,7 +611,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM video_playlist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
+                    "SELECT v FROM VideoPlaylist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
             query.setParameter("VideoId", videoId);
             query.setParameter("PlaylistId", playlistId);
 
@@ -622,7 +639,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM channel_playlist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
+                    "SELECT v FROM ChannelPlaylist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
             query.setParameter("ChannelId", channelId);
             query.setParameter("PlaylistId", playlistId);
             ChannelPlaylist channelPlaylist = new ChannelPlaylist(channelId,playlistId);
@@ -648,7 +665,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM channel_playlist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
+                    "SELECT v FROM ChannelPlaylist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
             query.setParameter("ChannelId", channelId);
             query.setParameter("PlaylistId", playlistId);
 
@@ -679,7 +696,7 @@ public class DatabaseManager {
             return account;
         }
     }
-    public static Account getAccount(String username, String password)
+    public static Account getAccount(String usernameOrEmail, String password)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
@@ -688,8 +705,9 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Account> query = entityManager.createQuery(
-                    "SELECT a FROM Accounts a WHERE a.username = :username AND a.password = :password", Account.class);
-            query.setParameter("username", username);
+                    "SELECT a FROM Account a WHERE (a.username = :username OR a.email = :email) AND a.password = :password", Account.class);
+            query.setParameter("username", usernameOrEmail);
+            query.setParameter("email", usernameOrEmail);
             query.setParameter("password", password);
             try
             {
@@ -744,7 +762,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Account> query = entityManager.createQuery(
-                    "SELECT a FROM Accounts a WHERE a.username = :username", Account.class);
+                    "SELECT a FROM Account a WHERE a.username = :username", Account.class);
             query.setParameter("username", username);
 
             try
@@ -766,7 +784,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Account> query = entityManager.createQuery(
-                    "SELECT a FROM Accounts a WHERE a.email = :email", Account.class);
+                    "SELECT a FROM Account a WHERE a.email = :email", Account.class);
             query.setParameter("email", email);
 
             try
@@ -779,6 +797,24 @@ public class DatabaseManager {
                 return true;
             }
         }
+    }
+
+    public List<Category> getMostViewedCategoriesOfUsers(long channelId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String jpql = "SELECT vc.categoryId, COUNT(vv.videoId) AS viewCount " +
+                "FROM VideoView vv " +
+                "JOIN VideoCategory vc ON vv.videoId = vc.videoId " +
+                "WHERE vv.accountId = :accountId " +
+                "GROUP BY vc.categoryId " +
+                "ORDER BY viewCount DESC";
+
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("channelId", channelId);
+
+        List<Category> result = query.getResultList();
+        entityManager.close();
+        return result;
     }
     //endregion
 
@@ -884,7 +920,7 @@ public class DatabaseManager {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
             Root<Category> categoryRoot = cq.from(Category.class);
-            Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("Video_Category", JoinType.INNER);
+            Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
 
             cq.select(categoryRoot)
                     .where(cb.equal(videoViewJoin.get("videoId"), videoId));
@@ -899,7 +935,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT vc FROM Video_Category vc WHERE vc.videoId = :videoId", VideoCategory.class);
+                    "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId", VideoCategory.class);
             query.setParameter("videoId", videoId);
             return query.getResultList();
         }
@@ -916,7 +952,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT vc FROM Video_Category vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
+                    "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
             query.setParameter("videoId", videoId);
             query.setParameter("categoryId", categoryId);
             VideoCategory videoCategory = new VideoCategory(videoId, categoryId);
@@ -954,7 +990,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT v FROM video_category v WHERE v.VideoId = :VideoId AND s.CategoryId = :CategoryId", VideoCategory.class);
+                    "SELECT v FROM VideoCategory v WHERE v.VideoId = :VideoId AND s.CategoryId = :CategoryId", VideoCategory.class);
             query.setParameter("VideoId", videoId);
             query.setParameter("CategoryId", categoryId);
 
@@ -975,7 +1011,7 @@ public class DatabaseManager {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<VideoView> query = entityManager.createQuery("SELECT v FROM VideoViews v WHERE v.videoId = :videoId", VideoView.class);
+            TypedQuery<VideoView> query = entityManager.createQuery("SELECT v FROM VideoView v WHERE v.videoId = :videoId", VideoView.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
@@ -985,7 +1021,7 @@ public class DatabaseManager {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reactions r WHERE r.videoId = :videoId", Reaction.class);
+            TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reaction r WHERE r.videoId = :videoId", Reaction.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
@@ -995,7 +1031,7 @@ public class DatabaseManager {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comments c WHERE c.videoId = :videoId", Comment.class);
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND c.repliedCommentId <= 0", Comment.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
@@ -1040,7 +1076,7 @@ public class DatabaseManager {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
             Root<Video> videoRoot = cq.from(Video.class);
-            Join<Video, VideoView> videoViewJoin = videoRoot.join("videoViews", JoinType.INNER);
+            Join<Video, VideoView> videoViewJoin = videoRoot.join("VideoView", JoinType.INNER);
 
             cq.select(videoRoot)
                     .where(cb.equal(videoViewJoin.get("channelId"), channelId))
@@ -1061,7 +1097,7 @@ public class DatabaseManager {
         {
             entityManager.getTransaction().begin();
             List<Category> categories = entityManager.createQuery(
-                            "SELECT c FROM Categories c", Category.class)
+                            "SELECT c FROM Category c", Category.class)
                     .getResultList();
             entityManager.getTransaction().commit();
             return categories;

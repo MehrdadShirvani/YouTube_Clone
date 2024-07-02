@@ -1,6 +1,8 @@
 package Shared.Models;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -60,6 +62,18 @@ public class Subscription {
     public static class SubscriptionId implements Serializable {
         private Long subscriberChannelId;
         private Long subscribedChannelId;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Subscription.SubscriptionId that = (Subscription.SubscriptionId) o;
+            return Objects.equals(subscribedChannelId, that.subscribedChannelId) && Objects.equals(subscriberChannelId, that.subscriberChannelId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(subscribedChannelId, subscriberChannelId);
+        }
 
     }
 }

@@ -79,4 +79,8 @@ The `DatabaseManager` class provides methods for making connection to database t
 - `List<Category> getCategories()`
 - `Category getCategory(Integer categoryId)`
 
+- `boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)`
+- `long getNumberOfViews(long videoId)`
+- `List<Category> getMostViewedCategoriesOfUsers(long channelId)`
+
 ### Security Risks
