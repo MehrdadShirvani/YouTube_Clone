@@ -45,8 +45,8 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private boolean isSubscribedToChannel;
-    private HashMap<Boolean , Integer> isVideoLiked;
-    private HashMap<Boolean , Integer> isCommentLiked;
+    private HashMap<Boolean , Short> isVideoLiked;
+    private HashMap<Boolean , Short> isCommentLiked;
     private Long numberOfViews;
     private Long numberOfLikes;
     private Long numberOfCommentLikes;
@@ -331,19 +331,19 @@ public class Body {
         isSubscribedToChannel = subscribedToChannel;
     }
 
-    public HashMap<Boolean, Integer> getIsVideoLiked() {
+    public HashMap<Boolean, Short> getIsVideoLiked() {
         return isVideoLiked;
     }
 
-    public void setIsVideoLiked(HashMap<Boolean, Integer> isVideoLiked) {
+    public void setIsVideoLiked(HashMap<Boolean, Short> isVideoLiked) {
         this.isVideoLiked = isVideoLiked;
     }
 
-    public HashMap<Boolean, Integer> getIsCommentLiked() {
+    public HashMap<Boolean, Short> getIsCommentLiked() {
         return isCommentLiked;
     }
 
-    public void setIsCommentLiked(HashMap<Boolean, Integer> isCommentLiked) {
+    public void setIsCommentLiked(HashMap<Boolean, Short> isCommentLiked) {
         this.isCommentLiked = isCommentLiked;
     }
 
