@@ -8,12 +8,12 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CategoryId")
-    private Long categoryId;
+    private Integer categoryId;
 
     @Column(name = "Name", unique = true, nullable = false, length = 50)
     private String name;
 
-    public Long getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
     public String getName() {
