@@ -46,6 +46,7 @@ public class Body {
     private boolean isSubscribedToChannel;
     private boolean isVideoLiked;
     private boolean isCommentLiked;
+    private Long numberOfViews;
 
 
 
@@ -339,5 +340,13 @@ public class Body {
 
     public void setCommentLiked(boolean commentLiked) {
         isCommentLiked = commentLiked;
+    }
+
+    public Long getNumberOfViews() {
+        return numberOfViews;
+    }
+
+    public void setNumberOfViews(Long numberOfViews) {
+        this.numberOfViews = numberOfViews;
     }
 }
