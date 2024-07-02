@@ -1170,10 +1170,18 @@ public class ClientHandler implements Runnable {
             return;
        }
 
-       boolean isVideoLiked = DatabaseManager.getReaction(channelId, videoId) != null;
+       Reaction reaction = DatabaseManager.getReaction(channelId, videoId);
+       HashMap<Boolean , Short> isVideoLiked = new HashMap<>();
+
+       if (reaction != null) {
+            isVideoLiked.put(true , reaction.getReactionTypeId());
+       } else {
+           isVideoLiked.put(false , null);
+       }
+
        responseBody.setSuccess(true);
        responseBody.setMessage("200 Ok");
-       responseBody.setVideoLiked(isVideoLiked);
+       responseBody.setIsVideoLiked(isVideoLiked);
 
        response = new Response(requestHeader , responseBody);
        sendResponse(response);
