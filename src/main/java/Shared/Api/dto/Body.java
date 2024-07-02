@@ -5,6 +5,7 @@ import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
@@ -44,11 +45,13 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private boolean isSubscribedToChannel;
-    private boolean isVideoLiked;
-    private boolean isCommentLiked;
+    private HashMap<Boolean , Short> isVideoLiked;
+    private HashMap<Boolean , Short> isCommentLiked;
     private Long numberOfViews;
     private Long numberOfLikes;
     private Long numberOfCommentLikes;
+    private Long numberOfDislikes;
+    private Long numberOfCommentDislikes;
 
 
 
@@ -328,20 +331,20 @@ public class Body {
         isSubscribedToChannel = subscribedToChannel;
     }
 
-    public boolean isVideoLiked() {
+    public HashMap<Boolean, Short> getIsVideoLiked() {
         return isVideoLiked;
     }
 
-    public void setVideoLiked(boolean liked) {
-        isVideoLiked = liked;
+    public void setIsVideoLiked(HashMap<Boolean, Short> isVideoLiked) {
+        this.isVideoLiked = isVideoLiked;
     }
 
-    public boolean isCommentLiked() {
+    public HashMap<Boolean, Short> getIsCommentLiked() {
         return isCommentLiked;
     }
 
-    public void setCommentLiked(boolean commentLiked) {
-        isCommentLiked = commentLiked;
+    public void setIsCommentLiked(HashMap<Boolean, Short> isCommentLiked) {
+        this.isCommentLiked = isCommentLiked;
     }
 
     public Long getNumberOfViews() {
@@ -366,5 +369,21 @@ public class Body {
 
     public void setNumberOfCommentLikes(Long numberOfCommentLikes) {
         this.numberOfCommentLikes = numberOfCommentLikes;
+    }
+
+    public Long getNumberOfDislikes() {
+        return numberOfDislikes;
+    }
+
+    public void setNumberOfDislikes(Long numberOfDislikes) {
+        this.numberOfDislikes = numberOfDislikes;
+    }
+
+    public Long getNumberOfCommentDislikes() {
+        return numberOfCommentDislikes;
+    }
+
+    public void setNumberOfCommentDislikes(Long numberOfCommentDislikes) {
+        this.numberOfCommentDislikes = numberOfCommentDislikes;
     }
 }

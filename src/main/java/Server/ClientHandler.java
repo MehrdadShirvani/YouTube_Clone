@@ -266,6 +266,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("likes")) {
             handleGetLikesOfVideo(request);
 
+        } else if (endpoint.equals("dislikes")) {
+            handleGetDislikesOfVideo(request);
+
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
@@ -295,6 +298,9 @@ public class ClientHandler implements Runnable {
 
         } else if (endpoint.equals("likes")) {
             handleGetLikesOfComment(request);
+
+        } else if (endpoint.equals("dislikes")) {
+            handleGetDislikesOfComment(request);
 
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
@@ -1164,10 +1170,18 @@ public class ClientHandler implements Runnable {
             return;
        }
 
-       boolean isVideoLiked = DatabaseManager.getReaction(channelId, videoId) != null;
+       Reaction reaction = DatabaseManager.getReaction(channelId, videoId);
+       HashMap<Boolean , Short> isVideoLiked = new HashMap<>();
+
+       if (reaction != null) {
+            isVideoLiked.put(true , reaction.getReactionTypeId());
+       } else {
+           isVideoLiked.put(false , null);
+       }
+
        responseBody.setSuccess(true);
        responseBody.setMessage("200 Ok");
-       responseBody.setVideoLiked(isVideoLiked);
+       responseBody.setIsVideoLiked(isVideoLiked);
 
        response = new Response(requestHeader , responseBody);
        sendResponse(response);
@@ -1191,10 +1205,18 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        boolean isCommentLiked = DatabaseManager.getCommentReaction(channelId , commentId) != null;
+        CommentReaction commentReaction = DatabaseManager.getCommentReaction(channelId, commentId);
+        HashMap<Boolean , Short> isCommentLiked = new HashMap<>();
+
+        if (commentReaction != null) {
+            isCommentLiked.put(true , commentReaction.getCommentReactionTypeId());
+        } else {
+            isCommentLiked.put(false , null);
+        }
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setCommentLiked(isCommentLiked);
+        responseBody.setIsCommentLiked(isCommentLiked);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
@@ -1244,10 +1266,41 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Long numberOfLikes = (long) DatabaseManager.getVideoReactions(videoId).size();
+        List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+        Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count();
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setNumberOfLikes(numberOfLikes);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetDislikesOfVideo(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+        Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfDislikes(numberOfLikes);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
@@ -1291,14 +1344,45 @@ public class ClientHandler implements Runnable {
 
         if (commentId == null) {
             responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId taht sent is null !");
+            responseBody.setMessage("The commentId that sent is null !");
 
             response = new Response(requestHeader , responseBody);
             sendResponse(response);
             return;
         }
 
-        Long numberOfCommentLikes = (long) DatabaseManager.getCommentReactionsOfComment(commentId).size();
+        List<CommentReaction> commentReactions = DatabaseManager.getCommentReactionsOfComment(commentId);
+        Long numberOfCommentLikes = commentReactions.stream().filter(commentReaction -> commentReaction.getCommentReactionTypeId() == 1).count();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfCommentLikes(numberOfCommentLikes);
+
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetDislikesOfComment(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long commentId = requestBody.getCommentId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The commentId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<CommentReaction> commentReactions = DatabaseManager.getCommentReactionsOfComment(commentId);
+        Long numberOfCommentLikes = commentReactions.stream().filter(commentReaction -> commentReaction.getCommentReactionTypeId() == -1).count();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");

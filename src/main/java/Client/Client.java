@@ -33,6 +33,8 @@ public class Client {
     private PublicKey serverPublicKey;
     private Account account;
     private final String SEARCH_HISTORY_ADDRESS = ".cache/Search_History.json" ;
+    public static final int LIKE_ID = 1;
+    public static final int DISLIKE_ID = -1;
 
     public Client() {
         try {
@@ -779,7 +781,7 @@ public class Client {
     }
 
 
-    public boolean isVideoLiked(Long videoId) {
+    public HashMap<Boolean , Short> isVideoLiked(Long videoId) {
        String endpoint = "/api/video/is-liked?channelId=" + this.account.getChannelId();
        String method = "GET";
        Header requestHeader = new Header(method , endpoint);
@@ -795,13 +797,13 @@ public class Client {
        Body responseBody = response.getBody();
 
        if (responseBody.isSuccess()) {
-            return responseBody.isVideoLiked();
+            return responseBody.getIsVideoLiked();
        }
 
-       return false;
+       return null;
     }
 
-    public boolean isCommentLiked(Long commentId) {
+    public HashMap<Boolean , Short> isCommentLiked(Long commentId) {
         String endpoint = "/api/comment/is-liked?channelId=" + this.account.getChannelId();
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
@@ -817,10 +819,10 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return responseBody.isCommentLiked();
+            return responseBody.getIsCommentLiked();
         }
 
-        return false;
+        return null;
     }
 
     public Long getViewsOfVideo(Long videoId) {
@@ -869,6 +871,29 @@ public class Client {
     }
 
 
+    public Long getDislikesOfVideo(Long videoId) {
+        String endpoint = "/api/video/dislikes";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getNumberOfDislikes();
+        }
+
+        return null;
+    }
+
+
     public List<Comment> getRepliesOfComment(Long commentId) {
         String endpoint = "/api/comment/replies";
         String method = "GET";
@@ -909,6 +934,29 @@ public class Client {
 
         if (responseBody.isSuccess()) {
             return responseBody.getNumberOfCommentLikes();
+        }
+
+        return null;
+    }
+
+
+    public Long getDislikesOfComment(Long commentId) {
+        String endpoint = "/api/comment/dislikes";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setCommentId(commentId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getNumberOfCommentDislikes();
         }
 
         return null;
