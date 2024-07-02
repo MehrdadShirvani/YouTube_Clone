@@ -1182,7 +1182,7 @@ public class ClientHandler implements Runnable {
                 continue;
             }
 
-            int numberOfVideo = (int)Math.ceil(entry.getValue()) * NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO);
+            int numberOfVideo = (int)Math.ceil(entry.getValue()) * NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO;
             totalVideos += numberOfVideo;
 
             if (numberOfVideo == 0 | totalVideos > NUMBER_OF_NOT_SUBSCRIBED_AND_INTERESTED_VIDEO) {
