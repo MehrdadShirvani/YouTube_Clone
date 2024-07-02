@@ -6,9 +6,11 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -22,7 +24,6 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 
 public class SmallVideoView {
-    public WebView profileWebView;
     @FXML
     WebView webView;
     @FXML
@@ -32,14 +33,15 @@ public class SmallVideoView {
     @FXML
     Label authorLabel;
     @FXML
-    Circle profileCircle;
-    public SmallVideoView()
-    {
+    HBox downHBox;
+    @FXML
+    WebView profileWebView;
+
+    public SmallVideoView() {
 
     }
 
-    public void setVideo(Video video)
-    {
+    public void setVideo(Video video) {
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
@@ -58,7 +60,8 @@ public class SmallVideoView {
         }
 
     }
-    public void initialize(){
+
+    public void initialize() {
         //Loading Animation
         Timeline shimmerTimelineTitle = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(titleLabel.opacityProperty(), 1)),
@@ -90,10 +93,20 @@ public class SmallVideoView {
 //        shimmerTimeLineProfile.setCycleCount(Timeline.INDEFINITE);
 //        shimmerTimeLineProfile.setAutoReverse(true);
 //        shimmerTimeLineProfile.play();
-        // Webview
-        webView.setPageFill(Color.TRANSPARENT);
+
+        // Thumb mask
+        Rectangle thumbMaskRec = new Rectangle(248, 139.49);
+        thumbMaskRec.setArcWidth(20);
+        thumbMaskRec.setArcHeight(20);
+        webView.setClip(thumbMaskRec);
+        // Profile mask
+        Rectangle profileMaskRec = new Rectangle(50,50);
+        profileMaskRec.setArcHeight(50);
+        profileMaskRec.setArcWidth(50);
+        profileWebView.setClip(profileMaskRec);
+        // load webview
         String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
         webView.getEngine().load(url);
-
+        profileWebView.getEngine().load(url);
     }
 }
