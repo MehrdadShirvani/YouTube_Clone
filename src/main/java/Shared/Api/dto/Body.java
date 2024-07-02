@@ -44,6 +44,7 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private boolean isSubscribedToChannel;
+    private boolean isLiked;
 
 
 
@@ -321,5 +322,13 @@ public class Body {
 
     public void setSubscribedToChannel(boolean subscribedToChannel) {
         isSubscribedToChannel = subscribedToChannel;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }
