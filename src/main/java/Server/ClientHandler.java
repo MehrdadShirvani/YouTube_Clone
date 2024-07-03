@@ -1041,9 +1041,14 @@ public class ClientHandler implements Runnable {
         int pageNumber = requestBody.getPageNumber();
         String searchKeywords;
 
+        Body responseBody = new Body();
+
         try {
             searchKeywords = requestHeader.parseSearchKeywords();
         } catch (UnsupportedEncodingException e) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("error while running regex on a endpoint !");
+
             String errorLog = "Error : error while running regex on a endpoint for finding search keywords !";
             System.err.println(errorLog);
             writeLog(errorLog);
@@ -1053,8 +1058,6 @@ public class ClientHandler implements Runnable {
         //TODO use database search function
         List<Video> searchVideos = DatabaseManager.searchVideo(channelId , categories , searchKeywords , perPage , pageNumber);
 
-
-        Body responseBody = new Body();
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setSearchVideos(searchVideos);
