@@ -1,9 +1,9 @@
 package Client;
 
+import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -15,10 +15,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.web.WebView;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HomeController {
     @FXML
@@ -148,7 +148,9 @@ public class HomeController {
     private void setHome() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
-        for (int i = 0; i < 11; ++i) {
+
+        List<Video> videos = YouTube.client.searchVideo(null,"",10,1);
+        for (Video video : videos) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             Parent smallVideo = null;
             try {
@@ -156,6 +158,8 @@ public class HomeController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            SmallVideoView controller = fxmlLoader.getController();
+            controller.setVideo(video, this);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
