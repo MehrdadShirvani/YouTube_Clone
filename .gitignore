@@ -45,3 +45,6 @@ src/main/java/Server/logs
 
 ### Caches ###
 .cache/
+
+### Datavase config file ###
+src/main/resources/META-INF
