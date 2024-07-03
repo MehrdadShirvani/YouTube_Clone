@@ -48,13 +48,11 @@ public class ClientEncryption {
         }
     }
 
-    public String decryptDataRSA(String encryptedJsonData) {
+    public byte[] decryptDataRSA(byte[] encryptedJsonData) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, this.clientRSAprivateKey);
-            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedJsonData);
-            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-            return new String(decryptedBytes);
+            return cipher.doFinal(encryptedJsonData);
         } catch (Exception e) {
             System.err.println("Error : while encrypting the data inside the client ! :");
             e.printStackTrace();
