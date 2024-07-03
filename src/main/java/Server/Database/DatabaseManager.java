@@ -823,27 +823,29 @@ public class DatabaseManager {
 
     public static List<Category> getMostViewedCategoriesOfUsers(long channelId)
     {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        String jpql = "SELECT vc.categoryId, COUNT(vv.videoId) AS viewCount " +
-                "FROM VideoView vv " +
-                "JOIN VideoCategory vc ON vv.videoId = vc.videoId " +
-                "WHERE vv.channelId = :channelId " +
-                "GROUP BY vc.categoryId " +
-                "ORDER BY viewCount DESC";
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()) {
 
-        Query query = entityManager.createQuery(jpql);
-        query.setMaxResults(5);
-        query.setParameter("channelId", channelId);
+            String jpql = "SELECT vc.categoryId, COUNT(vv.videoId) AS viewCount " +
+                    "FROM VideoView vv " +
+                    "JOIN VideoCategory vc ON vv.videoId = vc.videoId " +
+                    "WHERE vv.channelId = :channelId " +
+                    "GROUP BY vc.categoryId " +
+                    "ORDER BY viewCount DESC";
 
-        List<Object[]> result = query.getResultList();
-        entityManager.close();
-        List<Category> categories = new ArrayList<>();
-        for(Object[] item : result)
-        {
-            categories.add(getCategory(Integer.parseInt(item[0].toString())));
+            Query query = entityManager.createQuery(jpql);
+            query.setMaxResults(5);
+            query.setParameter("channelId", channelId);
+
+            List<Object[]> result = query.getResultList();
+            entityManager.close();
+            List<Category> categories = new ArrayList<>();
+            for (Object[] item : result)
+            {
+                categories.add(getCategory(Integer.parseInt(item[0].toString())));
+            }
+
+            return categories;
         }
-
-        return categories;
     }
     public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
     {
