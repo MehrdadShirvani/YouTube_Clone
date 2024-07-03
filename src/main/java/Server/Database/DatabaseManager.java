@@ -85,27 +85,39 @@ public class DatabaseManager {
             TypedQuery<Channel> query = entityManager.createQuery(cq);
             return query.getResultList();
         }
+
+
+
     }
 
     public static List<Channel> getSubscriberChannels(Long channelId) {
         Channel channel = getChannel(channelId);
         if(channel == null)
-        {
+        {;
             return null;
         }
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
-            Root<Channel> channelRoot = cq.from(Channel.class);
-            Join<Channel, Subscription> subscriptions = channelRoot.join("SubscribedChannelId", JoinType.INNER);
+        try {
+            CompletableFuture<List<Channel>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+                    CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
+                    Root<Channel> channelRoot = cq.from(Channel.class);
+                    Join<Channel, Subscription> subscriptions = channelRoot.join("subscribedChannelId", JoinType.INNER);
 
-            cq.select(channelRoot)
-                    .where(cb.equal(subscriptions.get("channelId"), channelId));
+                    cq.select(channelRoot)
+                            .where(cb.equal(subscriptions.get("channelId"), channelId));
 
-            TypedQuery<Channel> query = entityManager.createQuery(cq);
-            return query.getResultList();
+                    TypedQuery<Channel> query = entityManager.createQuery(cq);
+                    return query.getResultList();
+                }
+            });
+
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
     }
     public static boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)
