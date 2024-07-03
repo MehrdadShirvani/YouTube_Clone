@@ -964,4 +964,9 @@ public class Client {
 
         return null;
     }
+
+    public Account getAccount()
+    {
+        return account;
+    }
 }
