@@ -849,28 +849,31 @@ public class DatabaseManager {
     }
     public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
     {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        String jpql = "SELECT v.videoId, v.name, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount " +
-                "FROM Video v " +
-                "JOIN VideoCategory vc ON v.videoId = vc.videoId " +
-                "LEFT JOIN VideoView vv ON v.videoId = vv.videoId " +
-                "WHERE v.channelId != :channelId";
-        if(categories != null && !categories.isEmpty())
-        {
-            jpql += "AND vc.categoryId IN :categoryIds ";
-        }
-
-        List<String> searchTermsList = Arrays.asList(searchTerms.split("[ +]"));
-        if (!searchTerms.isEmpty()) {
-            jpql += " AND (";
-            for (int i = 0; i < searchTermsList.size(); i++) {
-                jpql += "LOWER(v.name) LIKE LOWER(:term" + i + ")";
-                if (i < searchTermsList.size() - 1) {
-                    jpql += " OR ";
-                }
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            String jpql = "SELECT v.videoId, v.name, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount " +
+                    "FROM Video v " +
+                    "JOIN VideoCategory vc ON v.videoId = vc.videoId " +
+                    "LEFT JOIN VideoView vv ON v.videoId = vv.videoId " +
+                    "WHERE v.channelId != :channelId";
+            if (categories != null && !categories.isEmpty())
+            {
+                jpql += "AND vc.categoryId IN :categoryIds ";
             }
-            jpql += ") ";
-        }
+
+            List<String> searchTermsList = Arrays.asList(searchTerms.split("[ +]"));
+            if (!searchTerms.isEmpty())
+            {
+                jpql += " AND (";
+                for (int i = 0; i < searchTermsList.size(); i++)
+                {
+                    jpql += "LOWER(v.name) LIKE LOWER(:term" + i + ")";
+                    if (i < searchTermsList.size() - 1)
+                    {
+                        jpql += " OR ";
+                    }
+                }
+                jpql += ") ";
+            }
 
 
         jpql += " GROUP BY v.videoId, v.name " +
