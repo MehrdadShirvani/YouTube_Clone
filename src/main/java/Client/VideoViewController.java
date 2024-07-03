@@ -95,6 +95,7 @@ public class VideoViewController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        subsLabel.setText(YouTube.client.getChannelSubscribers(video.getChannelId()) + "");
 
 //        try {
 //            Path path = new File("src/main/resources/Client/profile.html").toPath();
@@ -103,6 +104,14 @@ public class VideoViewController {
 //        } catch (IOException e) {
 //            throw new RuntimeException(e);
 //        }
+
+        try {
+            Path path = new File("src/main/resources/Client/video-player.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            videoWebView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId()+""));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void hi(ActionEvent event) {
         System.out.println(videoWebView.getWidth());
