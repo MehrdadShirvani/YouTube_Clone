@@ -43,8 +43,7 @@ public class Client {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.clientEncryption = new ClientEncryption();
 
-//            receiveServerPublicKeyRSA();
-//            sendClientPublicKeyRSA();
+            sendClientPublicKeyRSA();
             receiveAesKey();
 
         } catch (UnknownHostException e) {
@@ -113,10 +112,10 @@ public class Client {
 
     public void receiveAesKey() {
         try {
-            String encodedAesKey = this.bufferedReader.readLine();
-//            String decodedAesKey = this.clientEncryption.decryptDataRSA((encodedAesKey));
-            byte[] decodedAesKeyByte = Base64.getDecoder().decode(encodedAesKey);
-            SecretKey AesKey = new SecretKeySpec(decodedAesKeyByte , "AES");
+            String encodedEncryptedAesKey = this.bufferedReader.readLine();
+            byte[] encryptedAesKey = Base64.getDecoder().decode(encodedEncryptedAesKey);
+            byte[] decodedAesKey = this.clientEncryption.decryptDataRSA((encryptedAesKey));
+            SecretKey AesKey = new SecretKeySpec(decodedAesKey, "AES");
             this.clientEncryption.setAesKey(AesKey);
 
         } catch (IOException e) {
