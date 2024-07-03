@@ -695,7 +695,8 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setChannelId(this.account.getChannelId());
+//        requestBody.setChannelId(this.account.getChannelId());
+        requestBody.setChannelId(1L);
         requestBody.setCategories(categories);
         requestBody.setPerPage(perPage);
         requestBody.setPageNumber(pageNumber);
