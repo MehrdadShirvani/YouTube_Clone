@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Models.Video;
 import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -209,6 +210,34 @@ public class HomeController {
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             searchTextField.setText("");
             searchButton.requestFocus();
+        }
+    }
+
+    public void searchButtonAction(ActionEvent actionEvent) {
+        if(!searchTextField.getText().isBlank())
+        {
+            setSearch();
+        }else {
+            setHome();
+        }
+    }
+
+    private void setSearch() {
+        mainBorderPane.setCenter(homeScrollPane);
+        homeVideosFlowPane.getChildren().clear();
+
+        List<Video> videos = YouTube.client.searchVideo(null,searchTextField.getText(),10,1);
+        for (Video video : videos) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            Parent smallVideo = null;
+            try {
+                smallVideo = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            SmallVideoView controller = fxmlLoader.getController();
+            controller.setVideo(video, this);
+            homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
 }

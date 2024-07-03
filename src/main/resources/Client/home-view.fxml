@@ -51,7 +51,7 @@
                                 <Insets left="15.0" right="10.0" />
                             </padding>
                         </TextField>
-                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" opacity="0.7" prefHeight="32.0" prefWidth="54.0" text="Button">
+                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" opacity="0.7" prefHeight="32.0" prefWidth="54.0" text="Button" onAction="#searchButtonAction">
                             <graphic>
                                 <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
