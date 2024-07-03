@@ -37,6 +37,8 @@ public class SmallVideoView {
     Video video;
     HomeController homeController;
     private Timeline shimmerTimelineTitle;
+    private Timeline shimmerTimelineViews;
+    private Timeline shimmerTimelineAuthor;
 
     public SmallVideoView() {
 
@@ -50,6 +52,15 @@ public class SmallVideoView {
         DecimalFormat formatter = new DecimalFormat("#,###");
         Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
         viewsLabel.setText(formatter.format(numberOfViews) + "views . " + DateFormats.toRelativeTime(video.getCreatedDateTime()));
+        titleLabel.getStyleClass().clear();
+        authorLabel.getStyleClass().clear();
+        viewsLabel.getStyleClass().clear();
+        titleLabel.getStyleClass().add("title");
+        authorLabel.getStyleClass().add("caption");
+        viewsLabel.getStyleClass().add("caption");
+        shimmerTimelineTitle.stop();
+        shimmerTimelineAuthor.stop();
+        shimmerTimelineViews.stop();
         Task<Void> loaderTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -65,7 +76,7 @@ public class SmallVideoView {
                     try {
                         Path path = new File("src/main/resources/Client/small-video-thumbnail.html").toPath();
                         String htmlContent = new String(Files.readAllBytes(path));
-                        webView.getEngine().loadContent(htmlContent.replace("@id",video.getVideoId() + ""));
+                        webView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId() + ""));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -73,7 +84,7 @@ public class SmallVideoView {
                     try {
                         Path path = new File("src/main/resources/Client/profile.html").toPath();
                         String htmlContent = new String(Files.readAllBytes(path));
-                        profileWebView.getEngine().loadContent(htmlContent.replace("@id", video.getChannelId()+""));
+                        profileWebView.getEngine().loadContent(htmlContent.replace("@id", video.getChannelId() + ""));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -83,7 +94,7 @@ public class SmallVideoView {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                 }
-                return  null;
+                return null;
             }
         };
         Thread loaderThread = new Thread(loaderTask);
@@ -102,14 +113,14 @@ public class SmallVideoView {
         shimmerTimelineTitle.setAutoReverse(true);
         shimmerTimelineTitle.play();
 
-        Timeline shimmerTimelineViews = new Timeline(
+        shimmerTimelineViews = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(viewsLabel.opacityProperty(), 1)),
                 new KeyFrame(Duration.seconds(1), new KeyValue(viewsLabel.opacityProperty(), 0))
         );
         shimmerTimelineViews.setCycleCount(Timeline.INDEFINITE);
         shimmerTimelineViews.setAutoReverse(true);
         shimmerTimelineViews.play();
-        Timeline shimmerTimelineAuthor = new Timeline(
+        shimmerTimelineAuthor = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(authorLabel.opacityProperty(), 1)),
                 new KeyFrame(Duration.seconds(1), new KeyValue(authorLabel.opacityProperty(), 0))
         );
@@ -131,7 +142,7 @@ public class SmallVideoView {
         thumbMaskRec.setArcHeight(20);
         webView.setClip(thumbMaskRec);
         // Profile mask
-        Rectangle profileMaskRec = new Rectangle(50,50);
+        Rectangle profileMaskRec = new Rectangle(50, 50);
         profileMaskRec.setArcHeight(50);
         profileMaskRec.setArcWidth(50);
         profileWebView.setClip(profileMaskRec);
@@ -141,8 +152,7 @@ public class SmallVideoView {
         profileWebView.getEngine().load(url);
     }
 
-    public void clicked(MouseEvent mouseEvent)
-    {
+    public void clicked(MouseEvent mouseEvent) {
         homeController.setVideoPage(video);
     }
 }

@@ -5,7 +5,6 @@
     -fx-border-gray-color: #6C6C6C;
     -fx-bright-gray-color: #AAAAAA;
     -fx-blue-color: #065fd4;
-    -fx-white: #f1f1f1;
 }
 .title-loading{
     -fx-text-fill: transparent;
@@ -16,11 +15,11 @@
     -fx-background-radius: 20;
 }
 .title{
-    -fx-text-fill: -fx-white;
+    -fx-text-fill: #f1f1f1;
     -fx-background-size: 200% 100%;
     -fx-font-family: Roboto;
-    /*-fx-font-weight: bold;*/
-    -fx-background-radius: 20;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
 }
 .caption-loading{
     -fx-text-fill: transparent;
@@ -32,6 +31,5 @@
 }
 .caption{
     -fx-text-fill: -fx-bright-gray-color;
-    -fx-background-color: -fx-border-gray-color;;
     -fx-background-radius: 20;
 }

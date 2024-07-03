@@ -51,7 +51,7 @@
                                 <Insets left="15.0" right="10.0" />
                             </padding>
                         </TextField>
-                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" opacity="0.7" prefHeight="32.0" prefWidth="54.0" text="Button" onAction="#searchButtonAction">
+                        <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#searchButtonAction" opacity="0.7" prefHeight="32.0" prefWidth="54.0" text="Button">
                             <graphic>
                                 <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -133,9 +133,9 @@
         </VBox>
     </left>
     <center>
-        <ScrollPane fx:id="homeScrollPane" fitToWidth="true" style="-fx-border-color: blue; -fx-border-style: dashed;" styleClass="side-bar" BorderPane.alignment="CENTER">
+        <ScrollPane fx:id="homeScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="side-bar" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
             <content>
-                <FlowPane fx:id="homeVideosFlowPane" hgap="14.0" rowValignment="TOP" vgap="14.0">
+                <FlowPane fx:id="homeVideosFlowPane" hgap="14.0" rowValignment="TOP" vgap="10.0">
                <padding>
                   <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                </padding></FlowPane>
