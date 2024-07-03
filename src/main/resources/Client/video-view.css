@@ -1,7 +1,7 @@
 .root {
     -fx-black-color: #121212;
     -fx-gray-color: #212121;
-    -fx-semi-gray-color: #303030;
+    -fx-semi-gray-color: #303030; /*This color might be used for HBox*/
     -fx-border-gray-color: #6C6C6C;
     -fx-bright-gray-color: #AAAAAA;
     -fx-blue-color: #065fd4;
@@ -12,9 +12,14 @@
     -fx-background-color: -fx-gray-color;
 }
 
+.scroll-pane .viewport {
+    -fx-background-color: -fx-gray-color;
+}
+
 #titleLabel {
     -fx-text-fill: #f1f1f1;
     -fx-font-family: Roboto;
+    -fx-font-weight: bold;
     -fx-font-size: 18;
 }
 
@@ -25,8 +30,16 @@
     -fx-font-size: 14;
 }
 
+#likeButton:hover {
+    -fx-opacity: 0.7;
+}
+
 #dislikeButton {
     -fx-background-color: transparent;
+}
+
+#dislikeButton:hover {
+    -fx-opacity: 0.7;
 }
 
 .caption-button {
@@ -34,12 +47,91 @@
     -fx-border-width: 0;
     -fx-background-radius: 20;
     -fx-text-fill: #f1f1f1;
+    -fx-font-family: Roboto;
 }
-.caption-button:hover{
-    -fx-background-color:  rgba(170,170,170,0.3);
+
+.caption-button:hover {
+    /*-fx-background-color:  rgba(170,170,170,0.3);*/
+    -fx-opacity: 0.6;
 }
-#viewsLabel{
+
+#viewsLabel {
     -fx-text-fill: #AAAAAA;
     -fx-font-size: 14;
+}
 
+#authorLabel {
+    -fx-font-family: Roboto;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1f1f1;
+}
+
+#subsLabel {
+    -fx-font-family: Roboto;
+    -fx-font-size: 12;
+    -fx-text-fill: -fx-bright-gray-color;
+}
+
+#subsButton {
+    -fx-border-width: 0;
+    -fx-background-radius: 20;
+    -fx-background-color: white;
+    -fx-font-family: Roboto;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+#subsButton:hover {
+    -fx-opacity: 0.7;
+}
+#desLabel{
+    -fx-text-fill: #f1f1f1;
+    /*-fx-font-family: Roboto;*/
+    -fx-font-family: Roboto;
+    -fx-font-weight: 500;
+    -fx-font-size: 14;
+
+}
+#commentsLabel{
+    -fx-text-fill: #f1f1f1;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+}
+.comment-textfield{
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -fx-bright-gray-color;
+    -fx-font-family: Roboto;
+    -fx-font-size: 14;
+    -fx-prompt-text-fill: -fx-bright-gray-color;
+    -fx-text-fill: #f1f1f1;
+}
+.comment-textfield:focused{
+    -fx-border-color: -fx-blue-color;
+}
+.comment-button{
+    -fx-background-color:  #3ea6ff;
+    -fx-text-fill: black;
+    -fx-font-family: Roboto;
+    -fx-font-weight: 600;
+    -fx-font-size: 14;
+    -fx-border-width: 0;
+    -fx-background-radius: 15;
+}
+.comment-button:hover{
+    -fx-background-color: #65b8ff;
+}
+.comment-cancel{
+    -fx-background-color: transparent;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-family: Roboto;
+    -fx-font-weight: 600;
+    -fx-font-size: 14;
+    -fx-border-width: 0;
+    -fx-background-radius: 15;
+}
+.comment-cancel:hover{
+    -fx-background-color: rgba(40,40,40);
 }
