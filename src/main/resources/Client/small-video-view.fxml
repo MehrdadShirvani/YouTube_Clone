@@ -13,7 +13,7 @@
         <URL value="@small-video-view.css" />
     </stylesheets>
 
-    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0">
+    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" onMouseClicked="#clicked">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></WebView>

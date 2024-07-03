@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Video;
+import Shared.Utils.DateFormats;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,17 +42,22 @@ public class SmallVideoView {
     HBox downHBox;
     @FXML
     WebView profileWebView;
+    Video video;
+    HomeController homeController;
+    private Timeline shimmerTimelineTitle;
 
     public SmallVideoView() {
 
     }
 
-    public void setVideo(Video video) {
-        //titleLabel.setText(video.getName());
-        //authorLabel.setText(video.getChannel().getName());
-        //DecimalFormat formatter = new DecimalFormat("#,###");
-        //Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
-        //viewsLabel.setText(formatter.format(numberOfViews));
+    public void setVideo(Video video, HomeController homeController) {
+        this.video = video;
+        this.homeController = homeController;
+        titleLabel.setText(video.getName());
+        authorLabel.setText(video.getChannel().getName());
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
+        viewsLabel.setText(formatter.format(numberOfViews) + "views . " + DateFormats.toRelativeTime(video.getCreatedDateTime()));
         Task<Void> loaderTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -66,7 +73,7 @@ public class SmallVideoView {
                     try {
                         Path path = new File("src/main/resources/Client/small-video-thumbnail.html").toPath();
                         String htmlContent = new String(Files.readAllBytes(path));
-                        webView.getEngine().loadContent(htmlContent.replace("@id","37088"));
+                        webView.getEngine().loadContent(htmlContent.replace("@id",video.getVideoId() + ""));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -74,7 +81,7 @@ public class SmallVideoView {
                     try {
                         Path path = new File("src/main/resources/Client/profile.html").toPath();
                         String htmlContent = new String(Files.readAllBytes(path));
-                        profileWebView.getEngine().loadContent(htmlContent.replace("@id", "37088"));
+                        profileWebView.getEngine().loadContent(htmlContent.replace("@id", video.getChannelId()+""));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -95,7 +102,7 @@ public class SmallVideoView {
 
     public void initialize() {
         //Loading Animation
-        Timeline shimmerTimelineTitle = new Timeline(
+        shimmerTimelineTitle = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(titleLabel.opacityProperty(), 1)),
                 new KeyFrame(Duration.seconds(1), new KeyValue(titleLabel.opacityProperty(), 0))
         );
@@ -140,5 +147,10 @@ public class SmallVideoView {
         String url = HomeController.class.getResource("loading-small-video.html").toExternalForm();
         webView.getEngine().load(url);
         profileWebView.getEngine().load(url);
+    }
+
+    public void clicked(MouseEvent mouseEvent)
+    {
+        homeController.setVideo(video);
     }
 }
