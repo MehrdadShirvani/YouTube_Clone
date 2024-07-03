@@ -849,47 +849,42 @@ public class DatabaseManager {
     }
     public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
             String jpql = "SELECT v.videoId, v.name, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount " +
                     "FROM Video v " +
                     "JOIN VideoCategory vc ON v.videoId = vc.videoId " +
                     "LEFT JOIN VideoView vv ON v.videoId = vv.videoId " +
-                    "WHERE v.channelId != :channelId";
-            if (categories != null && !categories.isEmpty())
-            {
+                    "WHERE v.channelId != :channelId ";
+            if (categories != null && !categories.isEmpty()) {
                 jpql += "AND vc.categoryId IN :categoryIds ";
             }
 
             List<String> searchTermsList = Arrays.asList(searchTerms.split("[ +]"));
-            if (!searchTerms.isEmpty())
-            {
+            if (!searchTerms.isEmpty()) {
                 jpql += " AND (";
-                for (int i = 0; i < searchTermsList.size(); i++)
-                {
+                for (int i = 0; i < searchTermsList.size(); i++) {
                     jpql += "LOWER(v.name) LIKE LOWER(:term" + i + ")";
-                    if (i < searchTermsList.size() - 1)
-                    {
+                    if (i < searchTermsList.size() - 1) {
                         jpql += " OR ";
                     }
                 }
                 jpql += ") ";
             }
 
-
             jpql += " GROUP BY v.videoId, v.name " +
                     "ORDER BY categoryCount DESC, viewCount DESC";
-
 
             Query query = entityManager.createQuery(jpql);
             if (categories != null && !categories.isEmpty()) {
                 List<Integer> categoryIds = new ArrayList<>();
                 for (Category category : categories) {
                     categoryIds.add(category.getCategoryId());
-                    query.setParameter("categoryIds", categoryIds);
                 }
+                query.setParameter("categoryIds", categoryIds);
             }
             if (!searchTerms.isEmpty()) {
-
                 for (int i = 0; i < searchTermsList.size(); i++) {
                     query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
                 }
@@ -899,7 +894,6 @@ public class DatabaseManager {
             query.setMaxResults(perPage);
 
             List<Object[]> result = query.getResultList();
-            entityManager.close();
 
             List<Video> videos = new ArrayList<>();
             for (Object[] item : result) {
@@ -907,6 +901,10 @@ public class DatabaseManager {
             }
 
             return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 
