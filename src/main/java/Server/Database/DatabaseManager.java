@@ -5,6 +5,8 @@ import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class DatabaseManager {
     static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("mainPersistentUnit");
@@ -1107,13 +1109,25 @@ public class DatabaseManager {
     }
     public static List<Reaction> getVideoReactions(Long videoId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            entityManager.getTransaction().begin();
-            TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reaction r WHERE r.videoId = :videoId", Reaction.class);
-            query.setParameter("videoId",videoId);
-            return query.getResultList();
+        try {
+            CompletableFuture<List<Reaction>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    entityManager.getTransaction().begin();
+                    TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reaction r WHERE r.videoId = :videoId", Reaction.class);
+                    query.setParameter("videoId",videoId);
+                    return query.getResultList();
+                }catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
+
     }
     public static List<Comment> getVideoComments(Long videoId)
     {
