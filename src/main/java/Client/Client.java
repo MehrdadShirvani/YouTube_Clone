@@ -695,6 +695,7 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
+        //TODO -> get this back to normal
 //        requestBody.setChannelId(this.account.getChannelId());
         requestBody.setChannelId(1L);
         requestBody.setCategories(categories);
