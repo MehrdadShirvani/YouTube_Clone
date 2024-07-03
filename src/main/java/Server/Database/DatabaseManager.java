@@ -876,40 +876,38 @@ public class DatabaseManager {
             }
 
 
-        jpql += " GROUP BY v.videoId, v.name " +
-                "ORDER BY categoryCount DESC, viewCount DESC";
+            jpql += " GROUP BY v.videoId, v.name " +
+                    "ORDER BY categoryCount DESC, viewCount DESC";
 
 
-        Query query = entityManager.createQuery(jpql);
-        if(categories != null && !categories.isEmpty())
-        {
-            List<Integer> categoryIds = new ArrayList<>();
-            for(Category category : categories)
-            {
-                categoryIds.add(category.getCategoryId());
-                query.setParameter("categoryIds", categoryIds);
+            Query query = entityManager.createQuery(jpql);
+            if (categories != null && !categories.isEmpty()) {
+                List<Integer> categoryIds = new ArrayList<>();
+                for (Category category : categories) {
+                    categoryIds.add(category.getCategoryId());
+                    query.setParameter("categoryIds", categoryIds);
+                }
             }
-        }
-        if (!searchTerms.isEmpty()) {
+            if (!searchTerms.isEmpty()) {
 
-            for (int i = 0; i < searchTermsList.size(); i++) {
-                query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
+                for (int i = 0; i < searchTermsList.size(); i++) {
+                    query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
+                }
             }
+            query.setParameter("channelId", channelId);
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            List<Object[]> result = query.getResultList();
+            entityManager.close();
+
+            List<Video> videos = new ArrayList<>();
+            for (Object[] item : result) {
+                videos.add(getVideo(Long.parseLong(item[0].toString())));
+            }
+
+            return videos;
         }
-        query.setParameter("channelId", channelId);
-        query.setFirstResult((pageNumber - 1) * perPage);
-        query.setMaxResults(perPage);
-
-        List<Object[]> result = query.getResultList();
-        entityManager.close();
-
-        List<Video> videos = new ArrayList<>();
-        for(Object[] item : result)
-        {
-            videos.add(getVideo(Long.parseLong(item[0].toString())));
-        }
-
-        return videos;
     }
 
     //endregion
