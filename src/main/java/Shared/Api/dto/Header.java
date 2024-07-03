@@ -41,7 +41,7 @@ public class Header {
     }
 
     public boolean isValidSearchQuery() {
-        String endpointPattern = ".*/api/videos/search.*";
+        String endpointPattern = ".*/api/video/search.*";
         return this.endpoint.matches(endpointPattern);
     }
 
