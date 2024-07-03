@@ -130,6 +130,21 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
 
+    public void setVideoPage(Video video)
+    {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+            VideoViewController controller = fxmlLoader.getController();
+            controller.setVideo(video);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
+
     private void setHome() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
