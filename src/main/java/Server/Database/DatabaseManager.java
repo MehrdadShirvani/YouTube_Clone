@@ -84,6 +84,7 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
+
     public static List<Channel> getSubscriberChannels(Long channelId) {
         Channel channel = getChannel(channelId);
         if(channel == null)
@@ -119,7 +120,25 @@ public class DatabaseManager {
     }
     public static long getNumberOfViews(long videoId)
     {
-        return getVideoViewsOfVideo(videoId).size();
+        try {
+            CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+                try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+                    entityManager.getTransaction().begin();
+                    TypedQuery<VideoView> query = entityManager.createQuery("SELECT v FROM VideoView v WHERE v.videoId = :videoId", VideoView.class);
+                    query.setParameter("videoId", videoId);
+                    int result = query.getResultList().size();
+                    entityManager.getTransaction().commit();
+                    return result;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public static boolean isChannelNameUnique(String name)
