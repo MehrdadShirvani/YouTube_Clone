@@ -33,7 +33,6 @@ public class VideoViewController {
     public Label authorLabel;
     public Label subsLabel;
     public Button subsButton;
-    public Label likeCountLabel;
     @FXML
     BorderPane mainBorderPane;
     @FXML
@@ -85,7 +84,7 @@ public class VideoViewController {
         DecimalFormat formatter = new DecimalFormat("#,###");
         Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
         Long likeCount = YouTube.client.getLikesOfVideo(video.getVideoId());
-        likeCountLabel.setText(likeCount + "");
+        likeButton.setText(likeCount + "");
         viewsLabel.setText(formatter.format(numberOfViews) + " views . " + DateFormats.formatTimestamp(video.getCreatedDateTime()));
 
         String urlPhoto = HomeController.class.getResource("profile.html").toExternalForm();
