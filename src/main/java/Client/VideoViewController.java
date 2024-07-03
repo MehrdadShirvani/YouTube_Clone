@@ -1,8 +1,12 @@
 package Client;
 
+import Shared.Models.Video;
+import Shared.Utils.DateFormats;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -12,8 +16,24 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class VideoViewController {
+    public Label titleLabel;
+    public Label viewsLabel;
+    public ToggleButton likeButton;
+    public ToggleButton dislikeButton;
+    public Button shareButton;
+    public Label authorLabel;
+    public Label subsLabel;
+    public Button subsButton;
+    public Label likeCountLabel;
     @FXML
     BorderPane mainBorderPane;
     @FXML
@@ -57,9 +77,34 @@ public class VideoViewController {
         maskcommentProfileRec.setArcWidth(48);
         maskcommentProfileRec.setArcHeight(48);
         commentProfile.setClip(maskcommentProfileRec);
-
     }
+    public void setVideo(Video video)
+    {
+        titleLabel.setText(video.getName());
+        authorLabel.setText(video.getChannel().getName());
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
+        Long likeCount = YouTube.client.getLikesOfVideo(video.getVideoId());
+        likeCountLabel.setText(likeCount + "");
+        viewsLabel.setText(formatter.format(numberOfViews) + " views . " + DateFormats.formatTimestamp(video.getCreatedDateTime()));
 
+        String urlPhoto = HomeController.class.getResource("profile.html").toExternalForm();
+        try {
+            Path path = new File("src/main/resources/Client/profile.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            authorProfile.getEngine().loadContent(htmlContent.replace("@id", video.getChannelId()+""));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+//        try {
+//            Path path = new File("src/main/resources/Client/profile.html").toPath();
+//            String htmlContent = new String(Files.readAllBytes(path));
+//            commentProfile.getEngine().loadContent(htmlContent.replace("@id", YouTube.client.getAccount().getChannelId() + ""));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+    }
     public void hi(ActionEvent event) {
         System.out.println(videoWebView.getWidth());
     }
