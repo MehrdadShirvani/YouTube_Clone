@@ -74,33 +74,24 @@ public class DatabaseManager {
             return null;
         }
 
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<Channel>> future = CompletableFuture.supplyAsync(() -> {
-                EntityManager entityManager = null;
-                try {
-                    entityManager = entityManagerFactory.createEntityManager();
-                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-                    CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
-                    Root<Subscription> subscriptionRoot = cq.from(Subscription.class);
-                    Join<Subscription, Channel> subscriberChannelJoin = subscriptionRoot.join("subscriberChannelId", JoinType.INNER);
+            entityManager = entityManagerFactory.createEntityManager();
 
-                    cq.select(subscriberChannelJoin)
-                            .where(cb.equal(subscriptionRoot.get("subscriberChannelId"), channelId));
-                    TypedQuery<Channel> query = entityManager.createQuery(cq);
-                    return query.getResultList();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    if (entityManager != null) {
-                        entityManager.close();
-                    }
-                }
-            }, executorService);
+            StringBuilder jpql = new StringBuilder("SELECT c ")
+                    .append("FROM Channel c ")
+                    .append("JOIN Subscription s ON c.channelId = s.subscribedChannelId ")
+                    .append("WHERE s.subscriberChannelId = :channelId");
 
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+            TypedQuery<Channel> query = entityManager.createQuery(jpql.toString(), Channel.class);
+            query.setParameter("channelId", channelId);
+
+            List<Channel> results = query.getResultList();
+            return results;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 
