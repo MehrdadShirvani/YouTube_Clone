@@ -1027,18 +1027,28 @@ public class DatabaseManager {
         }
     }
     public static List<Category> getCategoriesOfVideo(Long videoId) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
-            Root<Category> categoryRoot = cq.from(Category.class);
-            Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
 
-            cq.select(categoryRoot)
-                    .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+        try {
+            CompletableFuture<List<Category>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+                    CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
+                    Root<Category> categoryRoot = cq.from(Category.class);
+                    Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
 
-            TypedQuery<Category> query = entityManager.createQuery(cq);
-            return query.getResultList();
+                    cq.select(categoryRoot)
+                            .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+
+                    TypedQuery<Category> query = entityManager.createQuery(cq);
+                    return query.getResultList();
+                }
+            });
+
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
     }
     public static List<VideoCategory> getVideoCategories(Long videoId) {
