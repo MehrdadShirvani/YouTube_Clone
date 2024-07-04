@@ -165,7 +165,7 @@ public class Header {
     }
 
     public Long parseVideoLikedChannelId() {
-        String regex = "^/api/video/is-liked\\?channelId=\\d+$";
+        String regex = "^/api/video/is-liked\\?channelId=(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
 
@@ -184,7 +184,7 @@ public class Header {
 
 
     public Long parseCommentLikedChannelId() {
-        String regex = "^/api/comment/is-liked\\?channelId=\\d+$";
+        String regex = "^/api/comment/is-liked\\?channelId=(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
 
