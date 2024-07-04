@@ -39,11 +39,10 @@ public class VideoViewController {
     public Label subsLabel;
     public Button subsButton;
     public Label desLabel;
-    public FlowPane homeVideosFlowPane;
+    public FlowPane sideBarFlow;
+    public Label commentsLabel;
     @FXML
     BorderPane mainBorderPane;
-//    @FXML
-//    VBox rightVBox;
     @FXML
     WebView videoWebView;
     @FXML
