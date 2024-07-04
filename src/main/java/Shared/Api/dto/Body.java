@@ -46,6 +46,7 @@ public class Body {
     private List<Video> searchVideos;
     private List<Video> watchHistoryVideos;
     private List<Video> playlistVideos;
+    private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
     private HashMap<Boolean , Short> isVideoLiked;
     private HashMap<Boolean , Short> isCommentLiked;
@@ -430,5 +431,13 @@ public class Body {
 
     public void setPlaylistVideos(List<Video> playlistVideos) {
         this.playlistVideos = playlistVideos;
+    }
+
+    public List<Channel> getPlaylistChannels() {
+        return playlistChannels;
+    }
+
+    public void setPlaylistChannels(List<Channel> playlistChannels) {
+        this.playlistChannels = playlistChannels;
     }
 }
