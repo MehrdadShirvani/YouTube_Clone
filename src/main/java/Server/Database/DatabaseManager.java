@@ -240,6 +240,14 @@ public class DatabaseManager {
     //region Reactions
     public static Reaction addReaction(Reaction reaction)
     {
+        if(reaction == null)
+        {
+            return  null;
+        }
+        if(getReaction(reaction.getChannelId(), reaction.getVideoId()) != null)
+        {
+            return editReaction(reaction);
+        }
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             EntityTransaction transaction = entityManager.getTransaction();
