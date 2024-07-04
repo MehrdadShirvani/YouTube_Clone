@@ -139,7 +139,7 @@ public class HomeController {
         try {
             videoPage = fxmlLoader.load();
             VideoViewController controller = fxmlLoader.getController();
-            controller.setVideo(video);
+            controller.setVideo(video, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
