@@ -61,6 +61,7 @@ public class VideoViewController {
     private boolean isChannelSubscribed = false;
     private List<Comment> commentList;
     private List<Video> recommendedVideos;
+    private Reaction currentReaction;
 
     public void initialize() {
         //Pref of main border pain: 1084 * 664
@@ -88,18 +89,17 @@ public class VideoViewController {
         maskcommentProfileRec.setArcHeight(48);
         commentProfile.setClip(maskcommentProfileRec);
     }
+    Video video;
     public void setVideo(Video video, HomeController homeController)
     {
+        this.video = video;
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
         Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
-        Long likeCount = YouTube.client.getLikesOfVideo(video.getVideoId());
-        likeButton.setText(likeCount + "");
+
         viewsLabel.setText(formatter.format(numberOfViews) + " views . " + DateFormats.formatTimestamp(video.getCreatedDateTime()));
         desLabel.setText(video.getDescription());
-
-
 
         try {
             Path path = new File("src/main/resources/Client/profile.html").toPath();
@@ -108,8 +108,7 @@ public class VideoViewController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        subsLabel.setText(YouTube.client.getChannelSubscribers(video.getChannelId()).size() + " subscribers ");
-
+        subsLabel.setText(YouTube.client.getChannelSubscribers(video.getChannelId()).size() + " subscribers ");
 
         try {
             Path path = new File("src/main/resources/Client/profile.html").toPath();
@@ -131,19 +130,16 @@ public class VideoViewController {
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-
-//                isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
-                try {
-//                    isVideoLiked.get(false);
-                }
-                catch (Exception ex)
-                {
-                    int a = 1;
-                }
-                commentList = YouTube.client.getCommentsOfVideo(video.getVideoId());
                 //TODO -> get VideoCategories
-                recommendedVideos = YouTube.client.searchVideo(null, "", 10,1);
                 Platform.runLater(()->{
+                    setUpComments();
+                    //TODO addVideoView
+
+                    recommendedVideos = YouTube.client.searchVideo(null, "", 10,1);
+                    currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId() ,video.getVideoId());
+                    isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
+                    setVideoLikedState();
+
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -162,18 +158,62 @@ public class VideoViewController {
                             }
                             SmallVideoView controller = fxmlLoader.getController();
                             controller.setVideo(recVideo, homeController);
-                            homeVideosFlowPane.getChildren().add(smallVideo);
+                            sideBarFlow.getChildren().add(smallVideo);
                         }
                     }
+                    isChannelSubscribed = YouTube.client.isSubscribedToChannel(video.getChannelId());
+                    if(isChannelSubscribed)
+                    {
+                        subsButton.setText("Unsubscribe");
+                    }
+                    else
+                    {
+                        subsButton.setText("Subscribe");
+                    }
+                    if(Objects.equals(video.getChannelId(), YouTube.client.getAccount().getChannelId()))
+                    {
+                        subsButton.setVisible(false);
+                    }
                 });
-//                isChannelSubscribed = YouTube.client.isSubscribedToChannel(video.getChannelId());
+
+
                 return null;
             }
+
+
         };
 
         Thread thread = new Thread(loaderView);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private void setUpComments() {
+        commentList = YouTube.client.getCommentsOfVideo(video.getVideoId());
+        commentsLabel.setText(commentList.size() + " comments");
+
+        //Empty currentCommentList
+        for(Comment comment : commentList)
+        {
+            //TODO: EHSAN -> Add comment view
+            System.out.printf(comment.getText());
+        //Comment Replies -> use
+            //YouTube.client.getRepliesOfComment(comment.getCommentId());
+
+        }
+    }
+
+
+    private void setVideoLikedState() {
+        try {
+//            Lbl.setText(isVideoLiked.get(true) == 1?"liked":"disliked");
+        }
+        catch (Exception ex)
+        {
+//            Lbl.setText("no reaction");
+        }
+        Long likeCount = YouTube.client.getLikesOfVideo(video.getVideoId());
+        likeButton.setText(likeCount + "");
     }
     public void hi(ActionEvent event) {
         System.out.println(videoWebView.getWidth());
@@ -181,5 +221,92 @@ public class VideoViewController {
 
     public void commentChanged(KeyEvent keyEvent) {
         commentButton.setDisable(commentTextField.getText().isBlank());
+    }
+
+    public void likeButtonAction(ActionEvent actionEvent) {
+        try
+        {
+            if(isVideoLiked.get(true) == 1)
+            {
+                isVideoLiked.remove(true);
+                YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
+                currentReaction = null;
+            }
+            else {
+                isVideoLiked.replace(true, (short) 1);
+                currentReaction.setReactionTypeId((short) 1);
+                YouTube.client.sendVideoLikeAddRequest(currentReaction);
+            }
+        }
+        catch (Exception exception)
+        {
+            isVideoLiked.put(true, (short) 1);
+            currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short)1);
+            YouTube.client.sendVideoLikeAddRequest(currentReaction);
+            currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+        }
+        setVideoLikedState();
+    }
+
+    public void dislikeButtonAction(ActionEvent actionEvent) {
+        try
+        {
+            if(isVideoLiked.get(true) == 1)
+            {
+                isVideoLiked.replace(true, (short) -1);
+                currentReaction.setReactionTypeId((short) -1);
+                YouTube.client.sendVideoLikeAddRequest(currentReaction);
+            }
+            else {
+                isVideoLiked.remove(true);
+                YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
+                currentReaction = null;
+            }
+        }
+        catch (Exception exception)
+        {
+            isVideoLiked.put(true, (short) -1);
+            currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short)-1);
+            YouTube.client.sendVideoLikeAddRequest(currentReaction);
+            currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+        }
+        setVideoLikedState();
+    }
+
+    public void subscribeToggleAction(ActionEvent actionEvent)
+    {
+        if(isChannelSubscribed)
+        {
+            subsButton.setText("Subscribe");
+            YouTube.client.sendUnsubscribeRequest(YouTube.client.getAccount().getChannelId(), video.getChannelId());
+//            YouTube.client.sendSubscribeRequest(,);
+        }
+        else
+        {
+            subsButton.setText("Unsubscribe");
+            YouTube.client.sendSubscribeRequest(YouTube.client.getAccount().getChannelId(), video.getChannelId());
+//            YouTube.client.sendUnsubscribeRequest();
+        }
+        isChannelSubscribed = !isChannelSubscribed;
+        subsLabel.setText(YouTube.client.getChannelSubscribers(video.getChannelId()).size() + " subscribers ");
+
+    }
+
+    public void newCommentAction(ActionEvent actionEvent)
+    {
+        if(commentTextField.getText().isBlank())
+        {
+            //TODO show alert for leaving the comment field empty
+            return;
+        }
+        YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), video.getVideoId(), YouTube.client.getAccount().getChannelId(), null));
+        commentTextField.setText("");
+
+        setUpComments();
+    }
+
+    public void cancelCommentAction(ActionEvent actionEvent)
+    {
+        commentTextField.setText("");
     }
 }
