@@ -685,11 +685,11 @@ public class ClientHandler implements Runnable {
                 sendResponse(response);
 
             } else {
-                //TODO make editReaction return Reaction
-                DatabaseManager.editReaction(reaction);
+                Reaction editedReaction = DatabaseManager.editReaction(reaction);
                 body = new Body();
                 body.setSuccess(true);
                 body.setMessage("200 Ok");
+                body.setReaction(editedReaction);
 
                 response = new Response(header , body);
                 sendResponse(response);
