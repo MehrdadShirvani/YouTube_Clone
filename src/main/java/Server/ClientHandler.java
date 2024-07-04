@@ -1704,7 +1704,7 @@ public class ClientHandler implements Runnable {
 
         if (playlistId == null) {
             responseBody.setSuccess(false);
-            responseBody.setMessage("The playlist object that sent is null !");
+            responseBody.setMessage("The playlistId that sent is null !");
 
             response = new Response(requestHeader , responseBody);
             sendResponse(response);
@@ -1716,6 +1716,32 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setPlaylistVideos(playlistVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetChannelsOfPlaylist(Request request , Long playlistId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Channel> playlistChannels = DatabaseManager.getChannelsOfPlaylist(playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylistChannels(playlistChannels);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
