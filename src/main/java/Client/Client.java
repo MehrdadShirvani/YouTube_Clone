@@ -1133,6 +1133,8 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
+        requestBody.setComment(comment);
+
         Request request = new Request(requestHeader , requestBody);
 
         sendRequest(request);
@@ -1153,6 +1155,31 @@ public class Client {
          String method = "POST";
          Header requestHeader = new Header(method , endpoint);
          Body requestBody = new Body();
+
+         requestBody.setPlaylist(playlist);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getPlaylist();
+         }
+
+         return null;
+    }
+
+
+    public Playlist editPlaylist(Playlist playlist) {
+         String endpoint = "/api/playlist/edit";
+         String method = "PUT";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setPlaylist(playlist);
 
          Request request = new Request(requestHeader , requestBody);
 
