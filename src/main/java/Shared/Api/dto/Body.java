@@ -62,6 +62,7 @@ public class Body {
     private VideoPlaylist videoPlaylist;
     private ChannelPlaylist channelPlaylist;
     private Integer categoryId;
+    private String channelName;
 
 
 
@@ -475,5 +476,13 @@ public class Body {
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 }

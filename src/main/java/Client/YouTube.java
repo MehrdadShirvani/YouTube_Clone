@@ -53,6 +53,7 @@ public class YouTube extends Application {
 
     public static void main(String[] args) {
         client = new Client();
+        client.sendLoginRequest("ashergold5@chron.com","David-Morgan");
         launch();
     }
 }

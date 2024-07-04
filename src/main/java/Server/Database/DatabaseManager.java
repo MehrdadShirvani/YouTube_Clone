@@ -7,9 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class DatabaseManager {
     static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("mainPersistentUnit");
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(10); // Custom thread pool
     //region Channels
     public static Channel addChannel(Channel channel) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
@@ -64,62 +68,60 @@ public class DatabaseManager {
     }
 
 
-    public static List<Channel> getSubscribedChannels(Long channelId)
-    {
+    public static List<Channel> getSubscribedChannels(Long channelId) {
         Channel channel = getChannel(channelId);
-        if(channel == null)
-        {
+        if (channel == null) {
             return null;
         }
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
-            Root<Channel> channelRoot = cq.from(Channel.class);
-            Join<Channel, Subscription> subscriptions = channelRoot.join("subscriptions", JoinType.INNER);
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
-            cq.select(channelRoot)
-                    .where(cb.equal(subscriptions.get("SubscriberChannelId"), channelId));
+            StringBuilder jpql = new StringBuilder("SELECT c ")
+                    .append("FROM Channel c ")
+                    .append("JOIN Subscription s ON c.channelId = s.subscribedChannelId ")
+                    .append("WHERE s.subscriberChannelId = :channelId");
 
-            TypedQuery<Channel> query = entityManager.createQuery(cq);
-            return query.getResultList();
+            TypedQuery<Channel> query = entityManager.createQuery(jpql.toString(), Channel.class);
+            query.setParameter("channelId", channelId);
+
+            List<Channel> results = query.getResultList();
+            return results;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
-
-
-
     }
 
     public static List<Channel> getSubscriberChannels(Long channelId) {
         Channel channel = getChannel(channelId);
-        if(channel == null)
-        {;
+        if (channel == null) {
             return null;
         }
 
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<Channel>> future = CompletableFuture.supplyAsync(() -> {
-                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-                {
-                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-                    CriteriaQuery<Channel> cq = cb.createQuery(Channel.class).distinct(true);
-                    Root<Channel> channelRoot = cq.from(Channel.class);
-                    Join<Channel, Subscription> subscriptions = channelRoot.join("subscribedChannelId", JoinType.INNER);
+            entityManager = entityManagerFactory.createEntityManager();
 
-                    cq.select(channelRoot)
-                            .where(cb.equal(subscriptions.get("channelId"), channelId));
+            StringBuilder jpql = new StringBuilder("SELECT c ")
+                    .append("FROM Channel c ")
+                    .append("JOIN Subscription s ON c.channelId = s.subscriberChannelId ")
+                    .append("WHERE s.subscribedChannelId = :channelId");
 
-                    TypedQuery<Channel> query = entityManager.createQuery(cq);
-                    return query.getResultList();
-                }
-            });
+            TypedQuery<Channel> query = entityManager.createQuery(jpql.toString(), Channel.class);
+            query.setParameter("channelId", channelId);
 
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+            List<Channel> results = query.getResultList();
+            return results;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
+
     public static boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)
     {
         List<Channel> list = getSubscribedChannels(subscriberChannelId);
@@ -132,21 +134,24 @@ public class DatabaseManager {
         }
         return false;
     }
-    public static long getNumberOfViews(long videoId)
-    {
+
+    public static long getNumberOfViews(long videoId) {
         try {
-            CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
-                try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-                    entityManager.getTransaction().begin();
-                    TypedQuery<VideoView> query = entityManager.createQuery("SELECT v FROM VideoView v WHERE v.videoId = :videoId", VideoView.class);
+            CompletableFuture<Long> future = CompletableFuture.supplyAsync(() -> {
+                EntityManager entityManager = null;
+                try {
+                    entityManager = entityManagerFactory.createEntityManager();
+                    TypedQuery<Long> query = entityManager.createQuery("SELECT COUNT(v) FROM VideoView v WHERE v.videoId = :videoId", Long.class);
                     query.setParameter("videoId", videoId);
-                    int result = query.getResultList().size();
-                    entityManager.getTransaction().commit();
-                    return result;
+                    return query.getSingleResult();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                } finally {
+                    if (entityManager != null) {
+                        entityManager.close();
+                    }
                 }
-            });
+            }, executorService);
 
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -191,23 +196,20 @@ public class DatabaseManager {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
-            TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
-            query.setParameter("SubscriberChannelId", subscriberChannelId);
-            query.setParameter("SubscribedChannelId", subscribedChannelId);
-            Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
-
             try
             {
-                query.getSingleResult();
+                TypedQuery<Subscription> query = entityManager.createQuery(
+                        "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
+                query.setParameter("subscriberChannelId", subscriberChannelId);
+                query.setParameter("subscribedChannelId", subscribedChannelId);
+                return query.getSingleResult();
             }
             catch (NoResultException e){
+                Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
                 entityManager.persist(subscription);
                 transaction.commit();
+                return subscription;
             }
-
-            entityManager.close();
-            return subscription;
         }
     }
 
@@ -219,9 +221,9 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
-            query.setParameter("SubscriberChannelId", subscriberChannelId);
-            query.setParameter("SubscribedChannelId", subscribedChannelId);
+                    "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
+            query.setParameter("subscriberChannelId", subscriberChannelId);
+            query.setParameter("subscribedChannelId", subscribedChannelId);
 
             try
             {
@@ -238,6 +240,14 @@ public class DatabaseManager {
     //region Reactions
     public static Reaction addReaction(Reaction reaction)
     {
+        if(reaction == null)
+        {
+            return  null;
+        }
+        if(getReaction(reaction.getChannelId(), reaction.getVideoId()) != null)
+        {
+            return editReaction(reaction);
+        }
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             EntityTransaction transaction = entityManager.getTransaction();
@@ -859,58 +869,56 @@ public class DatabaseManager {
             return categories;
         }
     }
-    public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber)
-    {
+    public static List<Video> searchVideo(long channelId, List<Category> categories, String searchTerms, int perPage, int pageNumber) {
         EntityManager entityManager = null;
         try {
             entityManager = entityManagerFactory.createEntityManager();
-            String jpql = "SELECT v.videoId, v.name, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount " +
-                    "FROM Video v " +
-                    "JOIN VideoCategory vc ON v.videoId = vc.videoId " +
-                    "LEFT JOIN VideoView vv ON v.videoId = vv.videoId " +
-                    "WHERE v.channelId != :channelId ";
+
+            StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount ")
+                    .append("FROM Video v ")
+                    .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId != :channelId ");
+
             if (categories != null && !categories.isEmpty()) {
-                jpql += "AND vc.categoryId IN :categoryIds ";
+                jpql.append("AND vc.categoryId IN :categoryIds ");
             }
 
-            List<String> searchTermsList = Arrays.asList(searchTerms.split("[ +]"));
+            List<String> searchTermsList = Arrays.asList(searchTerms.split("\\s+"));
             if (!searchTerms.isEmpty()) {
-                jpql += " AND (";
-                for (int i = 0; i < searchTermsList.size(); i++) {
-                    jpql += "LOWER(v.name) LIKE LOWER(:term" + i + ")";
-                    if (i < searchTermsList.size() - 1) {
-                        jpql += " OR ";
-                    }
-                }
-                jpql += ") ";
+                jpql.append("AND (");
+                jpql.append(searchTermsList.stream()
+                        .map(term -> "LOWER(v.name) LIKE LOWER(:term" + searchTermsList.indexOf(term) + ")")
+                        .collect(Collectors.joining(" OR ")));
+                jpql.append(") ");
             }
 
-            jpql += " GROUP BY v.videoId, v.name " +
-                    "ORDER BY categoryCount DESC, viewCount DESC";
+            jpql.append("GROUP BY v.videoId, v.name ")
+                    .append("ORDER BY categoryCount DESC, viewCount DESC");
 
-            Query query = entityManager.createQuery(jpql);
+            TypedQuery<Object[]> query = entityManager.createQuery(jpql.toString(), Object[].class);
+            query.setParameter("channelId", channelId);
+
             if (categories != null && !categories.isEmpty()) {
-                List<Integer> categoryIds = new ArrayList<>();
-                for (Category category : categories) {
-                    categoryIds.add(category.getCategoryId());
-                }
+                List<Integer> categoryIds = categories.stream()
+                        .map(Category::getCategoryId)
+                        .collect(Collectors.toList());
                 query.setParameter("categoryIds", categoryIds);
             }
+
             if (!searchTerms.isEmpty()) {
                 for (int i = 0; i < searchTermsList.size(); i++) {
                     query.setParameter("term" + i, "%" + searchTermsList.get(i) + "%");
                 }
             }
-            query.setParameter("channelId", channelId);
+
             query.setFirstResult((pageNumber - 1) * perPage);
             query.setMaxResults(perPage);
 
-            List<Object[]> result = query.getResultList();
-
-            List<Video> videos = new ArrayList<>();
-            for (Object[] item : result) {
-                videos.add(getVideo(Long.parseLong(item[0].toString())));
-            }
+            List<Object[]> results = query.getResultList();
+            List<Video> videos = results.stream()
+                    .map(result -> (Video) result[0])
+                    .collect(Collectors.toList());
 
             return videos;
         } finally {
@@ -1019,18 +1027,28 @@ public class DatabaseManager {
         }
     }
     public static List<Category> getCategoriesOfVideo(Long videoId) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
-            Root<Category> categoryRoot = cq.from(Category.class);
-            Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
 
-            cq.select(categoryRoot)
-                    .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+        try {
+            CompletableFuture<List<Category>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+                    CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
+                    Root<Category> categoryRoot = cq.from(Category.class);
+                    Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
 
-            TypedQuery<Category> query = entityManager.createQuery(cq);
-            return query.getResultList();
+                    cq.select(categoryRoot)
+                            .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+
+                    TypedQuery<Category> query = entityManager.createQuery(cq);
+                    return query.getResultList();
+                }
+            });
+
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
     }
     public static List<VideoCategory> getVideoCategories(Long videoId) {
@@ -1147,7 +1165,7 @@ public class DatabaseManager {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND c.repliedCommentId <= 0", Comment.class);
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND (c.repliedCommentId = NULL)", Comment.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }

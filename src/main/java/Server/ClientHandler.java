@@ -165,6 +165,17 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("isUnique")) {
             handleIsUniqueRequests(request);
 
+        } else if (endpoint.equals("categories")) {
+            handleGetCategories(request);
+
+        } else if (endpoint.equals("videoCategory")) {
+            if (header.endpointParser()[3].equals("delete")) {
+                handleDeleteVideoCategory(request);
+
+            }
+        } else if (endpoint.equals("playlist")) {
+            handlePlaylistRequests(request);
+
         } else {
             handleBadRequest(header);
         }
@@ -199,16 +210,24 @@ public class ClientHandler implements Runnable {
             } else if (endpoint.equals("subscriptions")) {
                 handleGetSubscriptionsRequest(request);
 
+            } else if (header.endpointParser()[4].equals("most-views-categories")) {
+                Long channelId = header.extractIds().getFirst();
+                handleGetMostViewedCategoriesOfUser(request , channelId);
+
+            } else if (header.endpointParser()[4].equals("watch-history")) {
+                Long channelId = header.extractIds().getFirst();
+                handleGetWatchHistory(request , channelId);
+
             } else if (header.isValidAccountInfoQuery()){
                 Long accountId = header.parseAccountId();
-                if (!accountId.equals(null)) {
+                if (accountId != null) {
                     handleAccountInfoRequests(request , accountId);
                 } else {
                     handleBadRequest(header);
                 }
             } else if (header.isValidSubscribedToChannelQuery()) {
                 Long channelId = header.parseIsSubscribedChannelId();
-                if (!channelId.equals(null)) {
+                if (channelId != null) {
                     handleIsSubscribedToChannelRequest(request , channelId);
                 } else {
                     handleBadRequest(header);
@@ -275,6 +294,17 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("dislikes")) {
             handleGetDislikesOfVideo(request);
 
+        } else if (header.endpointParser()[4].equals("categories")) {
+            Long videoId = header.extractIds().getFirst();
+            handleGetCategoriesOfVideo(request , videoId);
+
+        } else if (endpoint.equals("add")) {
+            handleAddVideo(request);
+
+        } else if (header.endpointParser()[4].equals("delete")) {
+            Long videoId = header.extractIds().getFirst();
+            handleDeleteVideo(request , videoId);
+
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
@@ -308,6 +338,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("dislikes")) {
             handleGetDislikesOfComment(request);
 
+        } else if (endpoint.equals("edit")) {
+            handleEditComment(request);
+
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
             handleIsCommentLikedRequest(request , channelId);
@@ -329,11 +362,65 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("email")) {
             handleCheckEmailUnique(request);
 
+        } else if (endpoint.equals("channelName")) {
+            handleIsChannelNameUnique(request);
         } else {
             handleBadRequest(header);
         }
     }
 
+
+    public void handlePlaylistRequests(Request request) {
+        Header header = request.getHeader();
+        String endpoint = header.endpointParser()[3];
+        String method = header.getMethod();
+
+        if (method.equals("POST")) {
+            if (endpoint.equals("add")) {
+                handleAddPlaylist(request);
+
+            } else if (header.endpointParser()[4].equals("video")) {
+                if (header.endpointParser()[5].equals("add")) {
+                    Long playlistId = header.extractIds().getFirst();
+                    handleAddVideoPlaylist(request , playlistId);
+
+                }
+            } else if (header.endpointParser()[4].equals("channel")) {
+                if (header.endpointParser()[5].equals("add")) {
+                    Long playlistId = header.extractIds().getFirst();
+                    handleAddChannelPlaylist(request , playlistId);
+
+                }
+            }
+        } else if (method.equals("PUT")) {
+            if (endpoint.equals("edit")) {
+                handleEditPlaylist(request);
+
+            }
+        } else if (method.equals("GET")) {
+            if (header.endpointParser()[4].equals("videos")) {
+                Long playlistId = header.extractIds().getFirst();
+                handleGetVideosOfPlaylist(request , playlistId);
+
+            } else if (header.endpointParser()[4].equals("channels")) {
+                Long playlistId = header.extractIds().getFirst();
+                handleGetChannelsOfPlaylist(request , playlistId);
+
+            }
+        } else if (method.equals("DELETE")) {
+            if (endpoint.equals("video")) {
+                if (header.endpointParser()[4].equals("delete")) {
+                    handleDeleteVideoPlaylist(request);
+
+                }
+            } else if (endpoint.equals("channel")) {
+                if (header.endpointParser()[4].equals("delete")) {
+                    handleDeleteChannelPlaylist(request);
+
+                }
+            }
+        }
+    }
 
     public void sendResponse(Response response) {
         try {
@@ -1532,6 +1619,325 @@ public class ClientHandler implements Runnable {
         }
 
         DatabaseManager.deleteVideoCategory(videoId , categoryId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetWatchHistory(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Video> watchHistoryVideos = DatabaseManager.getWatchHistory(channelId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setWatchHistoryVideos(watchHistoryVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetCategories(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        List<Category> categories = DatabaseManager.getCategories();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCategories(categories);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleIsChannelNameUnique(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String channelName = requestBody.getChannelName();
+
+        Body responseBody = new Body();
+
+        if (channelName == null | Objects.equals(channelName, "")) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isChannelNameUnique = DatabaseManager.isChannelNameUnique(channelName);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setChannelNameUnique(isChannelNameUnique);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleEditComment(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Comment comment = requestBody.getComment();
+
+        Body responseBody = new Body();
+
+        if (comment == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The comment object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Comment editedComment = DatabaseManager.editComment(comment);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setComment(editedComment);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleAddPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Playlist playlist = requestBody.getPlaylist();
+
+        Body responseBody = new Body();
+
+        if (playlist == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlist object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Playlist addedPlaylist = DatabaseManager.addPlaylist(playlist);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylist(addedPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleEditPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Playlist playlist = requestBody.getPlaylist();
+
+        Body responseBody = new Body();
+
+        if (playlist == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlist object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Playlist editedPlaylist = DatabaseManager.editPlaylist(playlist);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylist(editedPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetVideosOfPlaylist(Request request , Long playlistId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Video> playlistVideos = DatabaseManager.getVideosOfPlaylist(playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylistVideos(playlistVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetChannelsOfPlaylist(Request request , Long playlistId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Channel> playlistChannels = DatabaseManager.getChannelsOfPlaylist(playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylistChannels(playlistChannels);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleAddVideoPlaylist(Request request , Long playlistId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null | playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId or videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        VideoPlaylist videoPlaylist = DatabaseManager.addVideoPlaylist(videoId , playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVideoPlaylist(videoPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleDeleteVideoPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+        Long playlistId = requestBody.getPlaylistId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null | playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId or videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        DatabaseManager.deleteVideoPlaylist(videoId , playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleAddChannelPlaylist(Request request , Long playlistId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+
+        Body responseBody = new Body();
+
+        if (channelId == null | playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId or channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        ChannelPlaylist channelPlaylist = DatabaseManager.addChannelPlaylist(channelId , playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setChannelPlaylist(channelPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleDeleteChannelPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        Long playlistId = requestBody.getPlaylistId();
+
+        Body responseBody = new Body();
+
+        if (channelId == null | playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId or channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        DatabaseManager.deleteChannelPlaylist(channelId , playlistId);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");

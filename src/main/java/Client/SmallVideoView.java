@@ -50,8 +50,8 @@ public class SmallVideoView {
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
-        Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
-        viewsLabel.setText(formatter.format(numberOfViews) + "views . " + DateFormats.toRelativeTime(video.getCreatedDateTime()));
+
+
         titleLabel.getStyleClass().clear();
         authorLabel.getStyleClass().clear();
         viewsLabel.getStyleClass().clear();
@@ -71,7 +71,6 @@ public class SmallVideoView {
 
                 Platform.runLater(() -> {
 
-                    String urlThumbnail = HomeController.class.getResource("small-video-thumbnail.html").toExternalForm();
 
                     try {
                         Path path = new File("src/main/resources/Client/small-video-thumbnail.html").toPath();
@@ -80,7 +79,6 @@ public class SmallVideoView {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    String urlPhoto = HomeController.class.getResource("profile.html").toExternalForm();
                     try {
                         Path path = new File("src/main/resources/Client/profile.html").toPath();
                         String htmlContent = new String(Files.readAllBytes(path));
@@ -88,6 +86,10 @@ public class SmallVideoView {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                    Long numberOfViews = YouTube.client.getViewsOfVideo(video.getVideoId());
+                    Platform.runLater(() -> {
+                        viewsLabel.setText(formatter.format(numberOfViews) + " views . " + DateFormats.toRelativeTime(video.getCreatedDateTime()));
+                    });
                 });
 
                 try {

@@ -101,12 +101,12 @@ public class Comment {
     {
 
     }
-    public Comment(String text, Long videoId,  Long channelId, Timestamp createdDateTime, Long repliedCommentId)
+    public Comment(String text, Long videoId,  Long channelId, Long repliedCommentId)
     {
         this.text = text;
         this.videoId = videoId;
         this.channelId = channelId;
-        this.createdDateTime = createdDateTime;
+        this.createdDateTime = new Timestamp(System.currentTimeMillis());
         this.repliedCommentId = repliedCommentId;
     }
 }
