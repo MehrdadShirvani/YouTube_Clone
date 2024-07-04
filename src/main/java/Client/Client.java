@@ -1106,6 +1106,26 @@ public class Client {
         return null;
     }
 
+    public Boolean isChannelNameUnique() {
+        String endpoint = "/api/isUnique/channelName";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isChannelNameUnique();
+        }
+
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
