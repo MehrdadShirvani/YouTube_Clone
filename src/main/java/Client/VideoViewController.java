@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Comment;
+import Shared.Models.Reaction;
 import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.application.Platform;
@@ -14,21 +15,16 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
-import javax.swing.plaf.synth.SynthTableUI;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
