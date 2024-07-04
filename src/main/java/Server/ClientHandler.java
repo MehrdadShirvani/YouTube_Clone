@@ -1431,6 +1431,32 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetMostViewedCategoriesOfUser(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Category> categories = DatabaseManager.getMostViewedCategoriesOfUsers(channelId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCategories(categories);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
