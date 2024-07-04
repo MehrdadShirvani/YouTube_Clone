@@ -1,45 +1,49 @@
 package Client;
 
-import Shared.Models.*;
+import Shared.Models.Comment;
+import Shared.Models.Reaction;
+import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.application.Platform;
+<<<<<<< HEAD
+import javafx.concurrent.Worker;
+=======
 import javafx.concurrent.Task;
+>>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+<<<<<<< HEAD
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+=======
 import javafx.scene.layout.FlowPane;
+>>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import javafx.scene.shape.Rectangle;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+<<<<<<< HEAD
+import javafx.scene.control.ScrollPane;
+import java.awt.*;
+=======
 
+>>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.URI;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class VideoViewController {
     public Label titleLabel;
@@ -53,33 +57,36 @@ public class VideoViewController {
     public Label desLabel;
     public FlowPane sideBarFlow;
     public Label commentsLabel;
-    public Button downloadButton;
     @FXML
     BorderPane mainBorderPane;
     @FXML
-    public WebView videoWebView;
+    WebView videoWebView;
     @FXML
-    public WebView authorProfile;
+    WebView authorProfile;
     @FXML
-    public WebView commentProfile;
+    WebView commentProfile;
     @FXML
     TextField commentTextField;
     @FXML
     Button commentButton;
+    @FXML
+    ScrollPane leftScrollPane;
     private Rectangle maskVideoRec;
     private Rectangle maskProfileRec;
     private Rectangle maskcommentProfileRec;
+<<<<<<< HEAD
+    private WebEngine engine;
+=======
     private
     HashMap<Boolean,Short> isVideoLiked;
     private boolean isChannelSubscribed = false;
     private List<Comment> commentList;
     private List<Video> recommendedVideos;
     private Reaction currentReaction;
-
-    private ExecutorService executorService = Executors.newCachedThreadPool();;
+>>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 
     public void initialize() {
-        //Pref of main border pain: 1084 * 664
+        //Pref of main border pane: 1084 * 664
         //bindings
 //        rightVBox.prefWidthProperty().bind(mainBorderPane.widthProperty().divide(4));
         videoWebView.prefHeightProperty().bind(videoWebView.widthProperty().multiply(0.562));
@@ -88,6 +95,7 @@ public class VideoViewController {
             maskVideoRec = new Rectangle(videoWebView.getWidth(), videoWebView.getWidth() * 0.562);
             maskVideoRec.setArcWidth(25);
             maskVideoRec.setArcHeight(25);
+            maskVideoRec.setFill(Paint.valueOf("#303030"));
             videoWebView.setClip(maskVideoRec);
             maskVideoRec.widthProperty().bind(videoWebView.widthProperty());
             maskVideoRec.heightProperty().bind(videoWebView.heightProperty());
@@ -103,6 +111,22 @@ public class VideoViewController {
         maskcommentProfileRec.setArcWidth(48);
         maskcommentProfileRec.setArcHeight(48);
         commentProfile.setClip(maskcommentProfileRec);
+        //Arrow keys assign
+        leftScrollPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.DOWN || event.getCode() == KeyCode.UP|| event.getCode() == KeyCode.LEFT||  event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.SPACE) {
+                if( event.getCode() == KeyCode.LEFT)
+                    engine.executeScript("player.forward(-10);");
+                if( event.getCode() == KeyCode.RIGHT)
+                    engine.executeScript("player.forward(10);");
+                if( event.getCode() == KeyCode.UP)
+                    engine.executeScript("player.increaseVolume(0.1);");
+                if( event.getCode() == KeyCode.DOWN)
+                    engine.executeScript("player.decreaseVolume(-0.1);");
+                if( event.getCode() == KeyCode.SPACE)
+                    engine.executeScript("player.togglePlay();");
+                event.consume(); // Prevent default
+            }
+        });
     }
     Video video;
     public void setVideo(Video video, HomeController homeController)
@@ -136,17 +160,21 @@ public class VideoViewController {
         try {
             Path path = new File("src/main/resources/Client/video-player.html").toPath();
             String htmlContent = new String(Files.readAllBytes(path));
-            videoWebView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId()+""));
+//            videoWebView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId()+""));
+            engine = videoWebView.getEngine();
+            engine.loadContent(htmlContent);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        //addVideoView
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(()->{
                     setUpComments();
                     //TODO addVideoView
+
                     recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10,1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId() ,video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
@@ -229,6 +257,7 @@ public class VideoViewController {
     }
     public void hi(ActionEvent event) {
         System.out.println(videoWebView.getWidth());
+        engine.executeScript("player.play()");
     }
 
     public void commentChanged(KeyEvent keyEvent) {
@@ -321,61 +350,4 @@ public class VideoViewController {
     {
         commentTextField.setText("");
     }
-
-    public void downloadAction(ActionEvent actionEvent)
-    {
-        if(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()))
-        {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("You're not a premium user!");
-            alert.showAndWait();
-            //TODO better alert
-            return;
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Video File");
-        fileChooser.setInitialFileName(video.getName() + ".mp4");
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("MP4 files (*.mp4)", "*.mp4");
-        fileChooser.getExtensionFilters().add(filter);
-        Stage dialogStage = new Stage();
-        File selectedFile = fileChooser.showSaveDialog(dialogStage);
-
-        if (selectedFile != null) {
-            downloadVideo(selectedFile);
-        }
-    }
-
-    private void downloadVideo(File selectedFile)
-    {
-        executorService.submit(() -> {
-
-            try {
-                HttpClient httpClient = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://localhost:2131/download/" + video.getVideoId()))
-                        .build();
-                HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-                if (response.statusCode() == 200) {
-                    try (InputStream is = response.body(); FileOutputStream fos = new FileOutputStream(selectedFile)) {
-                        byte[] buffer = new byte[1024];
-                        int bytesRead = 0;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            fos.write(buffer, 0, bytesRead);
-                        }
-                    }
-                } else {
-                    //TODO -> show some error
-                }
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-    }
-
-};
+}

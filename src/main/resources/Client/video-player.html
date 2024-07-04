@@ -24,35 +24,6 @@
             border: 2px solid #ccc;
             border-radius: 10px;
         }
-        #controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .button {
-            background-color: #007BFF;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .slider {
-            margin: 0 10px;
-        }
-        .select {
-            margin: 0 10px;
-        }
         #progressContainer {
             position: absolute;
             bottom: 10px;
@@ -94,100 +65,37 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        :root {
+            --plyr-color-main: #FF0000;
+            --plyr-video-control-color:#f1f1f1;
+            --plyr-menu-background: rgba(0,0,0,0.9);
+            --plyr-menu-color:#f1f1f1;
+            --plyr-video-progress-buffered-background:rgba(241,241,241,0.1);
+        }
     </style>
+     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 </head>
 <body>
     <div id="videoContainer">
-        <video id="videoPlayer" controls>
-            <source src="http://localhost:2131/video/@id" type="video/mp4">
+        <video id="videoPlayer" playsinline controls>
+            <source src="http://localhost:2131/video/37088" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
         <div id="progressContainer" onclick="seek(event)">
             <div id="buffered"></div>
             <div id="progress"></div>
         </div>
         <div id="loader"></div>
     </div>
-    <div id="controls">
-        <button class="button" onclick="document.getElementById('videoPlayer').play()">Play</button>
-        <button class="button" onclick="document.getElementById('videoPlayer').pause()">Pause</button>
-        <label>Play Rate:</label>
-        <input class="slider" type="range" id="playRate" min="0.5" max="2.0" step="0.1" value="1" onchange="setPlayRate()">
-        <label>Volume:</label>
-        <input class="slider" type="range" id="volume" min="0" max="1" step="0.1" value="1" onchange="setVolume()">
-        <label>Quality:</label>
-        <select class="select" id="quality" onchange="setQuality()">
-            <option value="http://localhost:2131/video/@id">High</option>
-            <option value="http://localhost:2131/video/@id">Low</option>
-        </select>
-    </div>
     <script>
-        const video = document.getElementById('videoPlayer');
-        const progress = document.getElementById('progress');
-        const buffered = document.getElementById('buffered');
-        const progressContainer = document.getElementById('progressContainer');
-        const loader = document.getElementById('loader');
-
-        video.addEventListener('timeupdate', updateProgress);
-        video.addEventListener('progress', updateBuffered);
-        video.addEventListener('waiting', showLoader);
-        video.addEventListener('playing', hideLoader);
-
-        function updateProgress() {
-            const percent = (video.currentTime / video.duration) * 100;
-            progress.style.width = percent + '%';
-        }
-
-        function updateBuffered() {
-            if (video.buffered.length > 0) {
-                const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-                const duration = video.duration;
-                if (duration > 0) {
-                    const percent = (bufferedEnd / duration) * 100;
-                    buffered.style.width = percent + '%';
-                }
-            }
-        }
-
-        function seek(event) {
-            const rect = progressContainer.getBoundingClientRect();
-            const offsetX = event.clientX - rect.left;
-            const width = rect.width;
-            const percent = offsetX / width;
-            video.currentTime = percent * video.duration;
-        }
-
-        function setPlayRate() {
-            const rate = document.getElementById('playRate').value;
-            video.playbackRate = rate;
-        }
-
-        function setVolume() {
-            const volume = document.getElementById('volume').value;
-            video.volume = volume;
-        }
-
-        function setQuality() {
-            const quality = document.getElementById('quality').value;
-            const currentTime = video.currentTime;
-            const isPlaying = !video.paused;
-
-            video.src = quality;
-            video.load();
-            video.currentTime = currentTime;
-
-            if (isPlaying) {
-                video.play();
-            }
-        }
-
-        function showLoader() {
-            loader.style.display = 'block';
-        }
-
-        function hideLoader() {
-            loader.style.display = 'none';
-        }
+        const player = new Plyr('#videoPlayer',{
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip']
+        });
+        player.volume = 1;
+        // player.fullscreen.toggle();
+        player.fullscreen.enter();
+        // player.play();
     </script>
 </body>
 </html>
