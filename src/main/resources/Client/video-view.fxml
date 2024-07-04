@@ -16,11 +16,13 @@
     <right>
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <content>
-              <VBox fx:id="rightVBox" prefHeight="662.0" prefWidth="271.0">
-                  <children>
-                      <Button mnemonicParsing="false" onAction="#hi" text="Button" />
-                  </children>
-              </VBox>
+             <FlowPane fx:id="homeVideosFlowPane" hgap="1.0" rowValignment="TOP" vgap="10.0">
+                 <padding>
+                     <Insets bottom="14.0" left="1.0" right="1.0" top="14.0" />
+                 </padding></FlowPane>
+<!--              <VBox fx:id="rightVBox" prefHeight="662.0" prefWidth="271.0">-->
+
+<!--              </VBox>-->
          </content>
          <styleClass>
             <String fx:value="side-bar" />
