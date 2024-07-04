@@ -55,6 +55,7 @@ public class Body {
     private Long numberOfCommentDislikes;
     private int perPage;
     private int pageNumber;
+    private boolean isChannelNameUnique;
 
 
 
@@ -412,5 +413,13 @@ public class Body {
 
     public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
         this.watchHistoryVideos = watchHistoryVideos;
+    }
+
+    public boolean isChannelNameUnique() {
+        return isChannelNameUnique;
+    }
+
+    public void setChannelNameUnique(boolean channelNameUnique) {
+        isChannelNameUnique = channelNameUnique;
     }
 }
