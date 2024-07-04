@@ -462,6 +462,16 @@ public class ClientHandler implements Runnable {
     }
 
 
+    private void sendNullErrorResponse(Header header , String message) {
+        Body body = new Body();
+        body.setSuccess(false);
+        body.setMessage(message);
+
+        Response response = new Response(header , body);
+        sendResponse(response);
+    }
+
+
     public void handleBadRequest(Header header) {
         Body body = new Body();
         body.setSuccess(false);
