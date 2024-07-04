@@ -1155,7 +1155,7 @@ public class DatabaseManager {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND c.repliedCommentId <= 0", Comment.class);
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND (c.repliedCommentId = NULL)", Comment.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
