@@ -43,7 +43,7 @@
             <center>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <TextField fx:id="searchTextField" focusTraversable="false" onKeyReleased="#checkLetterSearch" opacity="0.7" prefHeight="33.0" prefWidth="348.0" promptText="Search">
+                        <TextField fx:id="searchTextField" focusTraversable="false" onAction="#searchButtonAction" onKeyReleased="#checkLetterSearch" opacity="0.7" prefHeight="33.0" prefWidth="348.0" promptText="Search">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
