@@ -1047,6 +1047,23 @@ public class Client {
         return responseBody.isSuccess();
     }
 
+
+    public boolean deleteVideoCategory(VideoCategory videoCategory) {
+        String endpoint = "/api/videoCategory/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        return responseBody.isSuccess();
+    }
+
     public Account getAccount()
     {
         return account;
