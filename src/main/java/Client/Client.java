@@ -1237,6 +1237,29 @@ public class Client {
        return null;
     }
 
+
+    public VideoPlaylist addVideoPlaylist(Long videoId , Long playlistId) {
+         String endpoint = "/api/playlist/" + playlistId + "/video/add";
+         String method = "POST";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setVideoId(videoId);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getVideoPlaylist();
+         }
+
+         return null;
+    }
+
     public Account getAccount()
     {
         return account;
