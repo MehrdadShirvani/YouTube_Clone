@@ -320,7 +320,7 @@ public class Client {
         Body responseBody = response.getBody();
     }
 
-    public boolean sendChannelEditRequest(Channel channel) {
+    public Channel sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
         String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
@@ -336,10 +336,10 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return true;
+            return responseBody.getChannel();
         }
 
-        return false;
+        return null;
     }
 
     public Channel getChannelInfo(Long channelId) {
