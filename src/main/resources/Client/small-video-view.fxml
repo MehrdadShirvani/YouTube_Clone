@@ -29,7 +29,7 @@
                <Insets right="10.0" top="10.0" />
             </HBox.margin>
             <children>
-               <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+               <WebView fx:id="profileWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
