@@ -1668,6 +1668,34 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleEditPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Playlist playlist = requestBody.getPlaylist();
+
+        Body responseBody = new Body();
+
+        if (playlist == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlist object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Playlist editedPlaylist = DatabaseManager.editPlaylist(playlist);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylist(editedPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
