@@ -1328,6 +1328,29 @@ public class Client {
          return responseBody.isSuccess();
     }
 
+
+    public VideoView addVideoView(VideoView videoView) {
+        String endpoint = "/api/video/add-view";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody =new Body();
+
+        requestBody.setVideoView(videoView);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideoView();
+        }
+
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
