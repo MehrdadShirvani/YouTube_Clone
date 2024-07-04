@@ -1303,6 +1303,26 @@ public class Client {
         return null;
     }
 
+
+    public boolean deleteChannelPlaylist(Long channelId , Long playlistId) {
+         String endpoint = "/api/playlist/channel/delete";
+         String method = "DELETE";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setChannelId(channelId);
+         requestBody.setPlaylistId(playlistId);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         return responseBody.isSuccess();
+    }
+
     public Account getAccount()
     {
         return account;
