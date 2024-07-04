@@ -1584,6 +1584,34 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleIsChannelNameUnique(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String channelName = requestBody.getChannelName();
+
+        Body responseBody = new Body();
+
+        if (channelName == null | Objects.equals(channelName, "")) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        boolean isChannelNameUnique = DatabaseManager.isChannelNameUnique(channelName);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setChannelNameUnique(isChannelNameUnique);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
