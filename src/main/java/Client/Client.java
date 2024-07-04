@@ -228,7 +228,7 @@ public class Client {
     }
 
 
-    public boolean sendAccountEditRequest(Account editedAccount) {
+    public Account sendAccountEditRequest(Account editedAccount) {
         String endpoint = "/api/account/edit";
         String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
@@ -247,11 +247,11 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
-                return true;
+                return responseAccount;
             }
         }
 
-        return false;
+        return null;
     }
 
 
@@ -320,7 +320,7 @@ public class Client {
         Body responseBody = response.getBody();
     }
 
-    public boolean sendChannelEditRequest(Channel channel) {
+    public Channel sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
         String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
@@ -336,10 +336,10 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return true;
+            return responseBody.getChannel();
         }
 
-        return false;
+        return null;
     }
 
     public Channel getChannelInfo(Long channelId) {

@@ -462,6 +462,16 @@ public class ClientHandler implements Runnable {
     }
 
 
+    private void sendNullErrorResponse(Header header , String message) {
+        Body body = new Body();
+        body.setSuccess(false);
+        body.setMessage(message);
+
+        Response response = new Response(header , body);
+        sendResponse(response);
+    }
+
+
     public void handleBadRequest(Header header) {
         Body body = new Body();
         body.setSuccess(false);
@@ -480,24 +490,14 @@ public class ClientHandler implements Runnable {
         String password = body.getPassword();
 
         if (Objects.equals(username , null) || Objects.equals(password , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("Username or Password is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header ,"Username or Password is null !");
             return;
         }
 
         Account account = DatabaseManager.getAccount(username , password);
 
         if (Objects.equals(account , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("Username or Password is wrong !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "Username or Password is wrong !");
             return;
         }
 
@@ -519,12 +519,7 @@ public class ClientHandler implements Runnable {
         Account account = body.getAccount();
 
         if (Objects.equals(account , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("Requested account is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "Requested account is null !");
             return;
         }
         account = DatabaseManager.addAccount(account);
@@ -546,21 +541,16 @@ public class ClientHandler implements Runnable {
         Account account = body.getAccount();
 
         if (Objects.equals(account , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("Requested account is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "Requested account is null !");
             return;
         }
 
-        //TODO make editAccount return the account
-        DatabaseManager.editAccount(account);
+        Account editedAccount = DatabaseManager.editAccount(account);
 
         body = new Body();
         body.setSuccess(true);
         body.setMessage("200 Ok");
+        body.setAccount(editedAccount);
 
         response = new Response(header , body);
 
@@ -573,26 +563,15 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
 
         if (Objects.equals(accountId , null)) {
-            Body body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The accountId is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "The accountId is null !");
             return;
         }
 
         Account account = DatabaseManager.getAccount(accountId);
 
         if (Objects.equals(account , null)) {
-            Body body = new Body();
-            body.setSuccess(false);
-            body.setMessage("There is no Account with this accountId ! [" + accountId + "]");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "There is no Account with this accountId ! [" + accountId + "]");
             return;
-
         }
 
         Body body = new Body();
@@ -616,12 +595,7 @@ public class ClientHandler implements Runnable {
         Subscription subscription = DatabaseManager.addSubscription(subscriberChannelId , subscribedChannelId);
 
         if (Objects.equals(subscription , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("subscriber channel id or subscribed channel id isn't valid !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "subscriber channel id or subscribed channel id isn't valid !");
             return;
         }
 
@@ -662,21 +636,16 @@ public class ClientHandler implements Runnable {
         Channel channel = body.getChannel();
 
         if (Objects.equals(channel , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The channel that sent is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "The channel that sent is null !");
             return;
         }
 
-        //TODO make editChannel return channel
-        DatabaseManager.editChannel(channel);
+        Channel editedChannel = DatabaseManager.editChannel(channel);
 
         body = new Body();
         body.setSuccess(true);
         body.setMessage("200 Ok");
+        body.setChannel(editedChannel);
 
         response = new Response(header , body);
 
@@ -689,24 +658,14 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
 
         if (Objects.equals(channelId , null)) {
-            Body body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The channel id that sent is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "The channel id that sent is null !");
             return;
         }
 
         Channel channel = DatabaseManager.getChannel(channelId);
 
         if (Objects.equals(channel , null)) {
-            Body body = new Body();
-            body.setSuccess(false);
-            body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "There is no channel with this channelId ! [" + channelId + "]");
             return;
         }
 
@@ -726,24 +685,14 @@ public class ClientHandler implements Runnable {
         Body body;
 
         if (Objects.equals(channelId , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The channelId that sent is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "The channelId that sent is null !");
             return;
         }
 
         List<Channel> subscriberChannels = DatabaseManager.getSubscriberChannels(channelId);
 
         if (Objects.equals(subscriberChannels , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("There is no channel with this channelId ! [" + channelId + "]");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "There is no channel with this channelId ! [" + channelId + "]");
             return;
         }
 
@@ -767,12 +716,7 @@ public class ClientHandler implements Runnable {
             Reaction reaction = body.getReaction();
 
             if (Objects.equals(reaction , null)) {
-                body = new Body();
-                body.setSuccess(false);
-                body.setMessage("The reaction that sent is null !");
-
-                response = new Response(header , body);
-                sendResponse(response);
+                sendNullErrorResponse(header , "The reaction that sent is null !");
                 return;
             }
 
@@ -803,12 +747,7 @@ public class ClientHandler implements Runnable {
             Long reactionId = body.getReactionId();
 
             if (Objects.equals(reactionId , null)) {
-                body = new Body();
-                body.setSuccess(false);
-                body.setMessage("The reactionId that sent is null !");
-
-                response = new Response(header , body);
-                sendResponse(response);
+                sendNullErrorResponse(header , "The reactionId that sent is null !");
                 return;
             }
 
@@ -856,12 +795,7 @@ public class ClientHandler implements Runnable {
         Comment comment = body.getComment();
 
         if (Objects.equals(comment , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The comment that sent is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
+            sendNullErrorResponse(header , "The comment that sent is null !");
             return;
         }
 
@@ -883,13 +817,8 @@ public class ClientHandler implements Runnable {
         Long commentId = body.getCommentId();
 
         if (Objects.equals(commentId , null)) {
-            body = new Body();
-            body.setSuccess(false);
-            body.setMessage("The commentId that send is null !");
-
-            response = new Response(header , body);
-            sendResponse(response);
-
+            sendNullErrorResponse(header , "The commentId that send is null !");
+            return;
         }
 
         DatabaseManager.deleteComment(commentId);
@@ -912,12 +841,7 @@ public class ClientHandler implements Runnable {
             CommentReaction commentReaction = body.getCommentReaction();
 
             if (Objects.equals(commentReaction, null)) {
-                body = new Body();
-                body.setSuccess(false);
-                body.setMessage("The comment reaction that sent is null !");
-
-                response = new Response(header , body);
-                sendResponse(response);
+                sendNullErrorResponse(header , "The comment reaction that sent is null !");
                 return;
             }
 
@@ -948,12 +872,7 @@ public class ClientHandler implements Runnable {
             Long commentReactionId = body.getCommentReactionId();
 
             if (Objects.equals(commentReactionId, null)) {
-                body = new Body();
-                body.setSuccess(false);
-                body.setMessage("The reactionId that sent is null !");
-
-                response = new Response(header , body);
-                sendResponse(response);
+                sendNullErrorResponse(header , "The reactionId that sent is null !");
                 return;
             }
 
@@ -981,11 +900,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (username.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The username that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The username that sent is null !");
             return;
         }
 
@@ -1009,11 +924,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (emailAddress.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The email address that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The email address that sent is null !");
             return;
         }
 
@@ -1038,11 +949,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (accountId.equals(null) | searchHistory.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The account id or searchHistory that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The account id or searchHistory that sent is null !");
             return;
         }
 
@@ -1068,11 +975,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The video id that sent is null");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The video id that sent is null");
             return;
         }
 
@@ -1096,11 +999,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelId.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("the channel id that sent is null");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "the channel id that sent is null");
             return;
         }
 
@@ -1124,11 +1023,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The video id that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The video id that sent is null !");
             return;
         }
 
@@ -1167,7 +1062,6 @@ public class ClientHandler implements Runnable {
             throw new RuntimeException(e);
         }
 
-        //TODO use database search function
         List<Video> searchVideos = DatabaseManager.searchVideo(channelId , categories , searchKeywords , perPage , pageNumber);
 
         responseBody.setSuccess(true);
@@ -1252,11 +1146,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (userChannelId.equals(null) | targetChannelId.equals(null)) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The UserChannelId  or targetChannelId is null!");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The UserChannelId  or targetChannelId is null!");
             return;
         }
 
@@ -1279,11 +1169,7 @@ public class ClientHandler implements Runnable {
        Body responseBody = new Body();
 
        if (videoId == null | channelId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId or channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId or channelId that sent is null !");
             return;
        }
 
@@ -1314,11 +1200,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (commentId == null | channelId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId or channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The commentId or channelId that sent is null !");
             return;
         }
 
@@ -1348,11 +1230,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null !");
             return;
         }
 
@@ -1375,11 +1253,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null !");
             return;
         }
 
@@ -1404,11 +1278,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null !");
             return;
         }
 
@@ -1433,11 +1303,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (commentId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The commentId that sent is null !");
             return;
         }
 
@@ -1460,11 +1326,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (commentId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The commentId that sent is null !");
             return;
         }
 
@@ -1490,11 +1352,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (commentId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The commentId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The commentId that sent is null !");
             return;
         }
 
@@ -1518,11 +1376,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null !");
             return;
         }
 
@@ -1544,11 +1398,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null !");
             return;
         }
 
@@ -1572,11 +1422,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (video == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The video object that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The video object that sent is null !");
             return;
         }
 
@@ -1598,11 +1444,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null !");
             return;
         }
 
@@ -1626,11 +1468,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null | categoryId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoId or categoryId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoId or categoryId that sent is null !");
             return;
         }
 
@@ -1651,11 +1489,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null !");
             return;
         }
 
@@ -1696,11 +1530,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelName == null | Objects.equals(channelName, "")) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null !");
             return;
         }
 
@@ -1724,11 +1554,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (comment == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The comment object that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The comment object that sent is null !");
             return;
         }
 
@@ -1752,11 +1578,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (playlist == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlist object that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlist object that sent is null !");
             return;
         }
 
@@ -1780,11 +1602,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (playlist == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlist object that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlist object that sent is null !");
             return;
         }
 
@@ -1806,11 +1624,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId that sent is null !");
             return;
         }
 
@@ -1832,11 +1646,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId that sent is null !");
             return;
         }
 
@@ -1860,11 +1670,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null | playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId or videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId or videoId that sent is null !");
             return;
         }
 
@@ -1889,11 +1695,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoId == null | playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId or videoId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId or videoId that sent is null !");
             return;
         }
 
@@ -1916,11 +1718,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelId == null | playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId or channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId or channelId that sent is null !");
             return;
         }
 
@@ -1945,11 +1743,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (channelId == null | playlistId == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId or channelId that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The playlistId or channelId that sent is null !");
             return;
         }
 
@@ -1972,11 +1766,7 @@ public class ClientHandler implements Runnable {
         Body responseBody = new Body();
 
         if (videoView == null) {
-            responseBody.setSuccess(false);
-            responseBody.setMessage("The videoView object that sent is null !");
-
-            response = new Response(requestHeader , responseBody);
-            sendResponse(response);
+            sendNullErrorResponse(requestHeader , "The videoView object that sent is null !");
             return;
         }
 
