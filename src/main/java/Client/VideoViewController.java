@@ -1,8 +1,6 @@
 package Client;
 
-import Shared.Models.Comment;
-import Shared.Models.Reaction;
-import Shared.Models.Video;
+import Shared.Models.*;
 import Shared.Utils.DateFormats;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -10,24 +8,38 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class VideoViewController {
     public Label titleLabel;
@@ -41,14 +53,15 @@ public class VideoViewController {
     public Label desLabel;
     public FlowPane sideBarFlow;
     public Label commentsLabel;
+    public Button downloadButton;
     @FXML
     BorderPane mainBorderPane;
     @FXML
-    WebView videoWebView;
+    public WebView videoWebView;
     @FXML
-    WebView authorProfile;
+    public WebView authorProfile;
     @FXML
-    WebView commentProfile;
+    public WebView commentProfile;
     @FXML
     TextField commentTextField;
     @FXML
@@ -62,6 +75,8 @@ public class VideoViewController {
     private List<Comment> commentList;
     private List<Video> recommendedVideos;
     private Reaction currentReaction;
+
+    private ExecutorService executorService = Executors.newCachedThreadPool();;
 
     public void initialize() {
         //Pref of main border pain: 1084 * 664
@@ -126,14 +141,12 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-        //addVideoView
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(()->{
                     setUpComments();
                     //TODO addVideoView
-
                     recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10,1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId() ,video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
@@ -308,4 +321,61 @@ public class VideoViewController {
     {
         commentTextField.setText("");
     }
-}
+
+    public void downloadAction(ActionEvent actionEvent)
+    {
+        if(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("You're not a premium user!");
+            alert.showAndWait();
+            //TODO better alert
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Video File");
+        fileChooser.setInitialFileName(video.getName() + ".mp4");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("MP4 files (*.mp4)", "*.mp4");
+        fileChooser.getExtensionFilters().add(filter);
+        Stage dialogStage = new Stage();
+        File selectedFile = fileChooser.showSaveDialog(dialogStage);
+
+        if (selectedFile != null) {
+            downloadVideo(selectedFile);
+        }
+    }
+
+    private void downloadVideo(File selectedFile)
+    {
+        executorService.submit(() -> {
+
+            try {
+                HttpClient httpClient = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("http://localhost:2131/download/" + video.getVideoId()))
+                        .build();
+                HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+                if (response.statusCode() == 200) {
+                    try (InputStream is = response.body(); FileOutputStream fos = new FileOutputStream(selectedFile)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead = 0;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                        }
+                    }
+                } else {
+                    //TODO -> show some error
+                }
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+};
