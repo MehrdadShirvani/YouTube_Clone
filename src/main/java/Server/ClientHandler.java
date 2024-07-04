@@ -718,6 +718,9 @@ public class ClientHandler implements Runnable {
             response = new Response(header , body);
             sendResponse(response);
 
+        } else if (endpoint.equals("reaction")) {
+            handleVideoGetReactionRequests(request);
+
         } else {
             handleBadRequest(header);
         }
@@ -1399,6 +1402,139 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
         responseBody.setNumberOfCommentLikes(numberOfCommentLikes);
 
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetCategoriesOfVideo(Request request , Long videoId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Category> categories = DatabaseManager.getCategoriesOfVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCategories(categories);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleGetMostViewedCategoriesOfUser(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Category> categories = DatabaseManager.getMostViewedCategoriesOfUsers(channelId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCategories(categories);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleAddVideo(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Video video = requestBody.getVideo();
+
+        Body responseBody = new Body();
+
+        if (video == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The video object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        Video addedVideo = DatabaseManager.addVideo(video);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVideo(addedVideo);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleDeleteVideo(Request request , Long videoId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        DatabaseManager.deleteVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleDeleteVideoCategory(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+        Integer categoryId = requestBody.getCategoryId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null | categoryId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId or categoryId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        DatabaseManager.deleteVideoCategory(videoId , categoryId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);

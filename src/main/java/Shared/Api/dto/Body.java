@@ -61,6 +61,7 @@ public class Body {
     private boolean isChannelNameUnique;
     private VideoPlaylist videoPlaylist;
     private ChannelPlaylist channelPlaylist;
+    private Integer categoryId;
 
 
 
@@ -466,5 +467,13 @@ public class Body {
 
     public void setChannelPlaylist(ChannelPlaylist channelPlaylist) {
         this.channelPlaylist = channelPlaylist;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 }

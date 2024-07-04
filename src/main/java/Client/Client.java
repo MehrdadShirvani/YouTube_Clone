@@ -1048,11 +1048,14 @@ public class Client {
     }
 
 
-    public boolean deleteVideoCategory(VideoCategory videoCategory) {
+    public boolean deleteVideoCategory(Long videoId, Integer categoryId) {
         String endpoint = "/api/videoCategory/delete";
         String method = "DELETE";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setCategoryId(categoryId);
 
         Request request = new Request(requestHeader , requestBody);
 
