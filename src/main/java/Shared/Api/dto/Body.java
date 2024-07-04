@@ -26,6 +26,7 @@ public class Body {
     private Long subscriberChannelId;
     private Long subscribedChannelId;
     private Long videoId;
+    private Long playlistId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -448,5 +449,13 @@ public class Body {
 
     public void setVideoPlaylist(VideoPlaylist videoPlaylist) {
         this.videoPlaylist = videoPlaylist;
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
     }
 }
