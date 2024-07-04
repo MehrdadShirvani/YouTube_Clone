@@ -228,7 +228,7 @@ public class Client {
     }
 
 
-    public boolean sendAccountEditRequest(Account editedAccount) {
+    public Account sendAccountEditRequest(Account editedAccount) {
         String endpoint = "/api/account/edit";
         String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
@@ -247,11 +247,11 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
-                return true;
+                return responseAccount;
             }
         }
 
-        return false;
+        return null;
     }
 
 
