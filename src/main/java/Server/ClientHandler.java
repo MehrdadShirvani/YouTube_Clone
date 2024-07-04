@@ -71,6 +71,14 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected()) {
             try {
                 encryptedJson =  this.bufferedReader.readLine();
+
+                if (encryptedJson == null) {
+                    String log = "A client has disconnected";
+                    System.out.println(log);
+                    writeLog(log);
+                    closeEverything(this.socket , this.bufferedReader , this.bufferedWriter);
+                }
+
                 json = this.serverEncryption.decryptDataAES(encryptedJson);
                 request = objectMapper.readValue(json , Request.class);
                 header = request.getHeader();
