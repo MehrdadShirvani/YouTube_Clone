@@ -16,6 +16,7 @@ module org.example.youtube {
     requires org.hibernate.orm.core;
     requires jdk.httpserver;
     requires java.desktop;
+    requires java.net.http;
 
     opens Server to javafx.fxml;
     exports Server;
