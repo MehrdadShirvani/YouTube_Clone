@@ -718,6 +718,9 @@ public class ClientHandler implements Runnable {
             response = new Response(header , body);
             sendResponse(response);
 
+        } else if (endpoint.equals("reaction")) {
+            handleVideoGetReactionRequests(request);
+
         } else {
             handleBadRequest(header);
         }
