@@ -196,12 +196,6 @@ public class DatabaseManager {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
-            TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
-            query.setParameter("SubscriberChannelId", subscriberChannelId);
-            query.setParameter("SubscribedChannelId", subscribedChannelId);
-            Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
-
             try
             {
                 TypedQuery<Subscription> query = entityManager.createQuery(
