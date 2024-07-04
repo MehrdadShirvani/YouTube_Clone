@@ -58,6 +58,7 @@ public class Body {
     private int perPage;
     private int pageNumber;
     private boolean isChannelNameUnique;
+    private VideoPlaylist videoPlaylist;
 
 
 
@@ -439,5 +440,13 @@ public class Body {
 
     public void setPlaylistChannels(List<Channel> playlistChannels) {
         this.playlistChannels = playlistChannels;
+    }
+
+    public VideoPlaylist getVideoPlaylist() {
+        return videoPlaylist;
+    }
+
+    public void setVideoPlaylist(VideoPlaylist videoPlaylist) {
+        this.videoPlaylist = videoPlaylist;
     }
 }
