@@ -45,6 +45,7 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private List<Video> watchHistoryVideos;
+    private List<Video> playlistVideos;
     private boolean isSubscribedToChannel;
     private HashMap<Boolean , Short> isVideoLiked;
     private HashMap<Boolean , Short> isCommentLiked;
@@ -421,5 +422,13 @@ public class Body {
 
     public void setChannelNameUnique(boolean channelNameUnique) {
         isChannelNameUnique = channelNameUnique;
+    }
+
+    public List<Video> getPlaylistVideos() {
+        return playlistVideos;
+    }
+
+    public void setPlaylistVideos(List<Video> playlistVideos) {
+        this.playlistVideos = playlistVideos;
     }
 }
