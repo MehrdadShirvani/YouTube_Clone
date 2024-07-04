@@ -130,12 +130,11 @@ public class VideoViewController {
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                //TODO -> get VideoCategories
                 Platform.runLater(()->{
                     setUpComments();
                     //TODO addVideoView
 
-                    recommendedVideos = YouTube.client.searchVideo(null, "", 10,1);
+                    recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10,1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId() ,video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
                     setVideoLikedState();
