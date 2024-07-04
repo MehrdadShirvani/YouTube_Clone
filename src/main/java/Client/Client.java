@@ -1126,6 +1126,27 @@ public class Client {
         return null;
     }
 
+
+    public Comment editComment(Comment comment) {
+        String endpoint = "/api/comment/edit";
+        String method = "PUT";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getComment();
+        }
+
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
