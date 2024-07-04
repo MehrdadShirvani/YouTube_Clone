@@ -23,7 +23,7 @@ import java.text.DecimalFormat;
 
 public class SmallVideoView {
     @FXML
-    WebView webView;
+    public WebView webView;
     @FXML
     Label titleLabel;
     @FXML
@@ -33,7 +33,7 @@ public class SmallVideoView {
     @FXML
     HBox downHBox;
     @FXML
-    WebView profileWebView;
+    public WebView profileWebView;
     Video video;
     HomeController homeController;
     private Timeline shimmerTimelineTitle;

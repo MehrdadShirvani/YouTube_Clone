@@ -19,6 +19,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeController {
@@ -57,6 +58,9 @@ public class HomeController {
     @FXML
     BorderPane mainBorderPane;
     Boolean isMinimized;
+    private List<Video> currentVideos;
+    private List<SmallVideoView> currentSmallVideos = new ArrayList<SmallVideoView>();
+    private VideoViewController currentVideoViewController;
 
     public void initialize() {
         isMinimized = false;
@@ -133,13 +137,19 @@ public class HomeController {
 
     public void setVideoPage(Video video)
     {
+        if(currentVideoViewController != null)
+        {
+            currentVideoViewController.videoWebView.getEngine().load(null);
+            currentVideoViewController.commentProfile.getEngine().load(null);
+            currentVideoViewController.authorProfile.getEngine().load(null);
+        }
         mainBorderPane.setCenter(null);
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
         BorderPane videoPage = null;
         try {
             videoPage = fxmlLoader.load();
-            VideoViewController controller = fxmlLoader.getController();
-            controller.setVideo(video, this);
+            currentVideoViewController = fxmlLoader.getController();
+            currentVideoViewController.setVideo(video, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -150,8 +160,13 @@ public class HomeController {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
 
-        List<Video> videos = YouTube.client.searchVideo(null,"",10,1);
-        for (Video video : videos) {
+        currentVideos = YouTube.client.searchVideo(null,"",10,1);
+        for (SmallVideoView controller : currentSmallVideos) {
+            controller.webView.getEngine().load(null);
+            controller.profileWebView.getEngine().load(null);
+        }
+        currentSmallVideos = new ArrayList<SmallVideoView>();
+        for (Video video : currentVideos) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             Parent smallVideo = null;
             try {
@@ -160,6 +175,8 @@ public class HomeController {
                 throw new RuntimeException(e);
             }
             SmallVideoView controller = fxmlLoader.getController();
+            currentSmallVideos.add(controller);
+
             controller.setVideo(video, this);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
