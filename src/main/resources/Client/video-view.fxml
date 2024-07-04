@@ -16,7 +16,7 @@
     <right>
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <content>
-             <FlowPane fx:id="homeVideosFlowPane" hgap="1.0" rowValignment="TOP" vgap="10.0">
+             <FlowPane fx:id="sideBarFlow" hgap="1.0" rowValignment="TOP" vgap="10.0">
                  <padding>
                      <Insets bottom="14.0" left="1.0" right="1.0" top="14.0" />
                  </padding></FlowPane>
