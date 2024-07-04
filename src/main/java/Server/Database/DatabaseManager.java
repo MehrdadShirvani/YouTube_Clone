@@ -221,9 +221,9 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Subscription> query = entityManager.createQuery(
-                    "SELECT s FROM Subscription s WHERE s.SubscriberChannelId = :SubscriberChannelId AND s.SubscribedChannelId = :SubscribedChannelId", Subscription.class);
-            query.setParameter("SubscriberChannelId", subscriberChannelId);
-            query.setParameter("SubscribedChannelId", subscribedChannelId);
+                    "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
+            query.setParameter("subscriberChannelId", subscriberChannelId);
+            query.setParameter("subscribedChannelId", subscribedChannelId);
 
             try
             {
