@@ -1007,6 +1007,29 @@ public class Client {
         return null;
     }
 
+
+    public Video addVideo(Video video) {
+        String endpoint = "/api/video/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideo(video);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideo();
+        }
+
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
