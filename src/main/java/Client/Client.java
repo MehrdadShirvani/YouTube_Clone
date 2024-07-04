@@ -1147,6 +1147,27 @@ public class Client {
         return null;
     }
 
+
+    public Playlist addPlaylist(Playlist playlist) {
+         String endpoint = "/api/playlist/add";
+         String method = "POST";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getPlaylist();
+         }
+
+         return null;
+    }
+
     public Account getAccount()
     {
         return account;
