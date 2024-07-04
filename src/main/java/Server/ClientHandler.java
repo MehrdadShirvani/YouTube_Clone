@@ -1405,6 +1405,32 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetCategoriesOfVideo(Request request , Long videoId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        List<Category> categories = DatabaseManager.getCategoriesOfVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCategories(categories);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
