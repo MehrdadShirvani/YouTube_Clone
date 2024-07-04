@@ -1109,11 +1109,13 @@ public class Client {
         return null;
     }
 
-    public Boolean isChannelNameUnique() {
+    public Boolean isChannelNameUnique(String channelName) {
         String endpoint = "/api/isUnique/channelName";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
+
+        requestBody.setChannelName(channelName);
 
         Request request = new Request(requestHeader , requestBody);
 
