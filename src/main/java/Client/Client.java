@@ -230,7 +230,7 @@ public class Client {
 
     public boolean sendAccountEditRequest(Account editedAccount) {
         String endpoint = "/api/account/edit";
-        String method = "POST";
+        String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
@@ -322,7 +322,7 @@ public class Client {
 
     public boolean sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
-        String method = "POST";
+        String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
@@ -963,6 +963,364 @@ public class Client {
         }
 
         return null;
+    }
+
+
+    public List<Category> getCategoriesOfVideo(Long videoId) {
+        String endpoint = "/api/video/" + videoId + "/categories";
+        String method = "GET";
+        Header requestHeader= new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getCategories();
+        }
+
+        return null;
+    }
+
+
+    public List<Category> getMostViewedCategoriesOfUser() {
+        String endpoint = "/api/account/" + this.account.getChannelId() + "most-views-categories";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getCategories();
+        }
+
+        return null;
+    }
+
+
+    public Video addVideo(Video video) {
+        String endpoint = "/api/video/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideo(video);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideo();
+        }
+
+        return null;
+    }
+
+
+    public boolean deleteVideo(Long videoId) {
+        String endpoint = "/api/video/" + videoId + "/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        return responseBody.isSuccess();
+    }
+
+
+    public boolean deleteVideoCategory(VideoCategory videoCategory) {
+        String endpoint = "/api/videoCategory/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        return responseBody.isSuccess();
+    }
+
+
+    public List<Video> getWatchHistory() {
+         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
+         String method = "GET";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getWatchHistoryVideos();
+         }
+
+         return null;
+    }
+
+
+    public List<Category> getCategories() {
+        String endpoint = "/api/categories";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return getCategories();
+        }
+
+        return null;
+    }
+
+    public Boolean isChannelNameUnique() {
+        String endpoint = "/api/isUnique/channelName";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isChannelNameUnique();
+        }
+
+        return null;
+    }
+
+
+    public Comment editComment(Comment comment) {
+        String endpoint = "/api/comment/edit";
+        String method = "PUT";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setComment(comment);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getComment();
+        }
+
+        return null;
+    }
+
+
+    public Playlist addPlaylist(Playlist playlist) {
+         String endpoint = "/api/playlist/add";
+         String method = "POST";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setPlaylist(playlist);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getPlaylist();
+         }
+
+         return null;
+    }
+
+
+    public Playlist editPlaylist(Playlist playlist) {
+         String endpoint = "/api/playlist/edit";
+         String method = "PUT";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setPlaylist(playlist);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getPlaylist();
+         }
+
+         return null;
+    }
+
+
+    public List<Video> getVideosOfPlaylist(Long playlistId) {
+        String endpoint = "/api/playlist/" + playlistId + "/videos";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getPlaylistVideos();
+        }
+
+        return null;
+    }
+
+
+    public List<Channel> getChannelsOfPlaylist(Long playlistId) {
+       String endpoint = "/api/playlist/" + playlistId + "/channels";
+       String method = "GET";
+       Header requestHeader = new Header(method , endpoint);
+       Body requestBody = new Body();
+
+       Request request = new Request(requestHeader , requestBody);
+
+       sendRequest(request);
+       Response response = handleResponse();
+
+       Body responseBody = response.getBody();
+
+       if (responseBody.isSuccess()) {
+            return responseBody.getPlaylistChannels();
+       }
+
+       return null;
+    }
+
+
+    public VideoPlaylist addVideoPlaylist(Long videoId , Long playlistId) {
+         String endpoint = "/api/playlist/" + playlistId + "/video/add";
+         String method = "POST";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setVideoId(videoId);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         if (responseBody.isSuccess()) {
+             return responseBody.getVideoPlaylist();
+         }
+
+         return null;
+    }
+
+
+    public boolean deleteVideoPlaylist(Long videoId , Long playlistId) {
+        String endpoint = "/api/playlist/video/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setPlaylistId(playlistId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        return responseBody.isSuccess();
+    }
+
+
+    public ChannelPlaylist addChannelPlaylist(Long channelId , Long playlistId) {
+        String endpoint = "/api/playlist/" + playlistId + "/channel/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getChannelPlaylist();
+        }
+
+        return null;
+    }
+
+
+    public boolean deleteChannelPlaylist(Long channelId , Long playlistId) {
+         String endpoint = "/api/playlist/channel/delete";
+         String method = "DELETE";
+         Header requestHeader = new Header(method , endpoint);
+         Body requestBody = new Body();
+
+         requestBody.setChannelId(channelId);
+         requestBody.setPlaylistId(playlistId);
+
+         Request request = new Request(requestHeader , requestBody);
+
+         sendRequest(request);
+         Response response = handleResponse();
+
+         Body responseBody = response.getBody();
+
+         return responseBody.isSuccess();
     }
 
     public Account getAccount()

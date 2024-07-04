@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -163,7 +165,7 @@ public class Header {
     }
 
     public Long parseVideoLikedChannelId() {
-        String regex = "^/api/video/is-liked\\?channelId=\\d+$";
+        String regex = "^/api/video/is-liked\\?channelId=(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
 
@@ -182,7 +184,7 @@ public class Header {
 
 
     public Long parseCommentLikedChannelId() {
-        String regex = "^/api/comment/is-liked\\?channelId=\\d+$";
+        String regex = "^/api/comment/is-liked\\?channelId=(\\d+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.endpoint);
 
@@ -197,5 +199,34 @@ public class Header {
             }
         }
         return null;
+    }
+
+
+    public List<Long> extractIds() throws IllegalArgumentException {
+        final String ENDPOINT_PATTERN = "^/api/(video|account|comment|playlist)/[0-9]+(/(categories|most-viewed-categories|delete|category/[0-9]+/delete|watch-history|edit|videos|channels|video/[0-9]+/delete|channel/[0-9]+/delete))?$";
+        final String ID_REGEX = "\\b\\d+\\b";
+        Pattern idPattern = Pattern.compile(ID_REGEX);
+
+        if (!this.endpoint.matches(ENDPOINT_PATTERN)) {
+            throw new IllegalArgumentException("Invalid endpoint format: " + this.endpoint);
+        }
+
+        List<Long> ids = new ArrayList<>();
+        Matcher matcher = idPattern.matcher(this.endpoint);
+
+        while (matcher.find()) {
+            String idAsStr = matcher.group();
+
+
+            try {
+                Long idAsLong = Long.parseLong(idAsStr);
+                ids.add(idAsLong);
+
+            } catch (Exception e) {
+                System.out.println("An error while converting id to Long");
+            }
+        }
+
+        return ids;
     }
 }

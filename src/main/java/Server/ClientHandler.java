@@ -182,9 +182,6 @@ public class ClientHandler implements Runnable {
             } else if (endpoint.equals("signup")) {
                 handleSignupRequests(request);
 
-            } else if (endpoint.equals("edit")) {
-                handleAccountEditRequests(request);
-
             } else if (endpoint.equals("subscribe")) {
                 handleAccountSubscribeRequests(request);
 
@@ -217,6 +214,10 @@ public class ClientHandler implements Runnable {
                     handleBadRequest(header);
                 }
             }
+        } else if (header.getMethod().equals("PUT")) {
+            if (endpoint.equals("edit")) {
+                handleAccountEditRequests(request);
+            }
         }
     }
 
@@ -225,7 +226,7 @@ public class ClientHandler implements Runnable {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
 
-        if (header.getMethod().equals("POST")) {
+        if (header.getMethod().equals("PUT")) {
             if (endpoint.equals("edit")) {
                 handleChannelEditRequests(request);
 

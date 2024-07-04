@@ -26,6 +26,7 @@ public class Body {
     private Long subscriberChannelId;
     private Long subscribedChannelId;
     private Long videoId;
+    private Long playlistId;
     private Account account;
     private Channel channel;
     private Category category;
@@ -44,6 +45,9 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
+    private List<Video> watchHistoryVideos;
+    private List<Video> playlistVideos;
+    private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
     private HashMap<Boolean , Short> isVideoLiked;
     private HashMap<Boolean , Short> isCommentLiked;
@@ -54,6 +58,9 @@ public class Body {
     private Long numberOfCommentDislikes;
     private int perPage;
     private int pageNumber;
+    private boolean isChannelNameUnique;
+    private VideoPlaylist videoPlaylist;
+    private ChannelPlaylist channelPlaylist;
 
 
 
@@ -403,5 +410,61 @@ public class Body {
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    public List<Video> getWatchHistoryVideos() {
+        return watchHistoryVideos;
+    }
+
+    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
+        this.watchHistoryVideos = watchHistoryVideos;
+    }
+
+    public boolean isChannelNameUnique() {
+        return isChannelNameUnique;
+    }
+
+    public void setChannelNameUnique(boolean channelNameUnique) {
+        isChannelNameUnique = channelNameUnique;
+    }
+
+    public List<Video> getPlaylistVideos() {
+        return playlistVideos;
+    }
+
+    public void setPlaylistVideos(List<Video> playlistVideos) {
+        this.playlistVideos = playlistVideos;
+    }
+
+    public List<Channel> getPlaylistChannels() {
+        return playlistChannels;
+    }
+
+    public void setPlaylistChannels(List<Channel> playlistChannels) {
+        this.playlistChannels = playlistChannels;
+    }
+
+    public VideoPlaylist getVideoPlaylist() {
+        return videoPlaylist;
+    }
+
+    public void setVideoPlaylist(VideoPlaylist videoPlaylist) {
+        this.videoPlaylist = videoPlaylist;
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
+    }
+
+    public ChannelPlaylist getChannelPlaylist() {
+        return channelPlaylist;
+    }
+
+    public void setChannelPlaylist(ChannelPlaylist channelPlaylist) {
+        this.channelPlaylist = channelPlaylist;
     }
 }
