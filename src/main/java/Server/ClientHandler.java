@@ -294,6 +294,9 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("dislikes")) {
             handleGetDislikesOfVideo(request);
 
+        } else if (endpoint.equals("add-view")) {
+            handleAddVideoView(request);
+
         } else if (header.endpointParser()[4].equals("categories")) {
             Long videoId = header.extractIds().getFirst();
             handleGetCategoriesOfVideo(request , videoId);
@@ -1941,6 +1944,34 @@ public class ClientHandler implements Runnable {
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleAddVideoView(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        VideoView videoView = requestBody.getVideoView();
+
+        Body responseBody = new Body();
+
+        if (videoView == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The videoView object that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        VideoView addedVideoView = DatabaseManager.addVideoView(videoView);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVideoView(addedVideoView);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
