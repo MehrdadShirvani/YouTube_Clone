@@ -185,6 +185,7 @@ public class ClientHandler implements Runnable {
     public void handleAccountRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
+        String[] endpointParsed = header.endpointParser();
 
         if (header.getMethod().equals("POST")) {
             if (endpoint.equals("login")) {
@@ -210,14 +211,6 @@ public class ClientHandler implements Runnable {
             } else if (endpoint.equals("subscriptions")) {
                 handleGetSubscriptionsRequest(request);
 
-            } else if (header.endpointParser()[4].equals("most-views-categories")) {
-                Long channelId = header.extractIds().getFirst();
-                handleGetMostViewedCategoriesOfUser(request , channelId);
-
-            } else if (header.endpointParser()[4].equals("watch-history")) {
-                Long channelId = header.extractIds().getFirst();
-                handleGetWatchHistory(request , channelId);
-
             } else if (header.isValidAccountInfoQuery()){
                 Long accountId = header.parseAccountId();
                 if (accountId != null) {
@@ -231,6 +224,16 @@ public class ClientHandler implements Runnable {
                     handleIsSubscribedToChannelRequest(request , channelId);
                 } else {
                     handleBadRequest(header);
+                }
+            } else if (endpointParsed.length >= 5) {
+                if (header.endpointParser()[4].equals("most-views-categories")) {
+                    Long channelId = header.extractIds().getFirst();
+                    handleGetMostViewedCategoriesOfUser(request , channelId);
+
+                } else if (header.endpointParser()[4].equals("watch-history")) {
+                    Long channelId = header.extractIds().getFirst();
+                    handleGetWatchHistory(request , channelId);
+
                 }
             }
         } else if (header.getMethod().equals("PUT")) {
@@ -278,6 +281,7 @@ public class ClientHandler implements Runnable {
     public void handleVideoRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
+        String[] endpointParsed = header.endpointParser();
 
         if (endpoint.equals("like")) {
             handleVideoLikeRequests(request);
@@ -297,16 +301,8 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("add-view")) {
             handleAddVideoView(request);
 
-        } else if (header.endpointParser()[4].equals("categories")) {
-            Long videoId = header.extractIds().getFirst();
-            handleGetCategoriesOfVideo(request , videoId);
-
         } else if (endpoint.equals("add")) {
             handleAddVideo(request);
-
-        } else if (header.endpointParser()[4].equals("delete")) {
-            Long videoId = header.extractIds().getFirst();
-            handleDeleteVideo(request , videoId);
 
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
@@ -314,6 +310,16 @@ public class ClientHandler implements Runnable {
         } else if (header.isValidVideoLikedQuery()) {
             Long channelId = header.parseVideoLikedChannelId();
             handleIsVideoLikedRequest(request , channelId);
+        } else if (endpointParsed.length >= 5) {
+            if (header.endpointParser()[4].equals("categories")) {
+                Long videoId = header.extractIds().getFirst();
+                handleGetCategoriesOfVideo(request , videoId);
+
+            } else if (header.endpointParser()[4].equals("delete")) {
+                Long videoId = header.extractIds().getFirst();
+                handleDeleteVideo(request , videoId);
+
+            }
         } else {
             handleBadRequest(header);
         }
@@ -376,23 +382,26 @@ public class ClientHandler implements Runnable {
     public void handlePlaylistRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
+        String[] endpointParsed = header.endpointParser();
         String method = header.getMethod();
 
         if (method.equals("POST")) {
             if (endpoint.equals("add")) {
                 handleAddPlaylist(request);
 
-            } else if (header.endpointParser()[4].equals("video")) {
-                if (header.endpointParser()[5].equals("add")) {
-                    Long playlistId = header.extractIds().getFirst();
-                    handleAddVideoPlaylist(request , playlistId);
+            } else if (endpointParsed.length >= 6) {
+                if (header.endpointParser()[4].equals("video")) {
+                    if (header.endpointParser()[5].equals("add")) {
+                        Long playlistId = header.extractIds().getFirst();
+                        handleAddVideoPlaylist(request, playlistId);
 
-                }
-            } else if (header.endpointParser()[4].equals("channel")) {
-                if (header.endpointParser()[5].equals("add")) {
-                    Long playlistId = header.extractIds().getFirst();
-                    handleAddChannelPlaylist(request , playlistId);
+                    }
+                } else if (header.endpointParser()[4].equals("channel")) {
+                    if (header.endpointParser()[5].equals("add")) {
+                        Long playlistId = header.extractIds().getFirst();
+                        handleAddChannelPlaylist(request, playlistId);
 
+                    }
                 }
             }
         } else if (method.equals("PUT")) {
@@ -401,25 +410,29 @@ public class ClientHandler implements Runnable {
 
             }
         } else if (method.equals("GET")) {
-            if (header.endpointParser()[4].equals("videos")) {
-                Long playlistId = header.extractIds().getFirst();
-                handleGetVideosOfPlaylist(request , playlistId);
+            if (endpointParsed.length >= 5) {
+                if (header.endpointParser()[4].equals("videos")) {
+                    Long playlistId = header.extractIds().getFirst();
+                    handleGetVideosOfPlaylist(request , playlistId);
 
-            } else if (header.endpointParser()[4].equals("channels")) {
-                Long playlistId = header.extractIds().getFirst();
-                handleGetChannelsOfPlaylist(request , playlistId);
-
-            }
-        } else if (method.equals("DELETE")) {
-            if (endpoint.equals("video")) {
-                if (header.endpointParser()[4].equals("delete")) {
-                    handleDeleteVideoPlaylist(request);
+                } else if (header.endpointParser()[4].equals("channels")) {
+                    Long playlistId = header.extractIds().getFirst();
+                    handleGetChannelsOfPlaylist(request , playlistId);
 
                 }
-            } else if (endpoint.equals("channel")) {
-                if (header.endpointParser()[4].equals("delete")) {
-                    handleDeleteChannelPlaylist(request);
+            }
+        } else if (method.equals("DELETE")) {
+            if (endpointParsed.length >= 5) {
+                if (endpoint.equals("video")) {
+                    if (header.endpointParser()[4].equals("delete")) {
+                        handleDeleteVideoPlaylist(request);
 
+                    }
+                } else if (endpoint.equals("channel")) {
+                    if (header.endpointParser()[4].equals("delete")) {
+                        handleDeleteChannelPlaylist(request);
+
+                    }
                 }
             }
         }
