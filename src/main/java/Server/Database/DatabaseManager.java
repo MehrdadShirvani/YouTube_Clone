@@ -204,15 +204,18 @@ public class DatabaseManager {
 
             try
             {
-                query.getSingleResult();
+                TypedQuery<Subscription> query = entityManager.createQuery(
+                        "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
+                query.setParameter("subscriberChannelId", subscriberChannelId);
+                query.setParameter("subscribedChannelId", subscribedChannelId);
+                return query.getSingleResult();
             }
             catch (NoResultException e){
+                Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
                 entityManager.persist(subscription);
                 transaction.commit();
+                return subscription;
             }
-
-            entityManager.close();
-            return subscription;
         }
     }
 
