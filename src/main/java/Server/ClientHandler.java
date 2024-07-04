@@ -1814,7 +1814,7 @@ public class ClientHandler implements Runnable {
 
         if (channelId == null | playlistId == null) {
             responseBody.setSuccess(false);
-            responseBody.setMessage("The playlistId or videoId that sent is null !");
+            responseBody.setMessage("The playlistId or channelId that sent is null !");
 
             response = new Response(requestHeader , responseBody);
             sendResponse(response);
@@ -1826,6 +1826,34 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setChannelPlaylist(channelPlaylist);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
+    public void handleDeleteChannelPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        Long playlistId = requestBody.getPlaylistId();
+
+        Body responseBody = new Body();
+
+        if (channelId == null | playlistId == null) {
+            responseBody.setSuccess(false);
+            responseBody.setMessage("The playlistId or channelId that sent is null !");
+
+            response = new Response(requestHeader , responseBody);
+            sendResponse(response);
+            return;
+        }
+
+        DatabaseManager.deleteChannelPlaylist(channelId , playlistId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response);
