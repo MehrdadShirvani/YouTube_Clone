@@ -5,11 +5,8 @@ import Shared.Models.Reaction;
 import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.application.Platform;
-<<<<<<< HEAD
 import javafx.concurrent.Worker;
-=======
 import javafx.concurrent.Task;
->>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,23 +16,17 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-<<<<<<< HEAD
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
-=======
 import javafx.scene.layout.FlowPane;
->>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
-<<<<<<< HEAD
 import javafx.scene.control.ScrollPane;
 import java.awt.*;
-=======
 
->>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -74,16 +65,13 @@ public class VideoViewController {
     private Rectangle maskVideoRec;
     private Rectangle maskProfileRec;
     private Rectangle maskcommentProfileRec;
-<<<<<<< HEAD
     private WebEngine engine;
-=======
     private
     HashMap<Boolean,Short> isVideoLiked;
     private boolean isChannelSubscribed = false;
     private List<Comment> commentList;
     private List<Video> recommendedVideos;
     private Reaction currentReaction;
->>>>>>> 58ad5af0846d8a31203650a67f7a3a9250dd8a8e
 
     public void initialize() {
         //Pref of main border pane: 1084 * 664
