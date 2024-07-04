@@ -29,7 +29,7 @@
       </ScrollPane>
     </right>
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER">
+        <ScrollPane fx:id="leftScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER">
             <content>
                 <VBox fx:id="leftVBox" prefWidth="796.0" style="-fx-border-color: green;" BorderPane.alignment="CENTER">
                     <children>
@@ -39,7 +39,8 @@
                                 </WebView>
                             </children>
                             <effect>
-                                <Reflection fraction="0.25" />
+                                <Reflection fraction="0.35" topOpacity="0.2">
+                                </Reflection>
                             </effect>
                         </StackPane>
                         <Label fx:id="titleLabel" stylesheets="@video-view.css" text="Blind Woodturner: Turning passion into fine art">
