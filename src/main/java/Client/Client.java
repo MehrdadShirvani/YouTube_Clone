@@ -987,8 +987,8 @@ public class Client {
     }
 
 
-    public List<Category> getMostViewedCategoriesOfUser(Long channelId) {
-        String endpoint = "/api/account/" + channelId + "most-views-categories";
+    public List<Category> getMostViewedCategoriesOfUser() {
+        String endpoint = "/api/account/" + this.account.getChannelId() + "most-views-categories";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
