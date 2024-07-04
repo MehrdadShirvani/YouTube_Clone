@@ -44,6 +44,7 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
+    private List<Video> watchHistoryVideos;
     private boolean isSubscribedToChannel;
     private HashMap<Boolean , Short> isVideoLiked;
     private HashMap<Boolean , Short> isCommentLiked;
@@ -403,5 +404,13 @@ public class Body {
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    public List<Video> getWatchHistoryVideos() {
+        return watchHistoryVideos;
+    }
+
+    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
+        this.watchHistoryVideos = watchHistoryVideos;
     }
 }
