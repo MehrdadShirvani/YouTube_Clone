@@ -230,7 +230,7 @@ public class Client {
 
     public boolean sendAccountEditRequest(Account editedAccount) {
         String endpoint = "/api/account/edit";
-        String method = "POST";
+        String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
@@ -322,7 +322,7 @@ public class Client {
 
     public boolean sendChannelEditRequest(Channel channel) {
         String endpoint = "/api/channel/edit";
-        String method = "POST";
+        String method = "PUT";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
