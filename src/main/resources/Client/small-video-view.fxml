@@ -8,12 +8,12 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="221.61" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
+<VBox alignment="TOP_CENTER" prefHeight="234.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
     <stylesheets>
         <URL value="@small-video-view.css" />
     </stylesheets>
 
-    <WebView fx:id="webView" prefHeight="139.49" prefWidth="248.0" onMouseClicked="#clicked">
+    <WebView fx:id="webView" onMouseClicked="#clicked" prefHeight="139.49" prefWidth="248.0">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></WebView>
@@ -21,7 +21,7 @@
         <children>
          <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
             <HBox.margin>
-               <Insets right="10.0" top="5.0" />
+               <Insets right="10.0" top="10.0" />
             </HBox.margin>
             <cursor>
                <Cursor fx:constant="HAND" />
@@ -29,29 +29,36 @@
          </WebView>
             <VBox>
                 <children>
-                    <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="Lorem ipsum dolor sit amet, consecte adipiscing elit." wrapText="true">
-                        <font>
-                            <Font size="11.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets />
-                        </VBox.margin>
-                  <cursor>
-                     <Cursor fx:constant="HAND" />
-                  </cursor>
-                    </Label>
-                    <VBox spacing="2.0">
+               <HBox alignment="CENTER_LEFT">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+                  <children>
+                          <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title" text="trees forest woods" wrapText="true">
+                              <font>
+                                  <Font size="11.0" />
+                              </font>
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <HBox.margin>
+                           <Insets top="10.0" />
+                        </HBox.margin>
+                          </Label>
+                  </children>
+               </HBox>
+                    <VBox spacing="1.0">
                         <children>
-                            <Label fx:id="authorLabel" styleClass="caption-loading" text="James Gouse" />
+                            <Label fx:id="authorLabel" styleClass="caption" text="James Gouse" />
                             <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
                         </children>
                         <VBox.margin>
-                            <Insets top="5.0" />
+                            <Insets top="2.0" />
                         </VBox.margin>
                     </VBox>
                 </children>
                 <HBox.margin>
-                    <Insets right="10.0" top="5.0" />
+                    <Insets right="5.0" top="5.0" />
                 </HBox.margin>
             </VBox>
         </children>
