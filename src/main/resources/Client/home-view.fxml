@@ -135,7 +135,7 @@
     <center>
         <ScrollPane fx:id="homeScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="side-bar" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
             <content>
-                <FlowPane fx:id="homeVideosFlowPane" hgap="14.0" rowValignment="TOP" vgap="10.0">
+                <FlowPane fx:id="homeVideosFlowPane" hgap="14.0" rowValignment="TOP" vgap="5.0">
                <padding>
                   <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
                </padding></FlowPane>

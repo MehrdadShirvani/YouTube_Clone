@@ -8,25 +8,34 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="234.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
+<VBox alignment="TOP_CENTER" prefHeight="225.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
     <stylesheets>
         <URL value="@small-video-view.css" />
     </stylesheets>
-
-    <WebView fx:id="webView" onMouseClicked="#clicked" prefHeight="139.49" prefWidth="248.0">
-      <cursor>
-         <Cursor fx:constant="HAND" />
-      </cursor></WebView>
-    <HBox fx:id="downHBox">
-        <children>
-         <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
-            <HBox.margin>
-               <Insets right="10.0" top="10.0" />
-            </HBox.margin>
+   <StackPane onMouseClicked="#clicked">
+      <children>
+      
+          <WebView fx:id="webView" disable="true" onMouseClicked="#clicked" prefHeight="139.49" prefWidth="248.0">
             <cursor>
                <Cursor fx:constant="HAND" />
             </cursor>
          </WebView>
+      </children>
+   </StackPane>
+    <HBox fx:id="downHBox">
+        <children>
+         <StackPane>
+            <HBox.margin>
+               <Insets right="10.0" top="10.0" />
+            </HBox.margin>
+            <children>
+               <WebView fx:id="profileWebView" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+               </WebView>
+            </children>
+         </StackPane>
             <VBox>
                 <children>
                <HBox alignment="CENTER_LEFT">
@@ -50,7 +59,7 @@
                     <VBox spacing="1.0">
                         <children>
                             <Label fx:id="authorLabel" styleClass="caption" text="James Gouse" />
-                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
+                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption" text="15K Views .1 week ago" />
                         </children>
                         <VBox.margin>
                             <Insets top="2.0" />

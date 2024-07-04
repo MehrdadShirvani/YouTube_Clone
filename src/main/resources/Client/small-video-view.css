@@ -18,8 +18,8 @@
     -fx-text-fill: #f1f1f1;
     -fx-background-size: 200% 100%;
     -fx-font-family: Roboto;
-    -fx-font-weight: bold;
-    -fx-font-size: 12;
+    /*-fx-font-weight: bold;*/
+    -fx-font-size: 15;
 }
 .caption-loading{
     -fx-text-fill: transparent;
@@ -32,4 +32,5 @@
 .caption{
     -fx-text-fill: -fx-bright-gray-color;
     -fx-background-radius: 20;
+    -fx-font-size: 12;
 }
