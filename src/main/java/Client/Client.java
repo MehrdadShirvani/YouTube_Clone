@@ -1125,7 +1125,7 @@ public class Client {
     }
 
 
-    public List<Video> getWatchHistory() {
+    public List<Video> getWatchHistory(int perPage , int pageNumber) {
          String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
