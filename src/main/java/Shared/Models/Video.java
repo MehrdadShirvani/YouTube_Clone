@@ -117,12 +117,12 @@ public class Video {
     {
 
     }
-    public Video(String name, String description, Long channelId, Timestamp createdDateTime, Boolean isPrivate, Boolean isAgeRestricted)
+    public Video(String name, String description, Long channelId, Boolean isPrivate, Boolean isAgeRestricted)
     {
         this.name = name;
         this.description = description;
         this.channelId = channelId;
-        this.createdDateTime = createdDateTime;
+        this.createdDateTime = new Timestamp(System.currentTimeMillis());;
         this.isPrivate = isPrivate;
         this.isAgeRestricted = isAgeRestricted;
     }
