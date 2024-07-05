@@ -1856,6 +1856,29 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleDeleteVideoCategories(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long videoId = requestBody.getVideoId();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null");
+            return;
+        }
+
+        DatabaseManager.deleteVideoCategories(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
