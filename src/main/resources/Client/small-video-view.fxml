@@ -21,6 +21,9 @@
             </cursor>
          </WebView>
       </children>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
    </StackPane>
     <HBox fx:id="downHBox">
         <children>

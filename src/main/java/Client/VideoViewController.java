@@ -169,23 +169,6 @@ public class VideoViewController {
                 subsIcon.setContent("");
             }
         });
-        for (int i = 0; i < 2; i++) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-                leftVBox.getChildren().add(fxmlLoader.load());
-                if (i == 0) {
-                    CommentViewController comment = fxmlLoader.getController();
-                    fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-                    CommentViewController reply = fxmlLoader.getController();
-                    comment.addReply(fxmlLoader.load());
-                    //Can't see why has error?!
-//                    reply.isOnReply = true;
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
     }
 
     Video video;
@@ -232,8 +215,7 @@ public class VideoViewController {
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
                     setUpComments();
-                    YouTube.client.addVideoView(new VideoView(video.getVideoId(),YouTube.client.getAccount().getChannelId()));
-
+                    YouTube.client.addVideoView(new VideoView(video.getVideoId(), YouTube.client.getAccount().getChannelId()));
                     recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
@@ -261,13 +243,10 @@ public class VideoViewController {
                         }
                     }
                     isChannelSubscribed = YouTube.client.isSubscribedToChannel(video.getChannelId());
-                    if(isChannelSubscribed)
-                    {
+                    if (isChannelSubscribed) {
                         subsIcon.setContent("M10 20H14C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20ZM20 17.35V19H4V17.35L6 15.47V10.32C6 7.40001 7.56 5.10001 10 4.34001V3.96001C10 2.54001 11.49 1.46001 12.99 2.20001C13.64 2.52001 14 3.23001 14 3.96001V4.35001C16.44 5.10001 18 7.41001 18 10.33V15.48L20 17.35ZM19 17.77L17 15.89V10.42C17 7.95001 15.81 6.06001 13.87 5.32001C12.61 4.79001 11.23 4.82001 10.03 5.35001C8.15 6.11001 7 7.99001 7 10.42V15.89L5 17.77V18H19V17.77Z");
                         subsButton.setText("Unsubscribe");
-                    }
-                    else
-                    {
+                    } else {
                         subsIcon.setContent("");
                         subsButton.setText("Subscribe");
                     }
@@ -291,33 +270,64 @@ public class VideoViewController {
     private void setUpComments() {
         commentList = YouTube.client.getCommentsOfVideo(video.getVideoId());
         commentsLabel.setText(commentList.size() + " comments");
-        //Empty currentCommentList
+        ////////////////////////////////////
+//        for (int i = 0; i < 2; i++) {
+//            try {
+//                FXMLLoader fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+//                leftVBox.getChildren().add(fxmlLoader.load());
+//                if (i == 0) {
+//                    CommentViewController comment = fxmlLoader.getController();
+//                    fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+//                    CommentViewController reply = fxmlLoader.getController();
+//                    comment.addReply(fxmlLoader.load());
+//                    //Can't see why has error?!
+////                    reply.isOnReply = true;
+//                }
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+
+        ////////////////////////////////////
         for (Comment comment : commentList) {
-            //TODO: EHSAN -> Add comment view
+            try {
+                FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+                leftVBox.getChildren().add(commentLoader.load());
+                CommentViewController controller = commentLoader.getController();
+                controller.isCommentLiked = YouTube.client.isCommentLiked(comment.getCommentId());
+                controller.setComment(comment.getChannel().getName(),comment.getText(),DateFormats.toRelativeTime(comment.getCreatedDateTime()),YouTube.client.getLikesOfComment(comment.getCommentId()));
+                //TODO: Reactions
+                //Replies
+//                List<Comment> replies = YouTube.client.getRepliesOfComment(comment.getCommentId());
+//                for(Comment reply : replies) {
+//                    commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+//                    controller.addReply(commentLoader.load());
+//                    CommentViewController replyController = commentLoader.getController();
+//                    replyController.isCommentLiked = YouTube.client.isCommentLiked(reply.getCommentId());
+//                    replyController.setComment(reply.getChannel().getName(),reply.getText(),DateFormats.toRelativeTime(reply.getCreatedDateTime()),YouTube.client.getLikesOfComment(reply.getCommentId()));
+//                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             System.out.printf(comment.getText());
-            //Comment Replies -> use
             //YouTube.client.getRepliesOfComment(comment.getCommentId());
 
         }
     }
 
     long changeInLike = 0;
+
     private void setVideoLikedState() {
         try {
 //            Lbl.setText(isVideoLiked.get(true) == 1?"liked":"disliked");
-            if(isVideoLiked.get(true) == 1)
-            {
+            if (isVideoLiked.get(true) == 1) {
                 likeIcon.setContent("M0 7H3V17H0V7ZM15.77 7H11.54L13.06 2.06C13.38 1.03 12.54 0 11.38 0C10.8 0 10.24 0.24 9.86 0.65L4 7V17H14.43C15.49 17 16.41 16.33 16.62 15.39L17.96 9.39C18.23 8.15 17.18 7 15.77 7Z");
                 dislikeIcon.setContent("M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z");
-            }
-            else
-            {
+            } else {
                 dislikeIcon.setContent("M18,4h3v10h-3V4z M5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21c0.58,0,1.14-0.24,1.52-0.65L17,14V4H6.57 C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14z");
                 likeIcon.setContent("M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z");
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             likeIcon.setContent("M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z");
             dislikeIcon.setContent("M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z");
         }

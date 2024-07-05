@@ -12,7 +12,7 @@
         <URL value="@video-view.css" />
     </stylesheets>
     <HBox alignment="CENTER_LEFT">
-        <WebView fx:id="commentProfile" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" BorderPane.alignment="CENTER">
+        <WebView fx:id="commentProfile" contextMenuEnabled="false" disable="true" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" BorderPane.alignment="CENTER">
             <HBox.margin>
                 <Insets />
             </HBox.margin>
@@ -22,8 +22,8 @@
             <children>
                 <HBox>
                     <children>
-                        <Label styleClass="comment-author-label" text="James Gouse " />
-                        <Label layoutX="10.0" layoutY="10.0" styleClass="comment-time-label" text=" 8 hours ago" />
+                        <Label fx:id="authorLabel" styleClass="comment-author-label" text="James Gouse " />
+                        <Label fx:id="dateLabel" layoutX="10.0" layoutY="10.0" styleClass="comment-time-label" text=" 8 hours ago" />
                     </children>
                     <VBox.margin>
                         <Insets />
@@ -32,7 +32,7 @@
                 <Label fx:id="commentTextLabel" styleClass="comment-text-label" text="Wow, world is full of different skills " />
                 <HBox alignment="CENTER_LEFT" prefWidth="732.0" spacing="2.0">
                     <children>
-                        <ToggleButton fx:id="likeCommentButton" graphicTextGap="10.0" mnemonicParsing="false" styleClass="like-comment-button" stylesheets="@video-view.css" text="2">
+                        <ToggleButton fx:id="likeCommentButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#likeCommentAction" styleClass="like-comment-button" stylesheets="@video-view.css" text="2">
                             <toggleGroup>
                                 <ToggleGroup fx:id="likeToggleGroup" />
                             </toggleGroup>
