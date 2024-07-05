@@ -65,6 +65,7 @@ public class Body {
     private String channelName;
     private String searchTerms;
     private List<VideoCategory> videoCategories;
+    private List<Integer> categoryIds;
 
 
 
@@ -502,5 +503,13 @@ public class Body {
 
     public void setVideoCategories(List<VideoCategory> videoCategories) {
         this.videoCategories = videoCategories;
+    }
+
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 }
