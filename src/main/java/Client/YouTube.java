@@ -13,11 +13,12 @@ import java.io.IOException;
 public class YouTube extends Application {
     public static Stage primaryStage;
     public static Client client;
+    private static String viewName;
 
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource("home-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource(viewName));
 //        Scene scene = new Scene(fxmlLoader.load(), 1007, 641);
         Scene scene = new Scene(fxmlLoader.load());
         stage.setMinWidth(1007);
@@ -61,12 +62,12 @@ public class YouTube extends Application {
                 System.out.println("Login with cached account !");
                 Account account = CacheUtil.readAccountFromCache();
                 client.setAccount(account);
+                viewName = "home-view.fxml";
 
             } else {
-                System.out.println("Login normally !");
-                client.sendLoginRequest("ashergold5@chron.com","David-Morgan");
-                Account account = client.getAccount();
-                CacheUtil.cacheAccount(account);
+                viewName = "login-view.fxml";
+                System.out.println("Login Normally !");
+
             }
         } catch (IOException e) {
             System.out.println("An error occurred");
