@@ -1408,4 +1408,8 @@ public class Client {
     {
         return account;
     }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 }
