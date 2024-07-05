@@ -1,9 +1,12 @@
 package Server;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.UUID;
 
 public class EmailVerification {
@@ -41,5 +44,37 @@ public class EmailVerification {
 
     private String verificationToken() {
         return UUID.randomUUID().toString();
+    }
+
+
+    public void sendVerificationEmail() throws MessagingException {
+        Properties prop = new Properties();
+
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(prop, new Authenticator() {
+
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail , password);
+            }
+        });
+
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(this.senderEmail));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(this.recipientsEmail));
+        message.setSubject("Email Verification");
+
+        String content = "<p>Dear User,</p>"
+                + "<p>This is your token for verifying your email:</p>"
+                + "<p><strong>Verification Token: " + token + "</strong></p>"
+                + "<p>Thank you,<br>Memoli</p>";
+
+        message.setContent(content, "text/html");
+
+        Transport.send(message);
     }
 }
