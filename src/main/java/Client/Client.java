@@ -158,16 +158,11 @@ public class Client {
 
             return response;
 
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            String viewName = "elements/retry-page.fxml";
+            YouTube.changeScene(viewName);
 
-        } catch (SocketException e) {
             System.out.println("THERE IS NO LONGER CONNECTION !");
-            e.printStackTrace();
-            throw new RuntimeException(e);
-
-        } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
