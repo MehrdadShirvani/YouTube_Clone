@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.web.*?>
+
+<VBox fx:id="otherCommentVBox" alignment="CENTER" prefWidth="796.0" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.CommentViewController">
+    <stylesheets>
+        <URL value="@video-view.css" />
+    </stylesheets>
+    <HBox alignment="CENTER_LEFT">
+        <WebView fx:id="commentProfile" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" BorderPane.alignment="CENTER">
+            <HBox.margin>
+                <Insets />
+            </HBox.margin>
+        </WebView>
+
+        <VBox fx:id="mainVBox" alignment="CENTER_LEFT" spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox>
+                    <children>
+                        <Label styleClass="comment-author-label" text="James Gouse " />
+                        <Label layoutX="10.0" layoutY="10.0" styleClass="comment-time-label" text=" 8 hours ago" />
+                    </children>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </HBox>
+                <Label fx:id="commentTextLabel" styleClass="comment-text-label" text="Wow, world is full of different skills " />
+                <HBox alignment="CENTER_LEFT" prefWidth="732.0" spacing="2.0">
+                    <children>
+                        <ToggleButton fx:id="likeCommentButton" graphicTextGap="10.0" mnemonicParsing="false" styleClass="like-comment-button" stylesheets="@video-view.css" text="2">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="likeToggleGroup" />
+                            </toggleGroup>
+
+                            <graphic>
+                                <SVGPath fx:id="likeIcon" content="M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z" fill="#f1f1f1" />
+                            </graphic>
+                        </ToggleButton>
+                        <ToggleButton fx:id="dislikeCommentButton" contentDisplay="GRAPHIC_ONLY" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="like-comment-button" stylesheets="@video-view.css" text="ToggleButton" toggleGroup="$likeToggleGroup">
+                            <graphic>
+                                <SVGPath fx:id="dislikeIcon" content="M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z" fill="#f1f1f1" />
+                            </graphic>
+                        </ToggleButton>
+                        <Button fx:id="replyCommentButton" mnemonicParsing="false" onAction="#replyOnComment" stylesheets="@video-view.css" text="Reply" />
+                    </children>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </HBox>
+                    <HBox fx:id="commentHBox" alignment="CENTER_LEFT">
+                        <children>
+                            <TextField fx:id="commentTextField" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#commentChanged" promptText="Add a reply..." styleClass="comment-textfield" HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                </HBox.margin>
+                                <opaqueInsets>
+                                    <Insets />
+                                </opaqueInsets>
+                            </TextField>
+                        </children>
+                        <VBox.margin>
+                            <Insets top="10.0" />
+                        </VBox.margin>
+                    </HBox>
+                    <HBox fx:id="commentBelowHBox" alignment="CENTER_RIGHT">
+                        <children>
+                            <Button layoutX="671.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancelCommentAction" prefHeight="35.0" styleClass="comment-cancel" text="cancel">
+                                <padding>
+                                    <Insets left="20.0" right="20.0" />
+                                </padding>
+                                <HBox.margin>
+                                    <Insets right="10.0" />
+                                </HBox.margin>
+                            </Button>
+                            <Button fx:id="commentButton" disable="true" mnemonicParsing="false" onAction="#newCommentAction" prefHeight="35.0" styleClass="comment-button" text="Comment">
+                                <padding>
+                                    <Insets left="20.0" right="20.0" />
+                                </padding>
+                            </Button>
+                        </children>
+                    </HBox>
+            </children>
+            <padding>
+                <Insets left="16.0" />
+            </padding>
+            <BorderPane.margin>
+                <Insets top="5.0" />
+            </BorderPane.margin>
+        </VBox>
+    </HBox>
+    <HBox fx:id="replyHBox" BorderPane.alignment="CENTER">
+        <children>
+            <TitledPane fx:id="replyTitledPane" animated="false" expanded="false" styleClass="reply-title-pane" text="1 Reply">
+                <content>
+                    <VBox fx:id="replyVBox" />
+                </content>
+            </TitledPane>
+        </children>
+        <padding>
+            <Insets left="55.0" right="55.0" />
+        </padding>
+    </HBox>
+    <padding>
+        <Insets bottom="15.0" top="15.0" />
+    </padding>
+</VBox>

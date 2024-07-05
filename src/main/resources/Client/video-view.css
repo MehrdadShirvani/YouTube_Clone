@@ -85,7 +85,7 @@
 #subsButton:hover {
     -fx-opacity: 0.7;
 }
-#desLabel{
+#desLabel, .comment-text-label{
     -fx-text-fill: #f1f1f1;
     /*-fx-font-family: Roboto;*/
     -fx-font-family: Roboto;
@@ -132,6 +132,55 @@
     -fx-border-width: 0;
     -fx-background-radius: 15;
 }
-.comment-cancel:hover{
+.comment-cancel:hover, #replyCommentButton:hover{
     -fx-background-color: rgba(40,40,40);
+}
+.comment-author-label{
+    -fx-font-family: Roboto;
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1f1f1;
+}
+.comment-time-label{
+    -fx-font-family: Roboto;
+    -fx-font-size: 12;
+    -fx-text-fill: -fx-bright-gray-color;
+    -fx-font-weight: 400;
+}
+.like-comment-button{
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-bright-gray-color;
+    -fx-font-family: Roboto;
+    -fx-font-size: 12;
+}
+#replyCommentButton{
+    -fx-background-radius: 15;
+    -fx-background-color: transparent;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 12;
+}
+.reply-title-pane > .title {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+.reply-title-pane > .title > .text {
+    -fx-fill: #3ea6ff;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+}
+.reply-title-pane > .title > .graphic {
+    -fx-text-fill: #3ea6ff;
+}
+.reply-title-pane > .content{
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+.reply-title-pane > .title > .arrow-button .arrow {
+    -fx-background-color: #3ea6ff;
+}
+.reply-title-pane:focused > .title > .arrow-button .arrow  {
+    -fx-background-color: #3ea6ff;
 }
