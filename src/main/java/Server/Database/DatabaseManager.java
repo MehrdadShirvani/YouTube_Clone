@@ -1358,7 +1358,7 @@ public class DatabaseManager {
             transaction.commit();
         }
     }
-    public static List<Video> getWatchHistory(Long channelId) {
+    public static List<Video> getWatchHistory(Long channelId, int perPage, int pageNumber) {
 
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
@@ -1372,7 +1372,9 @@ public class DatabaseManager {
                     .orderBy(cb.desc(videoViewJoin.get("ViewDateTime")));
 
             TypedQuery<Video> query = entityManager.createQuery(cq);
-            query.setMaxResults(100);
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
 
             return query.getResultList();
         }
