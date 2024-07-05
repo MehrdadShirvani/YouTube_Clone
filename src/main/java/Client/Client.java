@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -1489,6 +1490,26 @@ public class Client {
 
         System.out.println(responseBody.getMessage());
         return null;
+    }
+
+
+    public boolean deleteVideoCategories(Long  videoId) {
+        String endpoint = "/api/video/category/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        System.out.println(responseBody.isSuccess() ? "" : responseBody.getMessage());
+        return responseBody.isSuccess();
     }
 
     public Account getAccount()
