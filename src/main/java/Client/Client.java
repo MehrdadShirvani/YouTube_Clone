@@ -197,7 +197,7 @@ public class Client {
                  return true;
              }
          }
-
+         System.out.println(responseBody.getMessage());
          return false;
     }
 
@@ -224,6 +224,7 @@ public class Client {
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -251,6 +252,7 @@ public class Client {
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -275,6 +277,7 @@ public class Client {
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -299,11 +302,13 @@ public class Client {
             Subscription subscription = responseBody.getSubscription();
             return subscription;
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
 
-    public void sendUnsubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
+    public boolean sendUnsubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
         String endpoint = "/api/account/unsubscribe";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -318,6 +323,7 @@ public class Client {
         Response response = handleResponse();
 
         Body responseBody = response.getBody();
+        return responseBody.isSuccess();
     }
 
     public Channel sendChannelEditRequest(Channel channel) {
@@ -339,6 +345,7 @@ public class Client {
             return responseBody.getChannel();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -360,6 +367,7 @@ public class Client {
             return channel;
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -382,6 +390,7 @@ public class Client {
             return subscribersChannel;
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -405,6 +414,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -427,6 +437,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -451,6 +462,7 @@ public class Client {
             return responseBody.getReaction();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -474,6 +486,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -497,6 +510,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -520,6 +534,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -543,6 +558,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -567,6 +583,8 @@ public class Client {
                 return true;
             }
         }
+
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -591,6 +609,8 @@ public class Client {
                 return true;
             }
         }
+
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -616,6 +636,7 @@ public class Client {
             return responseBody.getHomepageVideos();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -639,6 +660,7 @@ public class Client {
             return responseBody.getComments();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -661,6 +683,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getSubscriptions();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -683,6 +707,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getVideo();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -711,6 +737,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getSearchVideos();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -780,6 +808,7 @@ public class Client {
             return responseBody.isSubscribedToChannel();
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -803,6 +832,7 @@ public class Client {
             return responseBody.getIsVideoLiked();
        }
 
+       System.out.println(responseBody.getMessage());
        return null;
     }
 
@@ -825,6 +855,7 @@ public class Client {
             return responseBody.getIsCommentLiked();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -847,6 +878,7 @@ public class Client {
             return responseBody.getNumberOfViews();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -870,7 +902,8 @@ public class Client {
              return responseBody.getNumberOfLikes();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -893,6 +926,7 @@ public class Client {
             return responseBody.getNumberOfDislikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -916,6 +950,7 @@ public class Client {
             return responseBody.getComments();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -939,6 +974,7 @@ public class Client {
             return responseBody.getNumberOfCommentLikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -962,6 +998,7 @@ public class Client {
             return responseBody.getNumberOfCommentDislikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -983,6 +1020,7 @@ public class Client {
             return responseBody.getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1004,6 +1042,7 @@ public class Client {
             return responseBody.getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1027,6 +1066,7 @@ public class Client {
             return responseBody.getVideo();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1085,7 +1125,8 @@ public class Client {
              return responseBody.getWatchHistoryVideos();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1106,6 +1147,7 @@ public class Client {
             return getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1128,6 +1170,7 @@ public class Client {
             return responseBody.isChannelNameUnique();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1151,6 +1194,7 @@ public class Client {
             return responseBody.getComment();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1174,7 +1218,8 @@ public class Client {
              return responseBody.getPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1197,7 +1242,8 @@ public class Client {
              return responseBody.getPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1218,6 +1264,7 @@ public class Client {
             return responseBody.getPlaylistVideos();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1239,7 +1286,8 @@ public class Client {
             return responseBody.getPlaylistChannels();
        }
 
-       return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1262,7 +1310,8 @@ public class Client {
              return responseBody.getVideoPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1305,6 +1354,7 @@ public class Client {
             return responseBody.getChannelPlaylist();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1348,6 +1398,7 @@ public class Client {
             return responseBody.getVideoView();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
