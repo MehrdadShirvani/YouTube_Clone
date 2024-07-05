@@ -58,12 +58,10 @@ public class YouTube extends Application {
         try {
             client = new Client();
 
-        } catch (IOException e) {
-            String viewName = "elements/retry-page.fxml";
-            YouTube.changeScene(viewName);
+        } catch (Exception e) {
+            viewName = "elements/retry-page.fxml";
 
-            System.out.println("THERE IS NO LONGER CONNECTION !");
-            throw new RuntimeException(e);
+            System.out.println("THERE IS NO CONNECTION !");
         }
 
         try {
@@ -84,9 +82,8 @@ public class YouTube extends Application {
                 System.out.println("Login Normally !");
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("An error occurred");
-            throw new RuntimeException(e);
         }
 
         launch();
