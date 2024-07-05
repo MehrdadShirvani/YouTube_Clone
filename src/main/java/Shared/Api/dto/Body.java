@@ -66,6 +66,10 @@ public class Body {
     private String searchTerms;
     private List<VideoCategory> videoCategories;
     private List<Integer> categoryIds;
+    private List<VideoPlaylist> videoPlaylists;
+    private List<Playlist> playlists;
+    private List<Long> playlistIds;
+    private boolean isSelf;
 
 
 
@@ -511,5 +515,37 @@ public class Body {
 
     public void setCategoryIds(List<Integer> categoryIds) {
         this.categoryIds = categoryIds;
+    }
+
+    public List<VideoPlaylist> getVideoPlaylists() {
+        return videoPlaylists;
+    }
+
+    public void setVideoPlaylists(List<VideoPlaylist> videoPlaylists) {
+        this.videoPlaylists = videoPlaylists;
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
+
+    public List<Long> getPlaylistIds() {
+        return playlistIds;
+    }
+
+    public void setPlaylistIds(List<Long> playlistIds) {
+        this.playlistIds = playlistIds;
+    }
+
+    public boolean isSelf() {
+        return isSelf;
+    }
+
+    public void setSelf(boolean self) {
+        isSelf = self;
     }
 }
