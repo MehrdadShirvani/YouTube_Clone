@@ -48,3 +48,6 @@ src/main/java/Server/logs
 
 ### Datavase config file ###
 src/main/resources/META-INF
+
+### EmailVerification data ###
+.EmailData.txt
