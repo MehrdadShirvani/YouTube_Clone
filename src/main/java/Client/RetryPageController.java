@@ -9,10 +9,16 @@ public class RetryPageController {
     public void retryAction(ActionEvent actionEvent) {
         //TODO Ehsan: make a loading circle while clicking on retry button
         try {
+            boolean isLoggedIn;
             Client newClient = new Client();
             Account account = YouTube.client.getAccount();
 
-            boolean isLoggedIn = newClient.sendLoginRequest(account.getUsername() , account.getPassword());
+            if (account == null) {
+                isLoggedIn = newClient.sendLoginRequest("" , "");
+
+            } else {
+                isLoggedIn = newClient.sendLoginRequest(account.getUsername() , account.getPassword());
+            }
 
             if (isLoggedIn) {
                 YouTube.client = newClient;
