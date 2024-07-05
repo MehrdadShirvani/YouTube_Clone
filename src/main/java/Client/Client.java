@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.bytedeco.javacv.FrameFilter;
 import org.w3c.dom.ls.LSOutput;
 
 import javax.crypto.SecretKey;
@@ -39,7 +40,7 @@ public class Client {
     public static final int LIKE_ID = 1;
     public static final int DISLIKE_ID = -1;
 
-    public Client() throws IOException{
+    public Client() throws Exception {
         try {
             this.socket = new Socket(HOST , PORT);
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -49,9 +50,9 @@ public class Client {
             sendClientPublicKeyRSA();
             receiveAesKey();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             closeEverything(socket , bufferedReader , bufferedWriter);
-            throw new IOException(e);
+            throw new Exception (e);
         }
     }
 
