@@ -154,4 +154,12 @@ public class Video {
     public Integer getDuration() {
         return duration;
     }
+
+    public Integer getVideoTypeId() {
+        return videoTypeId;
+    }
+
+    public void setVideoTypeId(Integer videoTypeId) {
+        this.videoTypeId = videoTypeId;
+    }
 }
