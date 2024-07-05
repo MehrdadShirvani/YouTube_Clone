@@ -1,5 +1,7 @@
 package Client;
 
+import Shared.Models.Video;
+import Shared.Utils.VideoProcessor;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -105,10 +107,28 @@ public class AddEditVideoView {
             return;
         }
 
-        //TODO Mohsen
-        //create video using the constructor
-        //set the duration of the video
-        //call the api and post the video and get the new videoId
+        String videoName = TxtName.getText();
+        String videoDescription = TxtDesc.getText();
+        Long channelId = YouTube.client.getAccount().getChannelId();
+        Boolean isPrivate = CBIsPrivate.isSelected();
+        Boolean isAgeRestricted = CBIsAgeRestricted.isSelected();
+        String videoFileAddress = videoFile.getAbsolutePath();
+
+        Video uploadedVideo = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted);
+
+        VideoProcessor videoProcessor = new VideoProcessor(videoFileAddress);
+
+        try {
+            int videoDuration = (int) videoProcessor.getVideoDuration();
+            uploadedVideo.setDuration(videoDuration);
+
+        } catch (Exception e) {
+            System.out.println("Error at getVideoDuration !");
+            throw new RuntimeException(e);
+        }
+
+        Video addedVideo = YouTube.client.addVideo(uploadedVideo);
+        Long videoId = addedVideo.getVideoId();
 
         //TODO Mehrdad
         //Upload the video and files
