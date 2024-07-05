@@ -11,13 +11,17 @@ public class RetryPageController {
         try {
             boolean isLoggedIn;
             Client newClient = new Client();
-            Account account = YouTube.client.getAccount();
 
-            if (account == null) {
+            if (YouTube.client == null) {
                 isLoggedIn = newClient.sendLoginRequest("" , "");
 
             } else {
-                isLoggedIn = newClient.sendLoginRequest(account.getUsername() , account.getPassword());
+                if (YouTube.client.getAccount() != null) {
+                    isLoggedIn = newClient.sendLoginRequest(YouTube.client.getAccount().getUsername() , YouTube.client.getAccount().getPassword());
+
+                } else {
+                    isLoggedIn = newClient.sendLoginRequest("" , "");
+                }
             }
 
             if (isLoggedIn) {
@@ -30,7 +34,8 @@ public class RetryPageController {
                 YouTube.changeScene(homeViewName);
             }
 
-        } catch (IOException ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
             //TODO Ehsan: make pop up error to show that still there is no connection
         }
     }
