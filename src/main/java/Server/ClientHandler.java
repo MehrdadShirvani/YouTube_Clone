@@ -150,6 +150,7 @@ public class ClientHandler implements Runnable {
     public void handleApiRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[2];
+        String[] endpointParsed = header.endpointParser();
 
         if (endpoint.equals("account")) {
             handleAccountRequests(request);
@@ -170,13 +171,18 @@ public class ClientHandler implements Runnable {
             handleGetCategories(request);
 
         } else if (endpoint.equals("videoCategory")) {
-            if (header.endpointParser()[3].equals("delete")) {
+            if (endpointParsed[3].equals("delete")) {
                 handleDeleteVideoCategory(request);
 
             }
         } else if (endpoint.equals("playlist")) {
             handlePlaylistRequests(request);
 
+        } else if (endpoint.equals("videoPlaylists")) {
+            if (endpointParsed[3].equals("add")) {
+                handleAddVideoPlaylists(request);
+
+            }
         } else {
             handleBadRequest(header);
         }
@@ -248,6 +254,7 @@ public class ClientHandler implements Runnable {
     public void handleChannelRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
+        String[] endpointParsed = header.endpointParser();
 
         if (header.getMethod().equals("PUT")) {
             if (endpoint.equals("edit")) {
@@ -274,7 +281,31 @@ public class ClientHandler implements Runnable {
                 } else {
                     handleBadRequest(header);
                 }
+            } else if (endpointParsed.length >= 5) {
+                if (endpointParsed[4].equals("playlists")) {
+                    Long channelId = header.extractIds().getFirst();
+
+                    if (channelId != null) {
+                        handleGetPlaylistsOfChannel(request , channelId);;
+
+                    } else {
+                        handleBadRequest(header);
+                    }
+                } else if (endpointParsed[4].equals("public-playlists")) {
+                    Long channelId = header.extractIds().getFirst();
+
+                    if (channelId != null) {
+                        handleGetPublicPlaylistsForUser(request , channelId);;
+
+                    } else {
+                        handleBadRequest(header);
+                    }
+                }
+            } else {
+                handleBadRequest(header);
             }
+        } else {
+            handleBadRequest(header);
         }
     }
 
@@ -305,6 +336,20 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("add")) {
             handleAddVideo(request);
 
+        } else if (endpoint.equals("search-ad")) {
+            handleSearchAd(request);
+
+        } else if (endpoint.equals("search-short")) {
+            handleSearchShortVideo(request);
+
+        } else if (endpoint.equals("category")) {
+            if (endpointParsed[4].equals("add")) {
+                handleAddVideoCategories(request);
+
+            } else if (endpointParsed[4].equals("delete")) {
+                handleDeleteVideoCategories(request);
+
+            }
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
@@ -423,7 +468,10 @@ public class ClientHandler implements Runnable {
                 }
             }
         } else if (method.equals("DELETE")) {
-            if (endpointParsed.length >= 5) {
+            if (endpoint.equals("delete")) {
+                handleDeleteVideoPlaylists(request);
+
+            } else if (endpointParsed.length >= 5) {
                 if (endpoint.equals("video")) {
                     if (header.endpointParser()[4].equals("delete")) {
                         handleDeleteVideoPlaylist(request);
