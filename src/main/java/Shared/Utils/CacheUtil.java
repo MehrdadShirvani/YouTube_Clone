@@ -7,18 +7,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class CacheUtil {
 
-    private static final String CACHE_FILE_PATH = "src/main/java/Client/.cache/account_cache.json";
-    private static final String CHECKSUM_FILE_PATH = "src/main/java/Client/.cache/account_cache_checksum.txt";
+    private static final String CACHE_DIR_PATH = "src/main/java/Client/.cache";
+    private static final String CACHE_FILE_PATH = CACHE_DIR_PATH + "/account_cache.json";
+    private static final String CHECKSUM_FILE_PATH = CACHE_DIR_PATH + "/account_cache_checksum.txt";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static void ensureDirectoryExists() {
+        File cacheDir = new File(CACHE_DIR_PATH);
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+    }
+
     public static void cacheAccount(Account account) throws IOException {
+        ensureDirectoryExists();
         objectMapper.writeValue(new File(CACHE_FILE_PATH), account);
         String checksum = calculateChecksum(CACHE_FILE_PATH);
         Files.write(Paths.get(CHECKSUM_FILE_PATH), checksum.getBytes());
@@ -49,11 +57,10 @@ public class CacheUtil {
     }
 
     public static boolean isCacheUnchanged() throws IOException {
-        Path path = Paths.get(CHECKSUM_FILE_PATH);
-        if (!Files.exists(path)) {
+        if (!Files.exists(Paths.get(CHECKSUM_FILE_PATH))) {
             return false;
         }
-        String originalChecksum = new String(Files.readAllBytes(path));
+        String originalChecksum = new String(Files.readAllBytes(Paths.get(CHECKSUM_FILE_PATH)));
         String currentChecksum = calculateChecksum(CACHE_FILE_PATH);
         return originalChecksum.equals(currentChecksum);
     }
