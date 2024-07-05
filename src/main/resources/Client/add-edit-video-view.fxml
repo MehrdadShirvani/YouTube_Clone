@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Client.AddEditVideoView"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <VBox>
+        <TextField fx:id="TxtName" promptText="Name"/>
+        <TextField fx:id="TxtDesc" promptText="Description"/>
+        <CheckBox fx:id="CBIsPrivate" text="Is Private"> </CheckBox>
+        <CheckBox fx:id="CBIsAgeRestricted" text="Is Age Restricted"> </CheckBox>
+        <TextField disable="true" promptText="Duration"/>
+        <CheckBox fx:id="CBIsShort" text="Is Age Restricted"> </CheckBox>
+        <Button onAction="#chooseFile" text="Choose Video"/>
+        <Button onAction="#choosePictureFile" text="Choose Picture"/>
+        <ImageView fitHeight="100" fitWidth="100" fx:id="ImgThumbnail"/>
+        <Button onAction="#setDefaultThumbnail" text="Set thumbnail based on video"/>
+        <Button onAction="#uploadVideo" text="Upload Video"/>
+    </VBox>
+</AnchorPane>
