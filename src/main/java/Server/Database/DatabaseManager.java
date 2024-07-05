@@ -894,7 +894,7 @@ public class DatabaseManager {
                     .append("FROM Video v ")
                     .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
-                    .append("WHERE v.channelId != :channelId AND VideoTypeId = 3 ");
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 3 ");
 
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId IN :categoryIds ");
@@ -953,7 +953,7 @@ public class DatabaseManager {
                         .append("FROM Video v ")
                         .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                         .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
-                        .append("WHERE v.channelId != :channelId AND VideoTypeId = 2 ");
+                        .append("WHERE v.channelId != :channelId AND v.videoTypeId = 2 ");
 
                 if (categories != null && !categories.isEmpty()) {
                     jpql.append("AND vc.categoryId IN :categoryIds ");
@@ -1012,7 +1012,7 @@ public class DatabaseManager {
                     .append("FROM Video v ")
                     .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
-                    .append("WHERE v.channelId != :channelId AND VideoTypeId = 1 ");
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ");
 
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId IN :categoryIds ");
