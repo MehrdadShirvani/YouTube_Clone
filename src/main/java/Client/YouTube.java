@@ -54,8 +54,17 @@ public class YouTube extends Application {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        client = new Client();
+    public static void main(String[] args) {
+        try {
+            client = new Client();
+
+        } catch (IOException e) {
+            String viewName = "elements/retry-page.fxml";
+            YouTube.changeScene(viewName);
+
+            System.out.println("THERE IS NO LONGER CONNECTION !");
+            throw new RuntimeException(e);
+        }
 
         try {
             if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
