@@ -61,9 +61,15 @@ public class YouTube extends Application {
             if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
                 System.out.println("Login with cached account !");
                 Account account = CacheUtil.readAccountFromCache();
-                client.setAccount(account);
-                viewName = "home-view.fxml";
+                boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
 
+                if (isLoggedIn) {
+                    viewName = "home-view.fxml";
+                } else {
+                    System.out.println("Failed to Login using cached account !");
+                    System.out.println("Login Normally !");
+                    viewName = "login-view.fxml";
+                }
             } else {
                 viewName = "login-view.fxml";
                 System.out.println("Login Normally !");
