@@ -1,5 +1,7 @@
 package Client;
 
+import Shared.Models.Account;
+import Shared.Utils.CacheUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,11 +13,12 @@ import java.io.IOException;
 public class YouTube extends Application {
     public static Stage primaryStage;
     public static Client client;
+    private static String viewName;
 
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource("home-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource(viewName));
 //        Scene scene = new Scene(fxmlLoader.load(), 1007, 641);
         Scene scene = new Scene(fxmlLoader.load());
         stage.setMinWidth(1007);
@@ -52,8 +55,37 @@ public class YouTube extends Application {
     }
 
     public static void main(String[] args) {
-        client = new Client();
-        client.sendLoginRequest("ashergold5@chron.com","David-Morgan");
+        try {
+            client = new Client();
+
+        } catch (Exception e) {
+            viewName = "elements/retry-page.fxml";
+
+            System.out.println("THERE IS NO CONNECTION !");
+        }
+
+        try {
+            if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
+                System.out.println("Login with cached account !");
+                Account account = CacheUtil.readAccountFromCache();
+                boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
+
+                if (isLoggedIn) {
+                    viewName = "home-view.fxml";
+                } else {
+                    System.out.println("Failed to Login using cached account !");
+                    System.out.println("Login Normally !");
+                    viewName = "login-view.fxml";
+                }
+            } else {
+                viewName = "login-view.fxml";
+                System.out.println("Login Normally !");
+
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred");
+        }
+
         launch();
     }
 }

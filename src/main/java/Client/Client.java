@@ -2,17 +2,21 @@ package Client;
 
 import Shared.Api.dto.*;
 import Shared.Models.*;
+import Shared.Utils.CacheUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.bytedeco.javacv.FrameFilter;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +40,7 @@ public class Client {
     public static final int LIKE_ID = 1;
     public static final int DISLIKE_ID = -1;
 
-    public Client() {
+    public Client() throws Exception {
         try {
             this.socket = new Socket(HOST , PORT);
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -46,13 +50,9 @@ public class Client {
             sendClientPublicKeyRSA();
             receiveAesKey();
 
-        } catch (UnknownHostException e) {
+        } catch (Exception e) {
             closeEverything(socket , bufferedReader , bufferedWriter);
-            throw new RuntimeException(e);
-
-        } catch (IOException e) {
-            closeEverything(socket , bufferedReader , bufferedWriter);
-            throw new RuntimeException(e);
+            throw new Exception (e);
         }
     }
 
@@ -160,15 +160,11 @@ public class Client {
 
             return response;
 
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            String viewName = "elements/retry-page.fxml";
+            YouTube.changeScene(viewName);
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-
-        } catch (IOException e) {
+            System.out.println("THERE IS NO LONGER CONNECTION !");
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -194,10 +190,17 @@ public class Client {
              Account responseAccount = responseBody.getAccount();
              if (!Objects.equals(responseAccount , null)) {
                  this.account = responseAccount;
+
+                 try {
+                     CacheUtil.cacheAccount(this.account);
+                 } catch (IOException e) {
+                     throw new RuntimeException(e);
+                 }
+
                  return true;
              }
          }
-
+         System.out.println(responseBody.getMessage());
          return false;
     }
 
@@ -220,10 +223,18 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
+
+                try {
+                    CacheUtil.cacheAccount(this.account);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
                 return true;
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -251,6 +262,7 @@ public class Client {
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -275,6 +287,7 @@ public class Client {
             }
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -299,11 +312,13 @@ public class Client {
             Subscription subscription = responseBody.getSubscription();
             return subscription;
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
 
-    public void sendUnsubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
+    public boolean sendUnsubscribeRequest(Long subscriberChannelId , Long subscribedChannelId) {
         String endpoint = "/api/account/unsubscribe";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -318,6 +333,7 @@ public class Client {
         Response response = handleResponse();
 
         Body responseBody = response.getBody();
+        return responseBody.isSuccess();
     }
 
     public Channel sendChannelEditRequest(Channel channel) {
@@ -339,6 +355,7 @@ public class Client {
             return responseBody.getChannel();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -360,6 +377,7 @@ public class Client {
             return channel;
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -382,6 +400,7 @@ public class Client {
             return subscribersChannel;
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -405,6 +424,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -427,6 +447,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -451,6 +472,7 @@ public class Client {
             return responseBody.getReaction();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -474,6 +496,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -497,6 +520,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -520,6 +544,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -543,6 +568,7 @@ public class Client {
             return true;
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -567,6 +593,8 @@ public class Client {
                 return true;
             }
         }
+
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -591,6 +619,8 @@ public class Client {
                 return true;
             }
         }
+
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -616,6 +646,7 @@ public class Client {
             return responseBody.getHomepageVideos();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -639,6 +670,7 @@ public class Client {
             return responseBody.getComments();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -661,6 +693,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getSubscriptions();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -683,6 +717,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getVideo();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -711,6 +747,8 @@ public class Client {
         if (responseBody.isSuccess()) {
             return responseBody.getSearchVideos();
         }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -780,6 +818,7 @@ public class Client {
             return responseBody.isSubscribedToChannel();
         }
 
+        System.out.println(responseBody.getMessage());
         return false;
     }
 
@@ -803,6 +842,7 @@ public class Client {
             return responseBody.getIsVideoLiked();
        }
 
+       System.out.println(responseBody.getMessage());
        return null;
     }
 
@@ -825,6 +865,7 @@ public class Client {
             return responseBody.getIsCommentLiked();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -847,6 +888,7 @@ public class Client {
             return responseBody.getNumberOfViews();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -870,7 +912,8 @@ public class Client {
              return responseBody.getNumberOfLikes();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -893,6 +936,7 @@ public class Client {
             return responseBody.getNumberOfDislikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -916,6 +960,7 @@ public class Client {
             return responseBody.getComments();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -939,6 +984,7 @@ public class Client {
             return responseBody.getNumberOfCommentLikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -962,6 +1008,7 @@ public class Client {
             return responseBody.getNumberOfCommentDislikes();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -983,6 +1030,7 @@ public class Client {
             return responseBody.getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1004,6 +1052,7 @@ public class Client {
             return responseBody.getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1027,6 +1076,7 @@ public class Client {
             return responseBody.getVideo();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1068,7 +1118,7 @@ public class Client {
     }
 
 
-    public List<Video> getWatchHistory() {
+    public List<Video> getWatchHistory(int perPage , int pageNumber) {
          String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
@@ -1085,7 +1135,8 @@ public class Client {
              return responseBody.getWatchHistoryVideos();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1106,6 +1157,7 @@ public class Client {
             return getCategories();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1128,6 +1180,7 @@ public class Client {
             return responseBody.isChannelNameUnique();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1151,6 +1204,7 @@ public class Client {
             return responseBody.getComment();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1174,7 +1228,8 @@ public class Client {
              return responseBody.getPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1197,7 +1252,8 @@ public class Client {
              return responseBody.getPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1218,6 +1274,7 @@ public class Client {
             return responseBody.getPlaylistVideos();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1239,7 +1296,8 @@ public class Client {
             return responseBody.getPlaylistChannels();
        }
 
-       return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1262,7 +1320,8 @@ public class Client {
              return responseBody.getVideoPlaylist();
          }
 
-         return null;
+        System.out.println(responseBody.getMessage());
+        return null;
     }
 
 
@@ -1305,6 +1364,7 @@ public class Client {
             return responseBody.getChannelPlaylist();
         }
 
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
@@ -1348,11 +1408,208 @@ public class Client {
             return responseBody.getVideoView();
         }
 
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Video> searchAd(Long channelId , List<Category> categories , String searchTerms , int perPage , int pageNumber) {
+        String endpoint = "/api/video/search-ad";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+        requestBody.setCategories(categories);
+        requestBody.setSearchTerms(searchTerms);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getSearchVideos();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Video> searchShortVideo(Long channelId , List<Category> categories , String searchTerms , int perPage , int pageNumber) {
+        String endpoint = "/api/video/search-short";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+        requestBody.setCategories(categories);
+        requestBody.setSearchTerms(searchTerms);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getSearchVideos();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<VideoCategory> addVideoCategories(Long videoId , List<Integer> categoryId) {
+        String endpoint = "/api/video/category/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setCategoryIds(categoryId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getVideoCategories();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public boolean deleteVideoCategories(Long  videoId) {
+        String endpoint = "/api/video/category/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        System.out.println(responseBody.isSuccess() ? "" : responseBody.getMessage());
+        return responseBody.isSuccess();
+    }
+
+
+    public boolean deleteVideoPlaylists(Long playlistId) {
+        String endpoint = "/api/playlist/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPlaylistId(playlistId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        System.out.println(responseBody.isSuccess() ? "" : responseBody.getMessage());
+        return responseBody.isSuccess();
+    }
+
+
+    public List<VideoPlaylist> addVideoPlaylists(Long videoId , List<Long> playlistIds) {
+        String endpoint = "/api/videoPlaylists/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setPlaylistIds(playlistIds);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getVideoPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Playlist> getPlaylistsOfChannel(Long channelId , boolean isSelf) {
+        String endpoint = "/api/channel/" + channelId + "/playlists";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setSelf(isSelf);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Playlist> getPublicPlaylistsForUser(Long channelId) {
+        String endpoint = "/api/channel/" + channelId + "/public-playlists";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
         return null;
     }
 
     public Account getAccount()
     {
         return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

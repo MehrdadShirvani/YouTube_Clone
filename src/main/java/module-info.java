@@ -17,6 +17,8 @@ module org.example.youtube {
     requires jdk.httpserver;
     requires java.desktop;
     requires java.net.http;
+    requires org.bytedeco.javacv;
+    requires java.mail;
 
     opens Server to javafx.fxml;
     exports Server;
