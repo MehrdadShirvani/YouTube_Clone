@@ -146,7 +146,7 @@ public class SignUpController {
         }
 
         Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
-        if(YouTube.client.sendSignupRequest(account))
+        if(!YouTube.client.sendSignupRequest(account))
         {
             //TODO Stylize
             Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -1,5 +1,7 @@
 package Client;
 
+import Shared.Models.Account;
+import Shared.Utils.CacheUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -53,7 +55,24 @@ public class YouTube extends Application {
 
     public static void main(String[] args) {
         client = new Client();
-        client.sendLoginRequest("ashergold5@chron.com","David-Morgan");
+
+        try {
+            if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
+                System.out.println("Login with cached account !");
+                Account account = CacheUtil.readAccountFromCache();
+                client.setAccount(account);
+
+            } else {
+                System.out.println("Login normally !");
+                client.sendLoginRequest("ashergold5@chron.com","David-Morgan");
+                Account account = client.getAccount();
+                CacheUtil.cacheAccount(account);
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred");
+            throw new RuntimeException(e);
+        }
+
         launch();
     }
 }

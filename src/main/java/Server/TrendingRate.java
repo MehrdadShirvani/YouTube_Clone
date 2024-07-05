@@ -1,55 +1,46 @@
 package Server;
 
+import Server.Database.DatabaseManager;
+import Shared.Models.Comment;
+import Shared.Models.Reaction;
+import Shared.Models.Video;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public class TrendingRate{
-    private int viewCount;
-    private int likes;
-    private int dislikes;
-    private int comments;
-    private LocalDateTime lastCheckedDate;
-    private int previousViewCount;
-    private int previousLikes;
-    private int previousComments;
+    private Long videoId;
+    private Long viewCount;
+    private Long numberOfLikes;
+    private Long numberOfDislikes;
+    private Long numberOfComments;
 
-    public TrendingRate(int viewCount, int likes, int dislikes, int comments , LocalDateTime lastCheckedDate, int previousViewCount, int previousLikes, int previousComments, int previousShares) {
-        this.viewCount = viewCount;
-        this.likes = likes;
-        this.dislikes = dislikes;
-        this.comments = comments;
-        this.lastCheckedDate = lastCheckedDate;
-        this.previousViewCount = previousViewCount;
-        this.previousLikes = previousLikes;
-        this.previousComments = previousComments;
+    public TrendingRate(Video video) {
+        List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+        List<Comment> comments = DatabaseManager.getVideoComments(videoId);
+
+        this.videoId = video.getVideoId();
+        this.viewCount = DatabaseManager.getNumberOfViews(this.videoId);
+        this.numberOfLikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count() : 0;
+        this.numberOfDislikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count() : 0;
+        this.numberOfComments = (comments != null) ? comments.stream().count() : 0;
     }
 
-    public double getEngagementRate() {
-        int totalInteractions = likes + dislikes + comments;
+    private double getEngagementRate() {
+        Long totalInteractions = numberOfLikes + numberOfDislikes + numberOfComments;
         return (double) totalInteractions / viewCount;
-    }
-
-    public double getGrowthRate() {
-        Duration duration = Duration.between(lastCheckedDate, LocalDateTime.now());
-        double days = duration.toHours() / 24.0;
-        double viewGrowthRate = (double) (viewCount - previousViewCount) / previousViewCount / days;
-        double likeGrowthRate = (double) (likes - previousLikes) / previousLikes / days;
-        double commentGrowthRate = (double) (comments - previousComments) / previousComments / days;
-
-        return (viewGrowthRate + likeGrowthRate + commentGrowthRate) / 4;
     }
 
     public double calculateRating() {
         double viewWeight = 0.4;
-        double engagementRateWeight = 0.3;
-        double growthRateWeight = 0.3;
+        double engagementRateWeight = 0.6;
 
         double viewScore = viewCount;
         double engagementRateScore = getEngagementRate();
-        double growthRateScore = getGrowthRate();
 
-        return (viewScore * viewWeight) + (engagementRateScore * engagementRateWeight) + (growthRateScore * growthRateWeight);
+        return (viewScore * viewWeight) + (engagementRateScore * engagementRateWeight);
     }
 }
 
