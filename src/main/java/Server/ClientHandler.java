@@ -1808,6 +1808,29 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleSearchShortVideo(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        List<Category> categories = requestBody.getCategories();
+        String searchTerms = requestBody.getSearchTerms();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
+
+        Body responseBody = new Body();
+
+        List<Video> searchVideos = DatabaseManager.searchShortVideo(channelId , categories , searchTerms , perPage , pageNumber);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setSearchVideos(searchVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
