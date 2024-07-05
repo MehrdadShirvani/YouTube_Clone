@@ -1532,6 +1532,31 @@ public class Client {
         return responseBody.isSuccess();
     }
 
+
+    public List<VideoPlaylist> addVideoPlaylists(Long videoId , List<Long> playlistIds) {
+        String endpoint = "/api/video/playlists/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setPlaylistIds(playlistIds);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getVideoPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
