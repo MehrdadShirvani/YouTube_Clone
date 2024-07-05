@@ -1486,6 +1486,9 @@ public class ClientHandler implements Runnable {
     public void handleGetWatchHistory(Request request , Long channelId) {
         Response response;
         Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
 
         Body responseBody = new Body();
 
@@ -1494,7 +1497,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        List<Video> watchHistoryVideos = DatabaseManager.getWatchHistory(channelId);
+        List<Video> watchHistoryVideos = DatabaseManager.getWatchHistory(channelId , perPage , pageNumber);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
