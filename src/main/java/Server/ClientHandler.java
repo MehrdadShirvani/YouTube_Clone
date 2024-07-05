@@ -1951,6 +1951,29 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetPublicPlaylistsForUser(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null");
+            return;
+        }
+
+        List<Playlist> playlists = DatabaseManager.getPublicPlaylistsForUser(channelId );
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylists(playlists);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
