@@ -77,6 +77,7 @@ public class ClientHandler implements Runnable {
                     System.out.println(log);
                     writeLog(log);
                     closeEverything(this.socket , this.bufferedReader , this.bufferedWriter);
+                    break;
                 }
 
                 json = this.serverEncryption.decryptDataAES(encryptedJson);
