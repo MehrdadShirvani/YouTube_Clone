@@ -1560,12 +1560,36 @@ public class Client {
 
     public List<Playlist> getPlaylistsOfChannel(Long channelId , boolean isSelf) {
         String endpoint = "/api/channel/playlists";
-        String method = "POST";
+        String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
         requestBody.setChannelId(channelId);
         requestBody.setSelf(isSelf);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Playlist> getPublicPlaylistsForUser(Long channelId) {
+        String endpoint = "/api/channel/public-playlists";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
 
         Request request = new Request(requestHeader , requestBody);
 
