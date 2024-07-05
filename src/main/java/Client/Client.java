@@ -38,7 +38,7 @@ public class Client {
     public static final int LIKE_ID = 1;
     public static final int DISLIKE_ID = -1;
 
-    public Client() {
+    public Client() throws IOException{
         try {
             this.socket = new Socket(HOST , PORT);
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -48,13 +48,9 @@ public class Client {
             sendClientPublicKeyRSA();
             receiveAesKey();
 
-        } catch (UnknownHostException e) {
-            closeEverything(socket , bufferedReader , bufferedWriter);
-            throw new RuntimeException(e);
-
         } catch (IOException e) {
             closeEverything(socket , bufferedReader , bufferedWriter);
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
