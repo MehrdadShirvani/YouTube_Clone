@@ -1534,7 +1534,7 @@ public class Client {
 
 
     public List<VideoPlaylist> addVideoPlaylists(Long videoId , List<Long> playlistIds) {
-        String endpoint = "/api/video/playlists/add";
+        String endpoint = "/api/videoPlaylists/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
