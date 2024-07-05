@@ -63,6 +63,7 @@ public class Body {
     private ChannelPlaylist channelPlaylist;
     private Integer categoryId;
     private String channelName;
+    private String searchTerms;
 
 
 
@@ -484,5 +485,13 @@ public class Body {
 
     public void setChannelName(String channelName) {
         this.channelName = channelName;
+    }
+
+    public String getSearchTerms() {
+        return searchTerms;
+    }
+
+    public void setSearchTerms(String searchTerms) {
+        this.searchTerms = searchTerms;
     }
 }
