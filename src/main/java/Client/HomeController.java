@@ -2,7 +2,9 @@ package Client;
 
 import Shared.Models.Video;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,16 +13,16 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
+import javax.swing.text.PlainDocument;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeController {
     @FXML
@@ -120,6 +122,44 @@ public class HomeController {
                 historyIcon.setContent("M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM22 12c0 5.51-4.49 10-10 10S2 17.51 2 12h1c0 4.96 4.04 9 9 9s9-4.04 9-9-4.04-9-9-9C8.81 3 5.92 4.64 4.28 7.38c-.11.18-.22.37-.31.56L3.94 8H8v1H1.96V3h1v4.74c.04-.09.07-.17.11-.25.11-.22.23-.42.35-.63C5.22 3.86 8.51 2 12 2c5.51 0 10 4.49 10 10z");
             }
         });
+        //Menu shortcuts
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN),
+                    homeMenuButton::fire
+            );
+        });
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.S,KeyCombination.CONTROL_DOWN),
+                    shortsMenuButton::fire
+            );
+        });
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.S,KeyCombination.CONTROL_DOWN,KeyCombination.SHIFT_DOWN),
+                    subsMenuButton::fire
+            );
+        });
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.Y,KeyCombination.CONTROL_DOWN),
+                    channelMenuButton::fire
+            );
+        });
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.H,KeyCombination.CONTROL_DOWN,KeyCombination.SHIFT_DOWN),
+                    historyMenuButton::fire
+            );
+        });
+        Platform.runLater(() -> {
+            YouTube.primaryStage.getScene().getAccelerators().put(
+                    new KeyCodeCombination(KeyCode.SLASH),
+                    searchTextField::requestFocus
+            );
+        });
+
         setHome();
     }
 
@@ -135,10 +175,8 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
 
-    public void setVideoPage(Video video)
-    {
-        if(currentVideoViewController != null)
-        {
+    public void setVideoPage(Video video) {
+        if (currentVideoViewController != null) {
             currentVideoViewController.videoWebView.getEngine().load(null);
             currentVideoViewController.commentProfile.getEngine().load(null);
             currentVideoViewController.authorProfile.getEngine().load(null);
@@ -160,7 +198,7 @@ public class HomeController {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
 
-        currentVideos = YouTube.client.searchVideo(null,"",10,1);
+        currentVideos = YouTube.client.searchVideo(null, "", 10, 1);
         for (SmallVideoView controller : currentSmallVideos) {
             controller.webView.getEngine().load(null);
             controller.profileWebView.getEngine().load(null);
@@ -217,13 +255,17 @@ public class HomeController {
     public void checkLetter(KeyEvent keyEvent) {
         // slash for search
         if (keyEvent.getCode() == KeyCode.SLASH) {
-            searchTextField.requestFocus();
+//            searchTextField.requestFocus();
 //            System.out.println(homeScrollPane.getWidth() + " " + homeScrollPane.getHeight());
         }
     }
 
     public void checkLetterSearch(KeyEvent keyEvent) {
         // esc for search canceling
+        if (keyEvent.getCode() == KeyCode.SLASH && Objects.equals(searchTextField.getText(), "/")) {
+            searchTextField.setText("");
+            keyEvent.consume();
+        }
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             searchTextField.setText("");
             searchButton.requestFocus();
@@ -231,10 +273,9 @@ public class HomeController {
     }
 
     public void searchButtonAction(ActionEvent actionEvent) {
-        if(!searchTextField.getText().isBlank())
-        {
+        if (!searchTextField.getText().isBlank()) {
             setSearch();
-        }else {
+        } else {
             setHome();
         }
     }
@@ -243,7 +284,7 @@ public class HomeController {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
 
-        List<Video> videos = YouTube.client.searchVideo(null,searchTextField.getText(),10,1);
+        List<Video> videos = YouTube.client.searchVideo(null, searchTextField.getText(), 10, 1);
         for (Video video : videos) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             Parent smallVideo = null;

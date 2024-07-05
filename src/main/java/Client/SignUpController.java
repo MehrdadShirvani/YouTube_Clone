@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
@@ -43,6 +44,8 @@ public class SignUpController {
     GridPane designGridBox;
     @FXML
     VBox designVBox;
+    @FXML
+    HBox commentHBox;
     Label firstNameLabel;
     Label usernameLabel;
     Label passwordLabel;

@@ -59,18 +59,21 @@
                                     <children>
                                         <HBox alignment="CENTER" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #303030; -fx-border-radius: 20; -fx-background-radius: 20;">
                                             <children>
-                                                <ToggleButton fx:id="likeButton" onAction="#likeButtonAction" graphicTextGap="6.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="12">
+                                                <ToggleButton fx:id="likeButton" graphicTextGap="6.0" mnemonicParsing="false" onAction="#likeButtonAction" prefHeight="25.0" prefWidth="60.0" text="12">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="likeToggleGroup" />
+                                                    </toggleGroup>
                                                     <graphic>
-                                                        <SVGPath content="M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z" fill="#f1f1f1" />
+                                                        <SVGPath fx:id="likeIcon" content="M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z" fill="#f1f1f1" />
                                                     </graphic>
                                                     <padding>
                                                         <Insets left="10.0" right="10.0" />
                                                     </padding>
                                                 </ToggleButton>
                                                 <Line endY="-12.0" fill="#f1f1f1" opacity="0.5" startY="12.0" stroke="#f1f1f1" />
-                                                <ToggleButton fx:id="dislikeButton" onAction="#dislikeButtonAction" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+                                                <ToggleButton fx:id="dislikeButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#dislikeButtonAction" text="Button" toggleGroup="$likeToggleGroup">
                                                     <graphic>
-                                                        <SVGPath content="M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z" fill="#f1f1f1" />
+                                                        <SVGPath fx:id="dislikeIcon" content="M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z" fill="#f1f1f1" />
                                                     </graphic>
                                                     <padding>
                                                         <Insets left="10.0" right="10.0" />
@@ -86,7 +89,7 @@
                                                 <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
                                             </padding>
                                         </Button>
-                                        <Button fx:id="downloadButton" onAction="#downloadAction" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Download">
+                                        <Button fx:id="downloadButton" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" onAction="#downloadAction" prefHeight="35.0" styleClass="caption-button" text="Download">
                                             <graphic>
                                                 <SVGPath content="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z" fill="#f1f1f1" />
                                             </graphic>
@@ -125,11 +128,14 @@
                                                 <Label fx:id="subsLabel" text="1.2M subscribers" />
                                             </children>
                                         </VBox>
-                                        <Button fx:id="subsButton" onAction="#subscribeToggleAction" maxHeight="40.0" minHeight="35.0" mnemonicParsing="false" prefHeight="40.0" text="Subscribe">
+                                        <ToggleButton fx:id="subsButton" maxHeight="40.0" minHeight="35.0" mnemonicParsing="false" onAction="#subscribeToggleAction" prefHeight="40.0" text="Subscribe">
                                             <padding>
                                                 <Insets left="20.0" right="20.0" />
                                             </padding>
-                                        </Button>
+                                 <graphic>
+                                    <SVGPath fx:id="subsIcon" />
+                                 </graphic>
+                                        </ToggleButton>
                                     </children>
                                     <HBox.margin>
                                         <Insets />
@@ -155,7 +161,7 @@
                      <VBox.margin>
                         <Insets top="25.0" />
                      </VBox.margin></Label>
-                  <HBox alignment="CENTER_LEFT">
+                  <HBox fx:id="commentHBox" alignment="CENTER_LEFT">
                      <children>
                         <WebView fx:id="commentProfile" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" />
                         <TextField fx:id="commentTextField" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#commentChanged" promptText="Add a comment..." styleClass="comment-textfield" HBox.hgrow="ALWAYS">
@@ -171,9 +177,9 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <HBox alignment="CENTER_RIGHT">
+                  <HBox fx:id="commentBelowHBox" alignment="CENTER_RIGHT">
                      <children>
-                        <Button layoutX="671.0" onAction="#cancelCommentAction" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" styleClass="comment-cancel" text="cancel">
+                        <Button layoutX="671.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancelCommentAction" prefHeight="35.0" styleClass="comment-cancel" text="cancel">
                            <padding>
                               <Insets left="20.0" right="20.0" />
                            </padding>
@@ -181,7 +187,7 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="commentButton" onAction="#newCommentAction" disable="true" mnemonicParsing="false" prefHeight="35.0" styleClass="comment-button" text="Comment">
+                        <Button fx:id="commentButton" disable="true" mnemonicParsing="false" onAction="#newCommentAction" prefHeight="35.0" styleClass="comment-button" text="Comment">
                            <padding>
                               <Insets left="20.0" right="20.0" />
                            </padding></Button>
