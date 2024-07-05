@@ -5,21 +5,25 @@ import Shared.Models.Reaction;
 import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.control.TextField;
@@ -46,7 +50,7 @@ public class VideoViewController {
     public Button shareButton;
     public Label authorLabel;
     public Label subsLabel;
-    public Button subsButton;
+    public ToggleButton subsButton;
     public Label desLabel;
     public FlowPane sideBarFlow;
     public Label commentsLabel;
@@ -64,6 +68,18 @@ public class VideoViewController {
     Button commentButton;
     @FXML
     ScrollPane leftScrollPane;
+    @FXML
+    HBox commentBelowHBox;
+    @FXML
+    VBox leftVBox;
+    @FXML
+    HBox commentHBox;
+    @FXML
+    SVGPath likeIcon;
+    @FXML
+    SVGPath dislikeIcon;
+    @FXML
+    SVGPath subsIcon;
     private Rectangle maskVideoRec;
     private Rectangle maskProfileRec;
     private Rectangle maskcommentProfileRec;
@@ -117,6 +133,37 @@ public class VideoViewController {
                 event.consume(); // Prevent default
             }
         });
+        //Comment below HBox
+        leftVBox.getChildren().remove(commentBelowHBox);
+        commentTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue && !leftVBox.getChildren().contains(commentBelowHBox)) {
+                        leftVBox.getChildren().add(leftVBox.getChildren().indexOf(commentHBox)+1,commentBelowHBox);
+                        commentButton.requestFocus();
+                    }
+        });
+        likeButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            if (isSelected) {
+                likeIcon.setContent("M0 7H3V17H0V7ZM15.77 7H11.54L13.06 2.06C13.38 1.03 12.54 0 11.38 0C10.8 0 10.24 0.24 9.86 0.65L4 7V17H14.43C15.49 17 16.41 16.33 16.62 15.39L17.96 9.39C18.23 8.15 17.18 7 15.77 7Z");
+            } else {
+                likeIcon.setContent("M18.77 11H14.54L16.06 6.06C16.38 5.03 15.54 4 14.38 4C13.8 4 13.24 4.24 12.86 4.65L7 11H3V21H7H8H17.43C18.49 21 19.41 20.33 19.62 19.39L20.96 13.39C21.23 12.15 20.18 11 18.77 11ZM7 20H4V12H7V20ZM19.98 13.17L18.64 19.17C18.54 19.65 18.03 20 17.43 20H8V11.39L13.6 5.33C13.79 5.12 14.08 5 14.38 5C14.64 5 14.88 5.11 15.01 5.3C15.08 5.4 15.16 5.56 15.1 5.77L13.58 10.71L13.18 12H14.53H18.76C19.17 12 19.56 12.17 19.79 12.46C19.92 12.61 20.05 12.86 19.98 13.17Z");
+            }
+        });
+        dislikeButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            if (isSelected) {
+                dislikeIcon.setContent("M18,4h3v10h-3V4z M5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21c0.58,0,1.14-0.24,1.52-0.65L17,14V4H6.57 C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14z");
+            } else {
+                dislikeIcon.setContent("M17,4h-1H6.57C5.5,4,4.59,4.67,4.38,5.61l-1.34,6C2.77,12.85,3.82,14,5.23,14h4.23l-1.52,4.94C7.62,19.97,8.46,21,9.62,21 c0.58,0,1.14-0.24,1.52-0.65L17,14h4V4H17z M10.4,19.67C10.21,19.88,9.92,20,9.62,20c-0.26,0-0.5-0.11-0.63-0.3 c-0.07-0.1-0.15-0.26-0.09-0.47l1.52-4.94l0.4-1.29H9.46H5.23c-0.41,0-0.8-0.17-1.03-0.46c-0.12-0.15-0.25-0.4-0.18-0.72l1.34-6 C5.46,5.35,5.97,5,6.57,5H16v8.61L10.4,19.67z M20,13h-3V5h3V13z");
+            }
+        });
+        subsButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            if (isSelected) {
+                subsIcon.setContent("M10 20H14C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20ZM20 17.35V19H4V17.35L6 15.47V10.32C6 7.40001 7.56 5.10001 10 4.34001V3.96001C10 2.54001 11.49 1.46001 12.99 2.20001C13.64 2.52001 14 3.23001 14 3.96001V4.35001C16.44 5.10001 18 7.41001 18 10.33V15.48L20 17.35ZM19 17.77L17 15.89V10.42C17 7.95001 15.81 6.06001 13.87 5.32001C12.61 4.79001 11.23 4.82001 10.03 5.35001C8.15 6.11001 7 7.99001 7 10.42V15.89L5 17.77V18H19V17.77Z");
+            } else {
+                subsIcon.setContent("");
+            }
+        });
+
+
     }
     Video video;
     public void setVideo(Video video, HomeController homeController)
@@ -194,7 +241,7 @@ public class VideoViewController {
                     isChannelSubscribed = YouTube.client.isSubscribedToChannel(video.getChannelId());
                     if(isChannelSubscribed)
                     {
-                        subsButton.setText("Unsubscribe");
+                        subsButton.setText("Subscribed");
                     }
                     else
                     {
@@ -246,7 +293,6 @@ public class VideoViewController {
         likeButton.setText(likeCount + "");
     }
     public void hi(ActionEvent event) {
-        System.out.println(videoWebView.getWidth());
         engine.executeScript("player.play()");
     }
 
@@ -327,7 +373,6 @@ public class VideoViewController {
     {
         if(commentTextField.getText().isBlank())
         {
-            //TODO show alert for leaving the comment field empty
             return;
         }
         YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), video.getVideoId(), YouTube.client.getAccount().getChannelId(), null));
@@ -339,6 +384,7 @@ public class VideoViewController {
     public void cancelCommentAction(ActionEvent actionEvent)
     {
         commentTextField.setText("");
+        leftVBox.getChildren().remove(commentBelowHBox);
     }
 
     public void downloadAction(ActionEvent event) {
