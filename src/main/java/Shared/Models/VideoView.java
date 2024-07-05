@@ -73,10 +73,10 @@ public class VideoView {
 
     }
 
-    public VideoView(Long videoId, Long channelId, Timestamp viewDateTime)
+    public VideoView(Long videoId, Long channelId)
     {
         this.videoId = videoId;
         this.channelId = channelId;
-        this.viewDateTime = viewDateTime;
+        this.viewDateTime = new Timestamp(System.currentTimeMillis());
     }
 }

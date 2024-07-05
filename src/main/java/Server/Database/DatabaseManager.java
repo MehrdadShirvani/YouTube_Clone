@@ -28,6 +28,11 @@ public class DatabaseManager {
             entityManager.close();
             return savedChannel;
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
     public static Channel editChannel(Channel updatedChannel) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
@@ -40,6 +45,10 @@ public class DatabaseManager {
             transaction.commit();
             entityManager.close();
             return mergedChannel;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -50,75 +59,53 @@ public class DatabaseManager {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
-            Channel channel = entityManager.find(Channel.class, channelId);
-
-            entityManager.close();
-            return channel;
+            return entityManager.find(Channel.class, channelId);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
     public static List<Channel> getChannels() {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
-            entityManager.getTransaction().begin();
-            List<Channel> channels = entityManager.createQuery(
+            return entityManager.createQuery(
                             "SELECT c FROM Channel c", Channel.class).getResultList();
-            entityManager.getTransaction().commit();
-            return channels;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 
 
     public static List<Channel> getSubscribedChannels(Long channelId) {
-        Channel channel = getChannel(channelId);
-        if (channel == null) {
-            return null;
-        }
-
-        EntityManager entityManager = null;
-        try {
-            entityManager = entityManagerFactory.createEntityManager();
-
-            StringBuilder jpql = new StringBuilder("SELECT c ")
-                    .append("FROM Channel c ")
-                    .append("JOIN Subscription s ON c.channelId = s.subscribedChannelId ")
-                    .append("WHERE s.subscriberChannelId = :channelId");
-
-            TypedQuery<Channel> query = entityManager.createQuery(jpql.toString(), Channel.class);
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            String jpql = "SELECT c FROM Channel c JOIN Subscription s ON c.channelId = s.subscribedChannelId WHERE s.subscriberChannelId = :channelId";
+            TypedQuery<Channel> query = entityManager.createQuery(jpql, Channel.class);
             query.setParameter("channelId", channelId);
-
-            List<Channel> results = query.getResultList();
-            return results;
-        } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
     public static List<Channel> getSubscriberChannels(Long channelId) {
-        Channel channel = getChannel(channelId);
-        if (channel == null) {
+        if (getChannel(channelId) == null) {
             return null;
         }
 
-        EntityManager entityManager = null;
-        try {
-            entityManager = entityManagerFactory.createEntityManager();
-
-            StringBuilder jpql = new StringBuilder("SELECT c ")
-                    .append("FROM Channel c ")
-                    .append("JOIN Subscription s ON c.channelId = s.subscriberChannelId ")
-                    .append("WHERE s.subscribedChannelId = :channelId");
-
-            TypedQuery<Channel> query = entityManager.createQuery(jpql.toString(), Channel.class);
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            String jpql = "SELECT c FROM Channel c JOIN Subscription s ON c.channelId = s.subscriberChannelId WHERE s.subscribedChannelId = :channelId";
+            TypedQuery<Channel> query = entityManager.createQuery(jpql, Channel.class);
             query.setParameter("channelId", channelId);
-
-            List<Channel> results = query.getResultList();
-            return results;
-        } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -136,25 +123,11 @@ public class DatabaseManager {
     }
 
     public static long getNumberOfViews(long videoId) {
-        try {
-            CompletableFuture<Long> future = CompletableFuture.supplyAsync(() -> {
-                EntityManager entityManager = null;
-                try {
-                    entityManager = entityManagerFactory.createEntityManager();
-                    TypedQuery<Long> query = entityManager.createQuery("SELECT COUNT(v) FROM VideoView v WHERE v.videoId = :videoId", Long.class);
-                    query.setParameter("videoId", videoId);
-                    return query.getSingleResult();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    if (entityManager != null) {
-                        entityManager.close();
-                    }
-                }
-            }, executorService);
-
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            TypedQuery<Long> query = entityManager.createQuery("SELECT COUNT(v) FROM VideoView v WHERE v.videoId = :videoId", Long.class);
+            query.setParameter("videoId", videoId);
+            return query.getSingleResult();
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
@@ -186,38 +159,10 @@ public class DatabaseManager {
 
     public static Subscription addSubscription(Long subscriberChannelId ,Long subscribedChannelId)
     {
-        if(getChannel(subscriberChannelId) == null || getChannel(subscribedChannelId) == null)
-        {
-            return null;
-        }
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            try
-            {
-                TypedQuery<Subscription> query = entityManager.createQuery(
-                        "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
-                query.setParameter("subscriberChannelId", subscriberChannelId);
-                query.setParameter("subscribedChannelId", subscribedChannelId);
-                return query.getSingleResult();
-            }
-            catch (NoResultException e){
-                Subscription subscription = new Subscription(subscriberChannelId,subscribedChannelId);
-                entityManager.persist(subscription);
-                transaction.commit();
-                return subscription;
-            }
-        }
-    }
-
-    public static void deleteSubscription(Long subscriberChannelId ,Long subscribedChannelId)
-    {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
+        try {
             transaction.begin();
 
             TypedQuery<Subscription> query = entityManager.createQuery(
@@ -225,14 +170,62 @@ public class DatabaseManager {
             query.setParameter("subscriberChannelId", subscriberChannelId);
             query.setParameter("subscribedChannelId", subscribedChannelId);
 
-            try
-            {
-                Subscription subscription = query.getSingleResult();
+            Subscription existingSubscription = null;
+            try {
+                existingSubscription = query.getSingleResult();
+            } catch (NoResultException e) {
+                // Subscription doesn't exist, proceed to create
+            }
+
+            if (existingSubscription == null) {
+                Subscription subscription = new Subscription(subscriberChannelId, subscribedChannelId);
+                entityManager.persist(subscription);
+                transaction.commit();
+                return subscription;
+            } else {
+                return existingSubscription;
+            }
+
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public static void deleteSubscription(Long subscriberChannelId ,Long subscribedChannelId)
+    {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            TypedQuery<Subscription> query = entityManager.createQuery(
+                    "SELECT s FROM Subscription s WHERE s.subscriberChannelId = :subscriberChannelId AND s.subscribedChannelId = :subscribedChannelId", Subscription.class);
+            query.setParameter("subscriberChannelId", subscriberChannelId);
+            query.setParameter("subscribedChannelId", subscribedChannelId);
+
+            Subscription subscription = null;
+            try {
+                subscription = query.getSingleResult();
                 entityManager.remove(subscription);
                 transaction.commit();
+            } catch (NoResultException e) {
+                // Subscription doesn't exist, no action needed
             }
-            catch (NoResultException e){
+
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
             }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
     //endregion
@@ -252,13 +245,12 @@ public class DatabaseManager {
         {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
-
             entityManager.persist(reaction);
             transaction.commit();
-
-            Reaction savedReaction = entityManager.find(Reaction.class, reaction.getReactionId());
-            entityManager.close();
-            return savedReaction;
+            return reaction;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
     public static Reaction editReaction(Reaction reaction)
