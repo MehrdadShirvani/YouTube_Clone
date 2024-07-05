@@ -1466,6 +1466,31 @@ public class Client {
         return null;
     }
 
+
+    public List<VideoCategory> addVideoCategories(Long videoId , List<Integer> categoryId) {
+        String endpoint = "/api/video/category/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setVideoId(videoId);
+        requestBody.setCategoryIds(categoryId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return requestBody.getVideoCategories();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
