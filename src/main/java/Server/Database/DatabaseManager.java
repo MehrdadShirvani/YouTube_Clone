@@ -892,7 +892,7 @@ public class DatabaseManager {
 
             StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount ")
                     .append("FROM Video v ")
-                    .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
                     .append("WHERE v.channelId != :channelId AND v.videoTypeId = 3 ");
 
@@ -951,7 +951,7 @@ public class DatabaseManager {
 
                 StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount ")
                         .append("FROM Video v ")
-                        .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                        .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                         .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
                         .append("WHERE v.channelId != :channelId AND v.videoTypeId = 2 ");
 
@@ -1010,7 +1010,7 @@ public class DatabaseManager {
 
             StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount, COUNT(vc.categoryId) AS categoryCount ")
                     .append("FROM Video v ")
-                    .append("JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
                     .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ");
 
