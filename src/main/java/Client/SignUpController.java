@@ -126,7 +126,7 @@ public class SignUpController {
         }
 
         //Username Uniqueness
-        if (!YouTube.client.sendCheckEmailUnique(usernameTextField.getText()))
+        if (!YouTube.client.sendCheckUsernameUnique(usernameTextField.getText()))
         {
             //TODO Ehsan -> Style the Message Box
             Alert alert = new Alert(Alert.AlertType.ERROR);
