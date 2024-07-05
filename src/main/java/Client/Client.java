@@ -13,6 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -164,7 +165,8 @@ public class Client {
             e.printStackTrace();
             throw new RuntimeException(e);
 
-        } catch (JsonProcessingException e) {
+        } catch (SocketException e) {
+            System.out.println("THERE IS NO LONGER CONNECTION !");
             e.printStackTrace();
             throw new RuntimeException(e);
 
