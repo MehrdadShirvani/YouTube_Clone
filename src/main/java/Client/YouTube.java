@@ -54,7 +54,7 @@ public class YouTube extends Application {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         client = new Client();
 
         try {
