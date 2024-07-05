@@ -1512,6 +1512,26 @@ public class Client {
         return responseBody.isSuccess();
     }
 
+
+    public boolean deleteVideoPlaylist(Long playlistId) {
+        String endpoint = "/api/playlist/delete";
+        String method = "DELETE";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPlaylistId(playlistId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        System.out.println(responseBody.isSuccess() ? "" : responseBody.getMessage());
+        return responseBody.isSuccess();
+    }
+
     public Account getAccount()
     {
         return account;
