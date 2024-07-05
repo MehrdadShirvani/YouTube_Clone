@@ -1559,12 +1559,11 @@ public class Client {
 
 
     public List<Playlist> getPlaylistsOfChannel(Long channelId , boolean isSelf) {
-        String endpoint = "/api/channel/playlists";
+        String endpoint = "/api/channel/" + channelId + "/playlists";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setChannelId(channelId);
         requestBody.setSelf(isSelf);
 
         Request request = new Request(requestHeader , requestBody);
@@ -1584,12 +1583,10 @@ public class Client {
 
 
     public List<Playlist> getPublicPlaylistsForUser(Long channelId) {
-        String endpoint = "/api/channel/public-playlists";
+        String endpoint = "/api/channel/" + channelId + "/public-playlists";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-
-        requestBody.setChannelId(channelId);
 
         Request request = new Request(requestHeader , requestBody);
 
