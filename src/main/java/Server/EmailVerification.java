@@ -77,4 +77,8 @@ public class EmailVerification {
 
         Transport.send(message);
     }
+
+    public String getToken() {
+        return token;
+    }
 }
