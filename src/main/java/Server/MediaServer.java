@@ -140,18 +140,28 @@ public class MediaServer {
         public void handle(HttpExchange exchange) throws IOException {
             if ("POST".equals(exchange.getRequestMethod())) {
                 String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
-                if(contentType == null ||contentType.split("[|]").length != 2 ||contentType.split("[|]")[0].equalsIgnoreCase("video/mp4"))
+                if(contentType == null ||contentType.split("[|]").length != 2 )
                 {
                     exchange.sendResponseHeaders(400, 0);
                     exchange.close();
                     return;
                 }
-                long videoId = Long.parseLong(contentType.split("[|]")[1]);
 
-                String uploadPath = "src/main/resources/Server/Videos/" + videoId + ".mp4";
-                File videoFile = new File(uploadPath);
+
+                File file;
+                if(contentType.split("[|]")[0].equalsIgnoreCase("image/jpg"))
+                {
+                    String photoId = (contentType.split("[|]")[1]);
+                    String uploadPath = "src/main/resources/Server/Images/" + photoId + ".jpg";
+                    file = new File(uploadPath);
+                }
+                else {
+                    long videoId = Long.parseLong(contentType.split("[|]")[1]);
+                    String uploadPath = "src/main/resources/Server/Videos/" + videoId + ".mp4";
+                    file = new File(uploadPath);
+                }
                 try(InputStream is =  exchange.getRequestBody();
-                FileOutputStream fos = new FileOutputStream(videoFile))
+                    FileOutputStream fos = new FileOutputStream(file))
                 {
                     byte[] buffer = new byte[4096];
                     int bytesRead;
@@ -159,8 +169,9 @@ public class MediaServer {
                         fos.write(buffer, 0, bytesRead);
                     }
                 }
-                exchange.sendResponseHeaders(200, 0);
-                exchange.close();
+                    exchange.sendResponseHeaders(200, 0);
+                    exchange.close();
+
             }
         }
     }

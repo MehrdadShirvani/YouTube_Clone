@@ -117,7 +117,7 @@ public class Video {
     {
 
     }
-    public Video(String name, String description, Long channelId, Boolean isPrivate, Boolean isAgeRestricted)
+    public Video(String name, String description, Long channelId, Boolean isPrivate, Boolean isAgeRestricted, int duration, int videoTypeId)
     {
         this.name = name;
         this.description = description;
@@ -125,6 +125,8 @@ public class Video {
         this.createdDateTime = new Timestamp(System.currentTimeMillis());;
         this.isPrivate = isPrivate;
         this.isAgeRestricted = isAgeRestricted;
+        this.duration = duration;
+        this.videoTypeId = videoTypeId;
     }
 
     public void updateVideoDetails(String thumbnail, int duration)
