@@ -34,6 +34,7 @@ public class ClientHandler implements Runnable {
     private BufferedWriter bufferedWriter;
     private PublicKey clientPublicKey;
     private ServerEncryption serverEncryption;
+    private Account account;
 
 
     public ClientHandler(Socket socket) {
@@ -555,6 +556,8 @@ public class ClientHandler implements Runnable {
         body.setMessage("200 Ok");
         body.setAccount(account);
 
+        this.account = account;
+
         response = new Response(header , body);
 
         sendResponse(response);
@@ -579,6 +582,8 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
+        this.account = account;
+
         sendResponse(response);
     }
 
@@ -602,6 +607,9 @@ public class ClientHandler implements Runnable {
         body.setAccount(editedAccount);
 
         response = new Response(header , body);
+
+        this.account = editedAccount;
+
 
         sendResponse(response);
     }
@@ -2127,5 +2135,25 @@ public class ClientHandler implements Runnable {
         recommendedVideos.addAll(videoTrending);
 
         return recommendedVideos;
+    }
+
+
+    public void sendNotification(List<Channel> channels , Video video) {
+        String responseEndpoint = "/api/notifications/poll";
+        String responseMethod = "POST";
+        Header responseHeader = new Header(responseEndpoint , responseMethod);
+
+        List<Long> channelIds = channels.stream().map(Channel::getChannelId).toList();
+
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (channelIds.contains(clientHandler.account.getChannelId())) {
+                Body responseBody = new Body();
+                responseBody.setVideo(video);
+
+                Response response = new Response(responseHeader , responseBody);
+
+                sendResponse(response);
+            }
+        }
     }
 }
