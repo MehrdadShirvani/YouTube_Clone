@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.web.*?>
+
+<VBox prefHeight="486.0" prefWidth="1080.0" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.ChannelViewController">
+    <stylesheets>
+        <URL value="@channel-view.css" />
+    </stylesheets>
+
+    <children>
+      <WebView prefHeight="192.0" prefWidth="1080.0" />
+      <BorderPane prefHeight="100.0" prefWidth="200.0">
+         <left>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <WebView fx:id="profileWebView" maxHeight="80.0" maxWidth="80.0" prefHeight="80.0" prefWidth="80.0">
+                     <HBox.margin>
+                        <Insets right="24.0" />
+                     </HBox.margin></WebView>
+                  <VBox>
+                     <children>
+                        <Label fx:id="authorLabel" text="Marcus Levin" />
+                        <Label fx:id="subsLabel" text="1.2M subscribers" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </left>
+         <right>
+            <ToggleButton fx:id="subsButton" minHeight="35.0" mnemonicParsing="false" prefHeight="40.0" text="Subscribe" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+               <graphic>
+                  <SVGPath fx:id="subsIcon" />
+               </graphic></ToggleButton>
+         </right>
+         <padding>
+            <Insets bottom="4.0" left="65.0" right="65.0" top="16.0" />
+         </padding>
+      </BorderPane>
+      <TabPane fx:id="mainTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Home">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Videos">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Playlists">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="About">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+         <padding>
+            <Insets left="65.0" right="65.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </TabPane>
+   </children>
+</VBox>

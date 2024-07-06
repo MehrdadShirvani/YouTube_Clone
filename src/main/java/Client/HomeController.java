@@ -165,8 +165,8 @@ public class HomeController {
 
     private void setShorts() {
         mainBorderPane.setCenter(null);
-        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
-        BorderPane videoPage = null;
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
+        VBox videoPage = null;
         try {
             videoPage = fxmlLoader.load();
         } catch (IOException e) {
