@@ -298,4 +298,15 @@ public class HomeController {
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
+
+
+    public void watchHistoryKey(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("watch-history-view.fxml"));
+        WatchHistoryController watchHistoryController = fxmlLoader.getController();
+
+        watchHistoryController.setHomeController(this);
+        watchHistoryController.setVideo();
+
+        YouTube.changeScene("watch-history-view.fxml");
+    }
 }
