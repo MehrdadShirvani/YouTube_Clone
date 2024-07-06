@@ -1114,7 +1114,7 @@ public class ClientHandler implements Runnable {
         String searchKeywords;
 
         Body responseBody = new Body();
-        System.out.println("we came to handle search video request ");
+
         try {
             searchKeywords = requestHeader.parseSearchKeywords();
         } catch (UnsupportedEncodingException e) {
@@ -1128,7 +1128,7 @@ public class ClientHandler implements Runnable {
         }
 
         List<Video> searchVideos = DatabaseManager.searchVideo(channelId , categories , searchKeywords , perPage , pageNumber);
-        System.out.println("searchVideos = " + searchVideos);
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setSearchVideos(searchVideos);
