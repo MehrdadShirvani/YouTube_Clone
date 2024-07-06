@@ -544,24 +544,22 @@ public class DatabaseManager {
 
     public static List<Video> getVideosOfPlaylist(Long playlistId)
     {
-        Playlist playlist = getPlaylist(playlistId);
-        if(playlist == null)
-        {
-            return null;
-        }
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
-            Root<Video> videoRoot = cq.from(Video.class);
-            Join<Video, VideoPlaylist> vidoePlaylists = videoRoot.join("VideoPlaylist", JoinType.INNER);
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT v ")
+                    .append("FROM Video v ")
+                    .append("Inner JOIN VideoPlaylist vp ON v.videoId = vp.videoId ")
+                    .append("Where vp.playlistId = :playlistId");
 
-            cq.select(videoRoot)
-                    .where(cb.equal(vidoePlaylists.get("playlistId"), playlistId));
-
-            TypedQuery<Video> query = entityManager.createQuery(cq);
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("playlistId", playlistId);
             return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 
