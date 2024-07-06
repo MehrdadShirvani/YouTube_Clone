@@ -398,8 +398,8 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Comment> query = entityManager.createQuery(
-                    "SELECT c FROM Comment c WHERE c.RepliedCommentId = :RepliedCommentId AND r.videoId = :videoId", Comment.class);
-            query.setParameter("RepliedCommentId", commentId);
+                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId AND r.videoId = :videoId", Comment.class);
+            query.setParameter("repliedCommentId", commentId);
             return  query.getResultList();
         }
     }
