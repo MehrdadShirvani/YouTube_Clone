@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
 <!--900 - 1600-->
 
-<BorderPane fx:id="mainBorderPane" onKeyReleased="#checkLetter" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0f0f0f;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.HomeController">
+<BorderPane fx:id="mainBorderPane" onKeyReleased="#checkLetter" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0f0f0f;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.HomeController">
     <stylesheets>
         <URL value="@home.css" />
     </stylesheets>
@@ -115,7 +123,7 @@
                         <SVGPath fx:id="channelIcon" content="M4 20h14v1H3V6h1v14zM6 3v15h15V3H6zm2.02 14c.36-2.13 1.93-4.1 5.48-4.1s5.12 1.97 5.48 4.1H8.02zM11 8.5a2.5 2.5 0 015 0 2.5 2.5 0 01-5 0zm3.21 3.43A3.507 3.507 0 0017 8.5C17 6.57 15.43 5 13.5 5S10 6.57 10 8.5c0 1.69 1.2 3.1 2.79 3.43-3.48.26-5.4 2.42-5.78 5.07H7V4h13v13h-.01c-.38-2.65-2.31-4.81-5.78-5.07z" fill="WHITE" />
                     </graphic>
                 </ToggleButton>
-                <ToggleButton fx:id="historyMenuButton" alignment="CENTER_LEFT" ellipsisString="" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="31.25" prefWidth="175.0" styleClass="menu-toggle-button" text="History" toggleGroup="$menuToggleGroup">
+                <ToggleButton fx:id="historyMenuButton" alignment="CENTER_LEFT" ellipsisString="" graphicTextGap="10.0" mnemonicParsing="false" onAction="#watchHistoryKey" prefHeight="31.25" prefWidth="175.0" styleClass="menu-toggle-button" text="History" toggleGroup="$menuToggleGroup">
                     <VBox.margin>
                         <Insets left="10.0" right="10.0" />
                     </VBox.margin>
