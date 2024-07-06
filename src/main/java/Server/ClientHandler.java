@@ -2042,6 +2042,29 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleSearchPlaylist(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
+        String searchKeywords = requestBody.getSearchTerms();
+
+        Body responseBody = new Body();
+
+        //TODO Use database method toe get videos
+        List<Video> searchPlaylists = new ArrayList<>();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setSearchVideos(searchPlaylists);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
