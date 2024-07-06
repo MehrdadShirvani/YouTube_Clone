@@ -46,7 +46,7 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
-    private Video watchHistoryVideos;
+    private List<Video> watchHistoryVideos;
     private Timestamp watchHistoryTimestamp;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
@@ -423,11 +423,11 @@ public class Body {
         this.pageNumber = pageNumber;
     }
 
-    public Video getWatchHistoryVideos() {
+    public List<Video> getWatchHistoryVideos() {
         return watchHistoryVideos;
     }
 
-    public void setWatchHistoryVideos(Video watchHistoryVideos) {
+    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
         this.watchHistoryVideos = watchHistoryVideos;
     }
 
