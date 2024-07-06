@@ -158,6 +158,12 @@ public class Client {
             decryptedJson = this.clientEncryption.decryptDataAES(encryptedJson);
             response = objectMapper.readValue(decryptedJson , Response.class);
 
+            if (Objects.equals(response.getHeader().getEndpoint(), "/api/notifications/poll")) {
+                //TODO : update notification ui
+                return handleResponse();
+            }
+
+
             return response;
 
         } catch (Exception e) {
