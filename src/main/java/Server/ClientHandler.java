@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1565,7 +1566,8 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        List<Video> watchHistoryVideos = DatabaseManager.getWatchHistory(channelId , perPage , pageNumber);
+        //TODO : use database method
+        HashMap<Video , Timestamp> watchHistoryVideos = new HashMap<>();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
