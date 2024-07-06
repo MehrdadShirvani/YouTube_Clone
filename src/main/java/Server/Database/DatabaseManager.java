@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -1169,28 +1170,23 @@ public class DatabaseManager {
         }
     }
     public static List<Category> getCategoriesOfVideo(Long videoId) {
-
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<Category>> future = CompletableFuture.supplyAsync(() -> {
-                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-                {
-                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-                    CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
-                    Root<Category> categoryRoot = cq.from(Category.class);
-                    Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
+            entityManager = entityManagerFactory.createEntityManager();
 
-                    cq.select(categoryRoot)
-                            .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT c ")
+                    .append("FROM Video v ")
+                    .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("LEFT JOIN Category c ON vc.categoryId = c.categoryId ")
+                    .append("Where v.videoId = :videoId");
 
-                    TypedQuery<Category> query = entityManager.createQuery(cq);
-                    return query.getResultList();
-                }
-            });
-
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+            TypedQuery<Category> query = entityManager.createQuery(jpql.toString(), Category.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static List<VideoCategory> getVideoCategories(Long videoId) {
