@@ -1392,6 +1392,31 @@ public class DatabaseManager {
             }
         }
     }
+    public static List<Date> getWatchHistoryDates(Long channelId, int perPage, int pageNumber) {
+
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT vv.viewDateTime ")
+                    .append("FROM Video v ")
+                    .append("INNER JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ")
+                    .append(" ORDER BY viewDateTime DESC");
+
+            TypedQuery<Date> query = entityManager.createQuery(jpql.toString(), Date.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
     //endregion
 
     //region Categories
