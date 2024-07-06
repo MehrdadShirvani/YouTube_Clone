@@ -46,7 +46,8 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
-    private HashMap<Video , Timestamp> watchHistoryVideos;
+    private Video watchHistoryVideos;
+    private Timestamp watchHistoryTimestamp;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
@@ -422,12 +423,20 @@ public class Body {
         this.pageNumber = pageNumber;
     }
 
-    public HashMap<Video, Timestamp> getWatchHistoryVideos() {
+    public Video getWatchHistoryVideos() {
         return watchHistoryVideos;
     }
 
-    public void setWatchHistoryVideos(HashMap<Video, Timestamp> watchHistoryVideos) {
+    public void setWatchHistoryVideos(Video watchHistoryVideos) {
         this.watchHistoryVideos = watchHistoryVideos;
+    }
+
+    public Timestamp getWatchHistoryTimestamp() {
+        return watchHistoryTimestamp;
+    }
+
+    public void setWatchHistoryTimestamp(Timestamp watchHistoryTimestamp) {
+        this.watchHistoryTimestamp = watchHistoryTimestamp;
     }
 
     public boolean isChannelNameUnique() {
