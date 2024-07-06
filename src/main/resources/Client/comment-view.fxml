@@ -12,7 +12,7 @@
         <URL value="@video-view.css" />
     </stylesheets>
     <HBox alignment="CENTER_LEFT">
-        <WebView fx:id="commentProfile" contextMenuEnabled="false" disable="true" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" BorderPane.alignment="CENTER">
+        <WebView fx:id="commentProfile" disable="true" maxHeight="48.0" maxWidth="48.0" prefHeight="48.0" prefWidth="48.0" BorderPane.alignment="CENTER">
             <HBox.margin>
                 <Insets />
             </HBox.margin>

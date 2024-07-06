@@ -8,7 +8,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="225.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
+<VBox fx:id="mainVBox" alignment="TOP_CENTER" prefHeight="225.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallVideoView">
     <stylesheets>
         <URL value="@small-video-view.css" />
     </stylesheets>
@@ -25,30 +25,30 @@
          <Cursor fx:constant="HAND" />
       </cursor>
    </StackPane>
-    <HBox fx:id="downHBox">
+    <HBox fx:id="downHBox" fillHeight="false">
         <children>
-         <StackPane>
+         <StackPane fx:id="profileStackPane">
             <HBox.margin>
                <Insets right="10.0" top="10.0" />
             </HBox.margin>
             <children>
-               <WebView fx:id="profileWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+               <WebView fx:id="profileWebView" disable="true" prefHeight="50.0" prefWidth="50.0">
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
                </WebView>
             </children>
          </StackPane>
-            <VBox>
+            <VBox fx:id="rightVBox">
                 <children>
                <HBox alignment="CENTER_LEFT">
                   <VBox.margin>
                      <Insets />
                   </VBox.margin>
                   <children>
-                          <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title" text="trees forest woods" wrapText="true">
+                          <Label fx:id="titleLabel" graphicTextGap="0.0" styleClass="title-loading" text="trees forest woods" wrapText="true">
                               <font>
-                                  <Font size="11.0" />
+                                  <Font size="15.0" />
                               </font>
                         <cursor>
                            <Cursor fx:constant="HAND" />
@@ -61,8 +61,8 @@
                </HBox>
                     <VBox spacing="1.0">
                         <children>
-                            <Label fx:id="authorLabel" styleClass="caption" text="James Gouse" />
-                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption" text="15K Views .1 week ago" />
+                            <Label fx:id="authorLabel" styleClass="caption-loading" text="James Gouse" />
+                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
                         </children>
                         <VBox.margin>
                             <Insets top="2.0" />

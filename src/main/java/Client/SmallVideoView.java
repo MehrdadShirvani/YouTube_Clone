@@ -8,13 +8,18 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,7 +38,13 @@ public class SmallVideoView {
     @FXML
     HBox downHBox;
     @FXML
+    VBox mainVBox;
+    @FXML
+    StackPane profileStackPane;
+    @FXML
     public WebView profileWebView;
+    @FXML
+    VBox rightVBox;
     Video video;
     HomeController homeController;
     private Timeline shimmerTimelineTitle;
@@ -143,6 +154,8 @@ public class SmallVideoView {
         thumbMaskRec.setArcWidth(20);
         thumbMaskRec.setArcHeight(20);
         webView.setClip(thumbMaskRec);
+        thumbMaskRec.widthProperty().bind(webView.widthProperty());
+        thumbMaskRec.heightProperty().bind(webView.heightProperty());
         // Profile mask
         Rectangle profileMaskRec = new Rectangle(50, 50);
         profileMaskRec.setArcHeight(50);
@@ -156,5 +169,24 @@ public class SmallVideoView {
 
     public void clicked(MouseEvent mouseEvent) {
         homeController.setVideoPage(video);
+    }
+
+    public void setPref(double ratio, Boolean avatar, Boolean author) {
+        mainVBox.setPrefWidth(mainVBox.getPrefWidth() * ratio);
+        mainVBox.setPrefHeight(mainVBox.getPrefHeight() * ratio);
+        double size = authorLabel.getFont().getSize();
+        authorLabel.setStyle("-fx-font-size: " + size * ratio + ";");
+//        size = titleLabel.getFont().getSize();
+//        titleLabel.setStyle("-fx-font-size: "+size*ratio+";");
+        size = viewsLabel.getFont().getSize();
+        HBox.setMargin(profileStackPane, new Insets(10 * ratio, 10 * ratio, 0, 0));
+        HBox.setMargin(rightVBox, new Insets(5 * ratio, 5 * ratio, 0, 0));
+        viewsLabel.setStyle("-fx-font-size: " + size * ratio + ";");
+        if (!avatar) {
+            profileStackPane.getChildren().remove(profileWebView);
+            mainVBox.getChildren().remove(profileStackPane);
+        }
+        if (!author)
+            ((VBox) authorLabel.getParent()).getChildren().remove(authorLabel);
     }
 }
