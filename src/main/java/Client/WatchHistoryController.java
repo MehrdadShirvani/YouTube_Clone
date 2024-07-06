@@ -7,7 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WatchHistoryController {
     @FXML
@@ -17,10 +21,12 @@ public class WatchHistoryController {
 
 
     public void setVideo(HomeController homeController) {
-        List<Video> watchHistoryVideos = YouTube.client.getWatchHistory(PER_PAGE , pageNumber);
+        HashMap<Video , Timestamp> watchHistoryVideos = YouTube.client.getWatchHistory(PER_PAGE , pageNumber);
+        List<Map.Entry<Video , Timestamp>> watchHistoryVideosSet = new ArrayList<>(watchHistoryVideos.entrySet());
+        watchHistoryVideosSet.sort(Map.Entry.comparingByValue());
         pageNumber++;
 
-        for (Video video : watchHistoryVideos) {
+        for (Map.Entry<Video , Timestamp> videoTimestampEntry : watchHistoryVideosSet) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-watch-history-view.fxml"));
             Parent smallVideo = null;
 
@@ -31,7 +37,7 @@ public class WatchHistoryController {
             }
 
             SmallWatchHistoryController smallWatchHistoryController = fxmlLoader.getController();
-            smallWatchHistoryController.setVideo(video, homeController);
+            smallWatchHistoryController.setVideo(videoTimestampEntry.getKey(), homeController);
             centerFlow.getChildren().add(smallVideo);
         }
     }
