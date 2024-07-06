@@ -84,6 +84,7 @@ public class ClientHandler implements Runnable {
                 }
 
                 json = this.serverEncryption.decryptDataAES(encryptedJson);
+                System.out.println("json = " + json);
                 request = objectMapper.readValue(json , Request.class);
                 header = request.getHeader();
                 endpoint = header.endpointParser()[1];
@@ -243,13 +244,19 @@ public class ClientHandler implements Runnable {
                     handleBadRequest(header);
                 }
             } else if (endpointParsed.length >= 5) {
-                if (header.endpointParser()[4].equals("most-views-categories")) {
+                if (endpointParsed[4].equals("most-views-categories")) {
                     Long channelId = header.extractIds().getFirst();
                     handleGetMostViewedCategoriesOfUser(request , channelId);
 
-                } else if (header.endpointParser()[4].equals("watch-history")) {
+                } else if (endpointParsed[4].equals("watch-history")) {
                     Long channelId = header.extractIds().getFirst();
-                    handleGetWatchHistory(request , channelId);
+                    if (endpointParsed[5].equals("video")) {
+                        handleGetWatchHistoryVideo(request , channelId);
+
+                    } else if (endpointParsed[5].equals("timestamp")) {
+                        handleGetWatchHistoryTimestamp(request , channelId);
+
+                    }
 
                 }
             }
@@ -1552,7 +1559,7 @@ public class ClientHandler implements Runnable {
     }
 
 
-    public void handleGetWatchHistory(Request request , Long channelId) {
+    public void handleGetWatchHistoryVideo(Request request , Long channelId) {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
@@ -1567,7 +1574,7 @@ public class ClientHandler implements Runnable {
         }
 
         //TODO : use database method
-        HashMap<Video , Timestamp> watchHistoryVideos = new HashMap<>();
+        List<Video> watchHistoryVideos = new ArrayList<>();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
@@ -1577,6 +1584,32 @@ public class ClientHandler implements Runnable {
         sendResponse(response , this);
     }
 
+
+
+    public void handleGetWatchHistoryTimestamp(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null !");
+            return;
+        }
+
+        //TODO : use database method
+        List<Timestamp> watchHistoryTimestamps= new ArrayList<>();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setWatchHistoryTimestamps(watchHistoryTimestamps);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
 
     public void handleGetCategories(Request request) {
         Response response;
