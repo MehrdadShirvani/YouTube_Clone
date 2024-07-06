@@ -398,8 +398,8 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Comment> query = entityManager.createQuery(
-                    "SELECT c FROM Comment c WHERE c.RepliedCommentId = :RepliedCommentId AND r.videoId = :videoId", Comment.class);
-            query.setParameter("RepliedCommentId", commentId);
+                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId AND r.videoId = :videoId", Comment.class);
+            query.setParameter("repliedCommentId", commentId);
             return  query.getResultList();
         }
     }
@@ -1360,23 +1360,32 @@ public class DatabaseManager {
     }
     public static List<Video> getWatchHistory(Long channelId, int perPage, int pageNumber) {
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
-            Root<Video> videoRoot = cq.from(Video.class);
-            Join<Video, VideoView> videoViewJoin = videoRoot.join("VideoView", JoinType.INNER);
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
-            cq.select(videoRoot)
-                    .where(cb.equal(videoViewJoin.get("channelId"), channelId))
-                    .orderBy(cb.desc(videoViewJoin.get("ViewDateTime")));
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video v ")
+                    .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ")
+                    .append(" ORDER BY viewDateTime DESC");
 
-            TypedQuery<Video> query = entityManager.createQuery(cq);
+            TypedQuery<Object[]> query = entityManager.createQuery(jpql.toString(), Object[].class);
+            query.setParameter("channelId", channelId);
+
             query.setFirstResult((pageNumber - 1) * perPage);
             query.setMaxResults(perPage);
 
+            List<Object[]> results = query.getResultList();
+            List<Video> videos = results.stream()
+                    .map(result -> (Video) result[0])
+                    .collect(Collectors.toList());
 
-            return query.getResultList();
+            return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     //endregion
