@@ -1,10 +1,19 @@
 package Client;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebView;
+
+import java.io.IOException;
 
 public class ChannelViewController {
     @FXML
@@ -13,8 +22,31 @@ public class ChannelViewController {
     SVGPath subsIcon;
     @FXML
     WebView profileWebView;
+    @FXML
+    WebView myNoContentWebView;
+    @FXML
+    WebView myNoContentWebView2;
+    @FXML
+    WebView myNoContentWebView3;
+    @FXML
+    WebView otherNoContentWebView;
+    @FXML
+    WebView otherNoContentWebView2;
+    @FXML
+    WebView otherNoContentWebView3;
+    @FXML
+    VBox homeVBox;
+    @FXML
+    VBox contentVBox;
+    @FXML
+    HBox recentHBox;
+    @FXML
+    HBox popularHBox;
+    @FXML
+    FlowPane videosFlowPane;
     private Rectangle maskcommentProfileRec;
-    public void initialize() {
+
+    public void initialize() throws IOException {
         //Mask
         maskcommentProfileRec = new Rectangle(80, 80);
         maskcommentProfileRec.setArcWidth(80);
@@ -29,6 +61,45 @@ public class ChannelViewController {
                 subsIcon.setContent("");
             }
         });
+        String myURL = HomeController.class.getResource("my-no-content.html").toExternalForm();
+        String otherURL = HomeController.class.getResource("other-no-content.html").toExternalForm();
+        System.out.println(myURL);
+
+        myNoContentWebView.getEngine().load(myURL);
+        otherNoContentWebView.getEngine().load(otherURL);
+        myNoContentWebView.setPageFill(Color.TRANSPARENT);
+        otherNoContentWebView.setPageFill(Color.TRANSPARENT);
+
+        myNoContentWebView2.getEngine().load(myURL);
+        otherNoContentWebView2.getEngine().load(otherURL);
+        myNoContentWebView2.setPageFill(Color.TRANSPARENT);
+        otherNoContentWebView2.setPageFill(Color.TRANSPARENT);
+
+        myNoContentWebView3.getEngine().load(myURL);
+        otherNoContentWebView3.getEngine().load(otherURL);
+        myNoContentWebView3.setPageFill(Color.TRANSPARENT);
+        otherNoContentWebView3.setPageFill(Color.TRANSPARENT);
+
+        for (int i = 0; i < 10; ++i) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            recentHBox.getChildren().add(fxmlLoader.load());
+            ((SmallVideoView)fxmlLoader.getController()).setPref(0.8,false,false);
+        }
+        for (int i = 0; i < 10; ++i) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            popularHBox.getChildren().add(fxmlLoader.load());
+            ((SmallVideoView)fxmlLoader.getController()).setPref(0.8,false,false);
+        }
+        for (int i = 0; i < 10; ++i) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            videosFlowPane.getChildren().add(fxmlLoader.load());
+            ((SmallVideoView)fxmlLoader.getController()).setPref(1,false,false);
+        }
+
+        //Delete the vboxs if the content is found(my/other)
+        //If no content is found then delete the contentVBox
+        //If content is found:
+//        homeVBox.setAlignment(Pos.CENTER_LEFT);
 
     }
 }

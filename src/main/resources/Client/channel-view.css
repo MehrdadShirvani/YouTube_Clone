@@ -7,21 +7,25 @@
     -fx-blue-color: #065fd4;
     -fx-white-color: #f1f1f1;
 }
+
 .side-bar {
     -fx-background-color: -fx-gray-color;
 }
-#authorLabel{
+
+#authorLabel {
     -fx-font-family: Roboto;
     -fx-font-size: 24;
     -fx-font-weight: bold;
-    -fx-text-fill:  #f1f1f1;
+    -fx-text-fill: #f1f1f1;
 }
-#subsLabel{
+
+#subsLabel {
     -fx-text-fill: -fx-bright-gray-color;
     -fx-font-family: Roboto;
     -fx-font-size: 14;
 }
-#subsButton{
+
+.submmit-button {
     -fx-border-width: 0;
     -fx-background-radius: 20;
     -fx-background-color: white;
@@ -29,31 +33,77 @@
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
-#mainTabPane .tab{
+
+submmit-button:hover {
+    -fx-opacity: 0.7;
+}
+
+#mainTabPane .tab {
     -fx-background-color: transparent;
 }
-#mainTabPane .tab .text{
+
+#mainTabPane .tab .text {
     -fx-fill: -fx-bright-gray-color;
     -fx-font-family: Roboto;
     -fx-font-size: 14;
     -fx-font-weight: bold;
 }
+
 #mainTabPane > .tab-header-area > .tab-header-background {
     -fx-background-color: transparent;
 }
+
 #mainTabPane .tab:selected {
     -fx-border-color: #f1f1f1;
     -fx-border-width: 0 0 2 0;
     -fx-text-fill: #f1f1f1;
 }
-#mainTabPane .tab:selected .tab-label{
+
+#mainTabPane .tab:selected .tab-label {
     -fx-text-fill: #f1f1f1;
     -fx-fill: #f1f1f1;
 }
+
 .tab {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-padding: 16 32 16 32;
-    /*-fx-border-insets: 16 32 16 32;*/
+    -fx-border-insets: 0 32 0 32;
     -fx-background-insets: 16 32 16 32;
+}
+
+.h1-label {
+    -fx-font-family: Roboto;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-weight: 800;
+    -fx-font-size: 12;
+}
+
+.h2-label {
+    -fx-font-family: Roboto;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 12;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: -fx-gray-color;
+    -fx-border-width: 0;
+}
+.title{
+    -fx-font-family: Roboto;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f1f1f1;
+}
+.des-label
+{
+    -fx-font-family: Roboto;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 14;
+}
+.h0-label{
+    -fx-font-family: Roboto;
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 24;
+    -fx-font-weight: 900;
 }
