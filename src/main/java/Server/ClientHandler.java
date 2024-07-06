@@ -14,6 +14,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URLDecoder;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -92,6 +93,13 @@ public class ClientHandler implements Runnable {
                 } else {
                     handleBadRequest(header);
                 }
+            } catch (SocketException e) {
+                String errorLog = "Error : got connection reset error ";
+                System.err.println(errorLog);
+                e.printStackTrace();
+                writeLog(errorLog);
+                throw new RuntimeException(e);
+
             } catch (IOException e) {
                 String errorLog = "Error : while reading request json in ClientHandler !";
                 System.err.println(errorLog);
@@ -488,16 +496,16 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void sendResponse(Response response) {
+    public void sendResponse(Response response , ClientHandler clientHandler) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectWriter objectWriter = objectMapper.writer();
             String json = objectWriter.writeValueAsString(response);
-            String encryptedJson = this.serverEncryption.encryptDataAES(json);
+            String encryptedJson = clientHandler.serverEncryption.encryptDataAES(json);
 
-            this.bufferedWriter.write(encryptedJson);
-            this.bufferedWriter.newLine();
-            this.bufferedWriter.flush();
+            clientHandler.bufferedWriter.write(encryptedJson);
+            clientHandler.bufferedWriter.newLine();
+            clientHandler.bufferedWriter.flush();
 
         } catch (JsonProcessingException e) {
             String errorLog = "Error : while serialize the response client in ClientHandler (sendResponse function)";
@@ -518,7 +526,7 @@ public class ClientHandler implements Runnable {
         body.setMessage(message);
 
         Response response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -528,7 +536,7 @@ public class ClientHandler implements Runnable {
         body.setMessage("400 Bad Request : " + header.getEndpoint());
 
         Response response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -560,7 +568,7 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -584,7 +592,7 @@ public class ClientHandler implements Runnable {
 
         this.account = account;
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -611,7 +619,7 @@ public class ClientHandler implements Runnable {
         this.account = editedAccount;
 
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -638,7 +646,7 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -663,7 +671,7 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -682,7 +690,7 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -706,7 +714,7 @@ public class ClientHandler implements Runnable {
 
         response = new Response(header , body);
 
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -732,7 +740,7 @@ public class ClientHandler implements Runnable {
         body.setChannel(channel);
 
         response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -759,7 +767,7 @@ public class ClientHandler implements Runnable {
         body.setSubscriberChannels(subscriberChannels);
 
         response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -786,7 +794,7 @@ public class ClientHandler implements Runnable {
                 body.setReaction(reaction);
 
                 response = new Response(header , body);
-                sendResponse(response);
+                sendResponse(response , this);
 
             } else {
                 Reaction editedReaction = DatabaseManager.editReaction(reaction);
@@ -796,7 +804,7 @@ public class ClientHandler implements Runnable {
                 body.setReaction(editedReaction);
 
                 response = new Response(header , body);
-                sendResponse(response);
+                sendResponse(response , this);
             }
 
 
@@ -815,7 +823,7 @@ public class ClientHandler implements Runnable {
             body.setMessage("200 Ok");
 
             response = new Response(header , body);
-            sendResponse(response);
+            sendResponse(response , this);
 
         } else if (endpoint.equals("reaction")) {
             handleVideoGetReactionRequests(request);
@@ -841,7 +849,7 @@ public class ClientHandler implements Runnable {
         body.setReaction(reaction);
 
         response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -864,7 +872,7 @@ public class ClientHandler implements Runnable {
         body.setComment(comment);
 
         response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
     public void handleCommentDeleteRequests(Request request) {
@@ -885,7 +893,7 @@ public class ClientHandler implements Runnable {
         body.setMessage("200 Ok");
 
         response = new Response(header , body);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
     public void handleCommentLikeRequests(Request request) {
@@ -911,7 +919,7 @@ public class ClientHandler implements Runnable {
                 body.setCommentReaction(commentReaction);
 
                 response = new Response(header , body);
-                sendResponse(response);
+                sendResponse(response , this);
 
             } else {
                 //TODO make editCommentReaction return Reaction
@@ -921,7 +929,7 @@ public class ClientHandler implements Runnable {
                 body.setMessage("200 Ok");
 
                 response = new Response(header , body);
-                sendResponse(response);
+                sendResponse(response , this);
             }
 
 
@@ -940,7 +948,7 @@ public class ClientHandler implements Runnable {
             body.setMessage("200 Ok");
 
             response = new Response(header , body);
-            sendResponse(response);
+            sendResponse(response , this);
 
         } else {
             handleBadRequest(header);
@@ -968,7 +976,7 @@ public class ClientHandler implements Runnable {
         responseBody.setUsernameUnique(isUsernameUnique);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -992,7 +1000,7 @@ public class ClientHandler implements Runnable {
         responseBody.setEmailUnique(isEmailUnique);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1019,7 +1027,7 @@ public class ClientHandler implements Runnable {
         responseBody.setHomepageVideos(homepageVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1043,7 +1051,7 @@ public class ClientHandler implements Runnable {
         responseBody.setComments(commentsOfVideo);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1067,7 +1075,7 @@ public class ClientHandler implements Runnable {
         responseBody.setSubscriptions(subscriptions);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1091,7 +1099,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideo(video);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1106,7 +1114,7 @@ public class ClientHandler implements Runnable {
         String searchKeywords;
 
         Body responseBody = new Body();
-
+        System.out.println("we came to handle search video request ");
         try {
             searchKeywords = requestHeader.parseSearchKeywords();
         } catch (UnsupportedEncodingException e) {
@@ -1120,13 +1128,13 @@ public class ClientHandler implements Runnable {
         }
 
         List<Video> searchVideos = DatabaseManager.searchVideo(channelId , categories , searchKeywords , perPage , pageNumber);
-
+        System.out.println("searchVideos = " + searchVideos);
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setSearchVideos(searchVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1213,7 +1221,7 @@ public class ClientHandler implements Runnable {
         responseBody.setSubscribedToChannel(isSubscribed);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1244,7 +1252,7 @@ public class ClientHandler implements Runnable {
        responseBody.setIsVideoLiked(isVideoLiked);
 
        response = new Response(requestHeader , responseBody);
-       sendResponse(response);
+       sendResponse(response , this);
     }
 
 
@@ -1275,7 +1283,7 @@ public class ClientHandler implements Runnable {
         responseBody.setIsCommentLiked(isCommentLiked);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
     public void handleGetViewsOfVideo(Request request) {
@@ -1297,7 +1305,7 @@ public class ClientHandler implements Runnable {
         responseBody.setNumberOfViews(numberOfViews);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1322,7 +1330,7 @@ public class ClientHandler implements Runnable {
         responseBody.setNumberOfLikes(numberOfLikes);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1347,7 +1355,7 @@ public class ClientHandler implements Runnable {
         responseBody.setNumberOfDislikes(numberOfLikes);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1370,7 +1378,7 @@ public class ClientHandler implements Runnable {
         responseBody.setComments(comments);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1396,7 +1404,7 @@ public class ClientHandler implements Runnable {
 
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1422,7 +1430,7 @@ public class ClientHandler implements Runnable {
 
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1444,7 +1452,7 @@ public class ClientHandler implements Runnable {
         responseBody.setCategories(categories);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1466,7 +1474,7 @@ public class ClientHandler implements Runnable {
         responseBody.setCategories(categories);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1494,7 +1502,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideo(addedVideo);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1515,7 +1523,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1539,7 +1547,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1564,7 +1572,7 @@ public class ClientHandler implements Runnable {
         responseBody.setWatchHistoryVideos(watchHistoryVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1581,7 +1589,7 @@ public class ClientHandler implements Runnable {
         responseBody.setCategories(categories);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1605,7 +1613,7 @@ public class ClientHandler implements Runnable {
         responseBody.setChannelNameUnique(isChannelNameUnique);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1629,7 +1637,7 @@ public class ClientHandler implements Runnable {
         responseBody.setComment(editedComment);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1653,7 +1661,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylist(addedPlaylist);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1677,7 +1685,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylist(editedPlaylist);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1699,7 +1707,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylistVideos(playlistVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1721,7 +1729,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylistChannels(playlistChannels);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1745,7 +1753,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideoPlaylist(videoPlaylist);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1769,7 +1777,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1793,7 +1801,7 @@ public class ClientHandler implements Runnable {
         responseBody.setChannelPlaylist(channelPlaylist);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1817,7 +1825,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1841,7 +1849,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideoView(addedVideoView);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1864,7 +1872,7 @@ public class ClientHandler implements Runnable {
         responseBody.setSearchVideos(searchVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1887,7 +1895,7 @@ public class ClientHandler implements Runnable {
         responseBody.setSearchVideos(searchVideos);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1912,7 +1920,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideoCategories(videoCategories);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1935,7 +1943,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1958,7 +1966,7 @@ public class ClientHandler implements Runnable {
         responseBody.setMessage("200 Ok");
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -1983,7 +1991,7 @@ public class ClientHandler implements Runnable {
         responseBody.setVideoPlaylists(videoPlaylists);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -2007,7 +2015,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylists(playlists);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -2030,7 +2038,7 @@ public class ClientHandler implements Runnable {
         responseBody.setPlaylists(playlists);
 
         response = new Response(requestHeader , responseBody);
-        sendResponse(response);
+        sendResponse(response , this);
     }
 
 
@@ -2145,7 +2153,7 @@ public class ClientHandler implements Runnable {
     public void sendNotification(List<Channel> channels , Video video) {
         String responseEndpoint = "/api/notifications/poll";
         String responseMethod = "POST";
-        Header responseHeader = new Header(responseEndpoint , responseMethod);
+        Header responseHeader = new Header(responseMethod , responseEndpoint);
 
         List<Long> channelIds = channels.stream().map(Channel::getChannelId).toList();
 
@@ -2156,7 +2164,7 @@ public class ClientHandler implements Runnable {
 
                 Response response = new Response(responseHeader , responseBody);
 
-                sendResponse(response);
+                sendResponse(response , clientHandler);
             }
         }
     }
