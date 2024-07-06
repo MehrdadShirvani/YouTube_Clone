@@ -1498,7 +1498,16 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Video addedVideo = DatabaseManager.addVideo(video);
+        Video addedVideo;
+        if(video.getVideoId() > 0)
+        {
+            addedVideo = DatabaseManager.editVideo(video);
+        }
+        else
+        {
+            addedVideo = DatabaseManager.addVideo(video);;
+        }
+
 
         List<Channel> subscriberChannels = DatabaseManager.getSubscriberChannels(video.getChannelId());
 
