@@ -1125,8 +1125,8 @@ public class Client {
     }
 
 
-    public HashMap<Video, Timestamp> getWatchHistory(int perPage , int pageNumber) {
-         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
+    public Video getWatchHistoryVideo(int perPage , int pageNumber) {
+         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history/video";
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
          Body requestBody = new Body();
@@ -1141,6 +1141,29 @@ public class Client {
          if (responseBody.isSuccess()) {
              return responseBody.getWatchHistoryVideos();
          }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+
+    public Timestamp getWatchHistoryTimestamp(int perPage , int pageNumber) {
+        String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history/timestamp";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getWatchHistoryTimestamp();
+        }
 
         System.out.println(responseBody.getMessage());
         return null;
