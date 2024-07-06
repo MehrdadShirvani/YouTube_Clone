@@ -47,7 +47,7 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private List<Video> watchHistoryVideos;
-    private Timestamp watchHistoryTimestamp;
+    private List<Timestamp> watchHistoryTimestamps;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
@@ -431,12 +431,12 @@ public class Body {
         this.watchHistoryVideos = watchHistoryVideos;
     }
 
-    public Timestamp getWatchHistoryTimestamp() {
-        return watchHistoryTimestamp;
+    public List<Timestamp> getWatchHistoryTimestamps() {
+        return watchHistoryTimestamps;
     }
 
-    public void setWatchHistoryTimestamp(Timestamp watchHistoryTimestamp) {
-        this.watchHistoryTimestamp = watchHistoryTimestamp;
+    public void setWatchHistoryTimestamps(List<Timestamp> watchHistoryTimestamps) {
+        this.watchHistoryTimestamps = watchHistoryTimestamps;
     }
 
     public boolean isChannelNameUnique() {
