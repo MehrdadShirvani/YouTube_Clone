@@ -23,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1124,7 +1125,7 @@ public class Client {
     }
 
 
-    public List<Video> getWatchHistory(int perPage , int pageNumber) {
+    public HashMap<Video, Timestamp> getWatchHistory(int perPage , int pageNumber) {
          String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
