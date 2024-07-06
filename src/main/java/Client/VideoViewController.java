@@ -269,7 +269,7 @@ public class VideoViewController {
 
     private void setUpComments() {
         commentList = YouTube.client.getCommentsOfVideo(video.getVideoId());
-        commentsLabel.setText(commentList.size() + " comments");
+        commentsLabel.setText(commentList.size() + " Comments");
         ////////////////////////////////////
 //        for (int i = 0; i < 2; i++) {
 //            try {
@@ -298,7 +298,7 @@ public class VideoViewController {
                 controller.setComment(comment.getChannel().getName(),comment.getText(),DateFormats.toRelativeTime(comment.getCreatedDateTime()),YouTube.client.getLikesOfComment(comment.getCommentId()));
                 //TODO: Reactions
                 //Replies
-//                List<Comment> replies = YouTube.client.getRepliesOfComment(comment.getCommentId());
+//                    List<Comment> replies = YouTube.client.getRepliesOfComment(comment.getCommentId());
 //                for(Comment reply : replies) {
 //                    commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
 //                    controller.addReply(commentLoader.load());
