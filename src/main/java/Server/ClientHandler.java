@@ -1485,6 +1485,10 @@ public class ClientHandler implements Runnable {
 
         Video addedVideo = DatabaseManager.addVideo(video);
 
+        List<Channel> subscriberChannels = DatabaseManager.getSubscriberChannels(video.getChannelId());
+
+        sendNotification(subscriberChannels , video);
+
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setVideo(addedVideo);
