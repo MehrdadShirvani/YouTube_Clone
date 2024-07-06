@@ -84,7 +84,6 @@ public class ClientHandler implements Runnable {
                 }
 
                 json = this.serverEncryption.decryptDataAES(encryptedJson);
-                System.out.println("json = " + json);
                 request = objectMapper.readValue(json , Request.class);
                 header = request.getHeader();
                 endpoint = header.endpointParser()[1];
