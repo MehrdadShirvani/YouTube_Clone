@@ -4,6 +4,7 @@ package Shared.Api.dto;
 import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ public class Body {
     private List<Channel> subscriptions;
     private List<Category> categories;
     private List<Video> searchVideos;
-    private List<Video> watchHistoryVideos;
+    private HashMap<Video , Timestamp> watchHistoryVideos;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
@@ -421,11 +422,11 @@ public class Body {
         this.pageNumber = pageNumber;
     }
 
-    public List<Video> getWatchHistoryVideos() {
+    public HashMap<Video, Timestamp> getWatchHistoryVideos() {
         return watchHistoryVideos;
     }
 
-    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
+    public void setWatchHistoryVideos(HashMap<Video, Timestamp> watchHistoryVideos) {
         this.watchHistoryVideos = watchHistoryVideos;
     }
 
