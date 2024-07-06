@@ -1610,6 +1610,33 @@ public class Client {
         return null;
     }
 
+    public List<Video> searchPlaylist(String searchKeywords , int perPage , int pageNumber , Long channelId) {
+        String endpoint = "/api/playlist/search";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        //TODO -> get this back to normal
+        requestBody.setChannelId(channelId);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+        requestBody.setSearchTerms(searchKeywords);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getSearchVideos();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
