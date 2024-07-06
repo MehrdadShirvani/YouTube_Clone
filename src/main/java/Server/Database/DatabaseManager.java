@@ -398,7 +398,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Comment> query = entityManager.createQuery(
-                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId AND r.videoId = :videoId", Comment.class);
+                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId", Comment.class);
             query.setParameter("repliedCommentId", commentId);
             return  query.getResultList();
         }
