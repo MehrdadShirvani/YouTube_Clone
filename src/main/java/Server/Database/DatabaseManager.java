@@ -454,16 +454,26 @@ public class DatabaseManager {
     }
     public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
+        try {
+            CompletableFuture<List<CommentReaction>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    EntityTransaction transaction = entityManager.getTransaction();
+                    transaction.begin();
 
-            TypedQuery<CommentReaction> query = entityManager.createQuery(
-                    "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
-            query.setParameter("commentId", commentId);
-            return  query.getResultList();
+                    TypedQuery<CommentReaction> query = entityManager.createQuery(
+                            "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
+                    query.setParameter("commentId", commentId);
+                    return  query.getResultList();
+                }
+            });
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
+
+
     }
     public static CommentReaction getCommentReaction(Long channelId, Long commentId)
     {
