@@ -18,13 +18,15 @@ public class AddEditPlaylistController {
     public void setPlaylist(Playlist playlist, HomeController controller)
     {
         this.playlist = playlist;
-        TxtName.setText(playlist.getName());
-        //Normal 1
-        //Collaborative 2
-        //Watch Later
-        CBIsPrivate.setSelected(playlist.getPrivate());
-        CBIsCollaborative.setSelected(playlist.getPlaylistTypeId() == 2);
-        CBIsCollaborative.setDisable(playlist.getPrivate());
+        if(playlist != null) {
+            TxtName.setText(playlist.getName());
+            //Normal 1
+            //Collaborative 2
+            //Watch Later
+            CBIsPrivate.setSelected(playlist.getPrivate());
+            CBIsCollaborative.setSelected(playlist.getPlaylistTypeId() == 2);
+            CBIsCollaborative.setDisable(playlist.getPrivate());
+        }
     }
     public void submitAction(ActionEvent actionEvent)
     {
@@ -42,6 +44,7 @@ public class AddEditPlaylistController {
         if(playlist == null)
         {
            Playlist newPlaylist =  YouTube.client.addPlaylist(new Playlist(TxtName.getText(),CBIsCollaborative.isSelected()?(short)2:(short)1, CBIsPrivate.isSelected()));
+           YouTube.client.addChannelPlaylist(YouTube.client.getAccount().getChannelId(),newPlaylist.getPlaylistId());
             //TODO Ehsan -> get back to page
         }
         else
@@ -57,7 +60,7 @@ public class AddEditPlaylistController {
 
     public void cbPrivateAction(ActionEvent actionEvent)
     {
-        CBIsCollaborative.setDisable(playlist.getPrivate());
+        CBIsCollaborative.setDisable(CBIsPrivate.isSelected());
         if(CBIsCollaborative.isDisable())
         {
             CBIsCollaborative.setSelected(false);
