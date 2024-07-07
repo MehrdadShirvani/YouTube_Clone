@@ -1661,11 +1661,39 @@ public class Client {
     }
 
 
-    public List<Video> getVideosOfChannel(Long channelId) {
+    public List<Video> getVideosOfChannel(Long channelId , int perPage , int pageNumber) {
         String endpoint = "/api/channel/" + channelId + "/videos/all";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
+
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideosOfChannel();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Video> getRecentVideosOfChannel(Long channelId , int perPage , int pageNumber) {
+        String endpoint = "/api/channel/" + channelId + "/videos/recent";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
 
         Request request = new Request(requestHeader , requestBody);
 
