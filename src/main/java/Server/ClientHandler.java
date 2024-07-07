@@ -12,6 +12,7 @@ import org.hibernate.dialect.Database;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.mail.MessagingException;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -2274,6 +2275,35 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setNumberOfVideos(numberOfVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
+    public void handleVerifyEmail(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String username = requestBody.getUsername();
+        String recipientsEmail = requestBody.getRecipientsEmail();
+        String token;
+
+        Body responseBody = new Body();
+
+        try {
+            EmailVerification emailVerification = new EmailVerification(recipientsEmail , username);
+            emailVerification.sendVerificationEmail();
+            token = emailVerification.getToken();
+
+        } catch (MessagingException e) {
+            sendNullErrorResponse(requestHeader , "There was a error in sending email !");
+            throw new RuntimeException(e);
+        }
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setToken(token);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
