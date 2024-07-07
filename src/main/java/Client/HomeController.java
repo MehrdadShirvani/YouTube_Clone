@@ -309,4 +309,19 @@ public class HomeController {
 
         YouTube.changeScene("watch-history-view.fxml");
     }
+
+    public void setVideoEditingPage(Video video)
+    {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+            AddEditVideoView controller = fxmlLoader.getController();
+            controller .setVideo(video, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
 }
