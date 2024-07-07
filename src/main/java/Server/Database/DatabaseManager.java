@@ -662,9 +662,9 @@ public static Long getAllViewsOfChannel(long channelId)
             transaction.begin();
 
             TypedQuery<VideoPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM VideoPlaylist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
-            query.setParameter("VideoId", videoId);
-            query.setParameter("PlaylistId", playlistId);
+                    "SELECT vp FROM VideoPlaylist vp WHERE vp.videoId = :videoId AND vp.playlistId = :playlistId", VideoPlaylist.class);
+            query.setParameter("videoId", videoId);
+            query.setParameter("playlistId", playlistId);
             VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
 
             try
