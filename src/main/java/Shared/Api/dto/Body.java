@@ -78,6 +78,7 @@ public class Body {
     private String recipientsEmail;
     private String token;
     private int twoFactorDigit;
+    private boolean isVerified;
 
 
     public Body() {
@@ -602,5 +603,13 @@ public class Body {
 
     public void setTwoFactorDigit(int twoFactorDigit) {
         this.twoFactorDigit = twoFactorDigit;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
     }
 }
