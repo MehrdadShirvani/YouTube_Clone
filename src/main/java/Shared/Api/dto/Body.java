@@ -75,7 +75,8 @@ public class Body {
     private boolean isSelf;
     private List<Video> videosOfChannel;
     private Long numberOfVideos;
-
+    private String recipientsEmail;
+    private String token;
 
 
     public Body() {
@@ -576,5 +577,21 @@ public class Body {
 
     public void setNumberOfVideos(Long numberOfVideos) {
         this.numberOfVideos = numberOfVideos;
+    }
+
+    public String getRecipientsEmail() {
+        return recipientsEmail;
+    }
+
+    public void setRecipientsEmail(String recipientsEmail) {
+        this.recipientsEmail = recipientsEmail;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
