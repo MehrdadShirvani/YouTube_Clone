@@ -2,10 +2,8 @@ package Server.Database;
 import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -1125,6 +1123,44 @@ public static Long getAllViewsOfChannel(long channelId)
                     .collect(Collectors.toList());
 
             return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+
+
+    public static HashMap<String, Long> dataAnalysis(long channelId, Date startDate, Date endDate) {
+        HashMap<String, Long> resultMap = new HashMap<>();
+        List<Category> categories = getCategories();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT vv ")
+                    .append("FROM Video v ")
+                    .append("INNER JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("INNER JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE vv.channelId = :channelId AND vv.viewDateTime >= :startDate AND vv.viewDateTime <= :endDate ");
+
+            if (categories != null && !categories.isEmpty()) {
+                jpql.append("AND vc.categoryId = :categoryId ");
+            }
+            long allCount = 0;
+            for(Category category : categories)
+            {
+                TypedQuery<VideoView> query = entityManager.createQuery(jpql.toString(), VideoView.class);
+                query.setParameter("channelId", channelId);
+                query.setParameter("startDate", startDate);
+                query.setParameter("endDate", endDate);
+                query.setParameter("categoryId", category.getCategoryId());
+                List<VideoView> results = query.getResultList();
+                resultMap.put(category.getName(), (long) results.size());
+                allCount += (long) results.size();
+            }
+            resultMap.put("all", allCount);
+            return resultMap;
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
