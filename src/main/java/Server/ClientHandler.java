@@ -297,7 +297,7 @@ public class ClientHandler implements Runnable {
                 } else {
                     handleBadRequest(header);
                 }
-            } else if (endpointParsed.length >= 5) {
+            } else if (endpointParsed.length == 5) {
                 if (endpointParsed[4].equals("playlists")) {
                     Long channelId = header.extractIds().getFirst();
 
@@ -316,6 +316,31 @@ public class ClientHandler implements Runnable {
                     } else {
                         handleBadRequest(header);
                     }
+                }
+            } else if (endpointParsed.length == 6) {
+                Long channelId = header.extractIds().getFirst();
+
+                if (endpointParsed[4].equals("videos")) {
+                    if (endpointParsed[5].equals("all")) {
+                        handleGetVideosOfChannel(request , channelId);
+
+                    } else if (endpointParsed[5].equals("recent")) {
+                        handleGetRecentVideosOfChannel(request ,channelId);
+
+                    } else if (endpointParsed[5].equals("popular")) {
+                        handleGetMostPopularVideosOfChannel(request , channelId);
+
+                    } else if (endpointParsed[5].equals("all-views")) {
+                        handleGetAllViewsOfChannel(request , channelId);
+
+                    } else if (endpointParsed[5].equals("count")) {
+                        handleGetCountOfVideosOfChannel(request , channelId);
+
+                    } else {
+                        handleBadRequest(header);
+                    }
+                } else {
+                    handleBadRequest(header);
                 }
             } else {
                 handleBadRequest(header);
@@ -390,6 +415,7 @@ public class ClientHandler implements Runnable {
     public void handleCommentRequests(Request request) {
         Header header = request.getHeader();
         String endpoint = header.endpointParser()[3];
+        String[] endpointParsed = header.endpointParser();
 
         if (endpoint.equals("add")) {
             handleCommentAddRequests(request);
@@ -411,6 +437,10 @@ public class ClientHandler implements Runnable {
 
         } else if (endpoint.equals("edit")) {
             handleEditComment(request);
+
+        } else if (endpointParsed[4].equals("reaction")) {
+            Long commentId = header.extractIds().getFirst();
+            handleGetCommentReaction(request , commentId);
 
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
