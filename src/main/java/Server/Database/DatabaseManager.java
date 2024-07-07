@@ -1388,6 +1388,14 @@ public static Long getAllViewsOfChannel(long channelId)
             return videoCategories;
         }
     }
+
+    public static void deleteVideoCategories(Long videoId)
+    {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            entityManager.createQuery("DELETE FROM VideoCategory vc WHERE vc.videoId = :videoId")
+                    .setParameter("videoId", videoId)
+                    .executeUpdate();
+        }    }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
         if(getVideo(videoId) == null || getCategory(categoryId) == null)
         {
