@@ -250,8 +250,10 @@ public class VideoViewController {
                         subsIcon.setContent("");
                         subsButton.setText("Subscribe");
                     }
+                    editVideoBtn.setVisible(false);
                     if (Objects.equals(video.getChannelId(), YouTube.client.getAccount().getChannelId())) {
                         subsButton.setVisible(false);
+                        editVideoBtn.setVisible(true);
                     }
                 });
 
@@ -460,5 +462,9 @@ public class VideoViewController {
 
     public void downloadAction(ActionEvent event) {
 
+    }
+
+    public void editBtnAction(ActionEvent actionEvent) {
+         homeController.setVideoEditingPage(video);
     }
 }
