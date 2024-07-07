@@ -5,14 +5,12 @@ import Shared.Models.Playlist;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
@@ -59,6 +57,8 @@ public class HomeController {
     FlowPane homeVideosFlowPane;
     @FXML
     BorderPane mainBorderPane;
+    @FXML
+    ToggleGroup menuToggleGroup;
     Boolean isMinimized;
     private List<Video> currentVideos;
     private List<SmallVideoView> currentSmallVideos = new ArrayList<SmallVideoView>();
@@ -88,6 +88,12 @@ public class HomeController {
                 searchButton.setScaleY(1);
             } else {
                 searchButton.setStyle("-fx-border-color: #065fd4");
+            }
+        });
+        //Remain one selected
+        menuToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == null) {
+                oldToggle.setSelected(true);
             }
         });
         //Menu SVG
@@ -131,25 +137,25 @@ public class HomeController {
         });
         Platform.runLater(() -> {
             YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.S,KeyCombination.CONTROL_DOWN),
+                    new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
                     shortsMenuButton::fire
             );
         });
         Platform.runLater(() -> {
             YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.S,KeyCombination.CONTROL_DOWN,KeyCombination.SHIFT_DOWN),
+                    new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
                     subsMenuButton::fire
             );
         });
         Platform.runLater(() -> {
             YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.Y,KeyCombination.CONTROL_DOWN),
+                    new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN),
                     channelMenuButton::fire
             );
         });
         Platform.runLater(() -> {
             YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.H,KeyCombination.CONTROL_DOWN,KeyCombination.SHIFT_DOWN),
+                    new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
                     historyMenuButton::fire
             );
         });
@@ -298,8 +304,8 @@ public class HomeController {
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
-    public void setChannel(Channel channel)
-    {
+
+    public void setChannel(Channel channel) {
         mainBorderPane.setCenter(null);
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
 
@@ -311,11 +317,11 @@ public class HomeController {
             throw new RuntimeException(e);
         }
         ChannelViewController controller = fxmlLoader.getController();
-        try {
-            controller.setChannel(channel, this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            controller.setChannel(channel, this);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         mainBorderPane.setCenter(videoPage);
     }
 
@@ -330,8 +336,7 @@ public class HomeController {
         YouTube.changeScene("watch-history-view.fxml");
     }
 
-    public void setVideoEditingPage(Video video)
-    {
+    public void setVideoEditingPage(Video video) {
         mainBorderPane.setCenter(null);
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-video-view.fxml"));
 
@@ -343,8 +348,7 @@ public class HomeController {
 
         try {
             AddEditVideoView controller = fxmlLoader.getController();
-            if(video != null)
-            {
+            if (video != null) {
                 controller.setVideo(video, this);
             }
         } catch (IOException e) {
@@ -352,13 +356,11 @@ public class HomeController {
         }
     }
 
-    public void yourChannelAction(ActionEvent actionEvent)
-    {
+    public void yourChannelAction(ActionEvent actionEvent) {
         setChannel(YouTube.client.getChannelInfo(YouTube.client.getAccount().getChannelId()));
     }
 
-    public void setPlaylistPage(Playlist playlist)
-    {
+    public void setPlaylistPage(Playlist playlist) {
         mainBorderPane.setCenter(null);
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-playlist-view.fxml"));
         try {
