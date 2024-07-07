@@ -253,7 +253,7 @@ public class ClientHandler implements Runnable {
                         handleGetWatchHistoryVideo(request , channelId);
 
                     } else if (endpointParsed[5].equals("timestamp")) {
-                        handleGetWatchHistoryTimestamp(request , channelId);
+                        handleGetWatchHistoryDates(request , channelId);
 
                     }
 
@@ -1611,8 +1611,7 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        //TODO : use database method
-        List<Video> watchHistoryVideos = new ArrayList<>();
+        List<Video> watchHistoryVideos = DatabaseManager.getWatchHistory(channelId , perPage , pageNumber);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
@@ -1624,7 +1623,7 @@ public class ClientHandler implements Runnable {
 
 
 
-    public void handleGetWatchHistoryTimestamp(Request request , Long channelId) {
+    public void handleGetWatchHistoryDates(Request request , Long channelId) {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
@@ -1639,11 +1638,11 @@ public class ClientHandler implements Runnable {
         }
 
         //TODO : use database method
-        List<Timestamp> watchHistoryTimestamps= new ArrayList<>();
+        List<Date> watchHistoryDates = DatabaseManager.getWatchHistoryDates(channelId , perPage , pageNumber);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setWatchHistoryTimestamps(watchHistoryTimestamps);
+        responseBody.setWatchHistoryDates(watchHistoryDates);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
