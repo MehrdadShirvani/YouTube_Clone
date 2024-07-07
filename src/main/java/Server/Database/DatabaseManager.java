@@ -1223,11 +1223,27 @@ public static Long getAllViewsOfChannel(long channelId)
             }
         }
     }
-    public static List<Video> getRecentVideosOfChannel(long channelId)
+    public static List<Video> getRecentVideosOfChannel(long channelId, int perPage, int pageNumber)
     {
-        //TODO
-        return new ArrayList<>();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId ORDER BY viewDateTime DESC ");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
     }
     public static List<Video> getMostPopularVideosOfChannel(long channelId)
     {
