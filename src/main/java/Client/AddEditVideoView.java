@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -28,6 +29,9 @@ public class AddEditVideoView implements Initializable {
     public TextField TxtDuration;
     public WebView profileWebView;
     public VBox VControls;
+    public Button ChooseVideoBtn;
+    public Button SetDefaultThumbnailBtn;
+    public Button SubmitBtn;
     ExecutorService executorService = Executors.newCachedThreadPool();
     public TextField TxtName;
     public TextField TxtDesc;
@@ -38,6 +42,8 @@ public class AddEditVideoView implements Initializable {
     File videoFile;
     File pictureFile;
     int videoDuration = 0;
+    private Video video;
+    private HomeController homeController;
 
     public void chooseFile(ActionEvent actionEvent)
     {
@@ -49,10 +55,17 @@ public class AddEditVideoView implements Initializable {
         videoFile = fileChooser.showOpenDialog(dialogStage);
         setDefaultThumbnail(new ActionEvent());
     }
-    public void setVideo(Video video) throws IOException {
+    public void setVideo(Video video, HomeController homeController) throws IOException {
+        this.homeController = homeController;
         Path path = new File("src/main/resources/Client/image-view.html").toPath();
         String htmlContent = new String(Files.readAllBytes(path));
         profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/T_" + video.getVideoId()));
+        TxtName.setText(video.getName());
+        TxtDesc.setText(video.getDescription());
+        TxtDuration.setText(video.getDescription() + " seconds");
+        SubmitBtn.setText("Edit Details");
+        SetDefaultThumbnailBtn.setVisible(false);
+        this.video = video;
     }
     private void uploadTheVideo(File selectedFile, Long videoId) {
             try {
@@ -130,16 +143,25 @@ public class AddEditVideoView implements Initializable {
         Boolean isAgeRestricted = CBIsAgeRestricted.isSelected();
         String videoFileAddress = videoFile.getAbsolutePath();
 
-        //TODO change this one back to normal
-        Video uploadedVideo = new Video(videoName , videoDescription , 3656355L , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
+        if(video == null)
+        {
+            Video uploadedVideo = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
 
-        Video addedVideo = YouTube.client.addVideo(uploadedVideo);
-        Long videoId = addedVideo.getVideoId();
+            Video addedVideo = YouTube.client.addVideo(uploadedVideo);
+            Long videoId = addedVideo.getVideoId();
 
-        //TODO Mehrdad
-        uploadTheVideo(videoFile, videoId);
-        uploadThePicture(pictureFile, videoId);
-        //handle edit mode
+            uploadTheVideo(videoFile, videoId);
+            uploadThePicture(pictureFile, videoId);
+        }
+        else
+        {
+            video.setName(videoName);
+            video.setDescription(videoDescription);
+            video.setPrivate(isPrivate);
+            video.setAgeRestricted(isAgeRestricted);
+            video.setVideoTypeId(CBIsShort.isSelected()?2:1);
+            YouTube.client.addVideo(video);
+        }
 
         YouTube.changeScene("home-view.fxml");
     }
