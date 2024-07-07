@@ -47,6 +47,8 @@ public class Account {
     @Column(name = "PremiumExpirationDate")
     @Temporal(TemporalType.DATE)
     private Date premiumExpirationDate;
+    @Column(name = "SecretKey", nullable = true, length = 1000)
+    private String secretKey;
 
 //    @ManyToOne
 //    @JoinColumn(name = "ChannelId", insertable = false, updatable = false)
@@ -149,6 +151,14 @@ public class Account {
 
     public void setPremiumExpirationDate(Timestamp premiumExpirationDate) {
         this.premiumExpirationDate = premiumExpirationDate;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 
 //    public Channel getChannel() {
