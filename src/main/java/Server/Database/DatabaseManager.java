@@ -681,7 +681,31 @@ public static Long getAllViewsOfChannel(long channelId)
         }
     }
     public static List<VideoPlaylist> addVideoPlaylists(Long videoId, List<Long> playlistIds) {
-        return new ArrayList<>();
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            List<VideoPlaylist> videoPlaylists = new ArrayList<>();
+            for(Long playlistId : playlistIds)
+            {
+                EntityTransaction transaction = entityManager.getTransaction();
+                transaction.begin();
+                TypedQuery<VideoPlaylist> query = entityManager.createQuery(
+                        "SELECT v FROM VideoPlaylist v WHERE v.videoId = :videoId AND v.playlistId = :playlistId", VideoPlaylist.class);
+                query.setParameter("videoId", videoId);
+                query.setParameter("playlistId", playlistId);
+                VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
+                try
+                {
+                    videoPlaylists.add(query.getSingleResult());
+                }
+                catch (NoResultException e){
+                    entityManager.persist(videoPlaylist);
+                    transaction.commit();
+                }
+            }
+
+            entityManager.close();
+            return videoPlaylists;
+        }
     }
 
     public static void deleteVideoPlaylist(VideoPlaylist videoPlaylist)
