@@ -107,6 +107,7 @@
     -fx-font-size: 14;
     -fx-prompt-text-fill: -fx-bright-gray-color;
     -fx-text-fill: #f1f1f1;
+    -fx-accent: -fx-blue-color;
 }
 .comment-textfield:focused{
     -fx-border-color: -fx-blue-color;

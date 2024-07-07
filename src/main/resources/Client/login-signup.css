@@ -88,3 +88,30 @@ DatePicker .month-year-pane .spinner {
     /*-fx-background-color: rgba(170, 170, 170, 0.1);*/
     -fx-background-color: rgba(108, 108, 108, 0.5);
 }
+.side-bar{
+    -fx-background-color: -fx-gray-color;
+}
+#retryButton{
+    -fx-border-width: 0.5;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3ea6ff;
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-border-gray-color;
+    -fx-font-size: 15;
+}
+.h1{
+    -fx-font-family: Roboto;
+    -fx-font-size: 20;
+    -fx-text-fill: #f1f1f1;
+}
+.h2{
+    -fx-font-family: Roboto;
+    -fx-font-size: 15;
+    -fx-text-fill: #f1f1f1;
+}
+#retryButton:disabled{
+    -fx-opacity: 0.2;
+}

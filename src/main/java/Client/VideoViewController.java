@@ -111,7 +111,6 @@ public class VideoViewController {
             maskVideoRec.widthProperty().bind(videoWebView.widthProperty());
             maskVideoRec.heightProperty().bind(videoWebView.heightProperty());
         });
-        videoWebView.getEngine().load("http://example.com");
         //Mask author profile
         maskProfileRec = new Rectangle(48, 48);
         maskProfileRec.setArcWidth(48);
@@ -132,7 +131,7 @@ public class VideoViewController {
                 if (event.getCode() == KeyCode.UP)
                     engine.executeScript("player.increaseVolume(0.1);");
                 if (event.getCode() == KeyCode.DOWN)
-                    engine.executeScript("player.decreaseVolume(-0.1);");
+                    engine.executeScript("player.decreaseVolume(0.1);");
                 if (event.getCode() == KeyCode.SPACE)
                     engine.executeScript("player.togglePlay();");
                 event.consume(); // Prevent default

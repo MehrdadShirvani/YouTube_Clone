@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Client.RetryPageController"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox>
-        <Label text="You Lost Connection. Please try again later"/>
-        <Button onAction="#retryAction" text="retry"/>
-    </VBox>
-</AnchorPane>
+<VBox alignment="CENTER" fillWidth="false" prefHeight="641.0" prefWidth="1007.0" spacing="20.0" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.RetryPageController">
+    <stylesheets>
+        <URL value="@../login-signup.css" />
+    </stylesheets>
+
+    <WebView fx:id="webView" disable="true" prefHeight="200.0" prefWidth="200.0" />
+     <Label styleClass="h1" text="Connect to the internet" />
+   <Label layoutX="451.0" layoutY="409.0" styleClass="h2" text="You're offline. Check your connection." />
+     <Button fx:id="retryButton" onAction="#retryAction" text="Retry">
+      <padding>
+         <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+      </padding></Button>
+</VBox>
