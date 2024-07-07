@@ -112,7 +112,7 @@
                         <SVGPath fx:id="subsIcon" content="M10 18v-6l5 3-5 3zm7-15H7v1h10V3zm3 3H4v1h16V6zm2 3H2v12h20V9zM3 10h18v10H3V10z" fill="WHITE" />
                     </graphic>
                 </ToggleButton>
-                <ToggleButton fx:id="channelMenuButton" alignment="CENTER_LEFT" ellipsisString="" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="31.25" prefWidth="175.0" styleClass="menu-toggle-button" text="Your channel" toggleGroup="$menuToggleGroup">
+                <ToggleButton fx:id="channelMenuButton" alignment="CENTER_LEFT" ellipsisString="" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="31.25" prefWidth="175.0" styleClass="menu-toggle-button" onAction="#yourChannelAction" text="Your channel" toggleGroup="$menuToggleGroup">
                     <VBox.margin>
                         <Insets left="10.0" right="10.0" />
                     </VBox.margin>
