@@ -1179,11 +1179,49 @@ public static Long getAllViewsOfChannel(long channelId)
         }
 
     }
-
-    public static List<Video> getVideosOfChannel(long channelId)
+    public static Long getCountOfVideosOfChannel(long channelId)
     {
-        //TODO
-        return new ArrayList<>();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+            return (long) query.getResultList().size();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+                return 0L;
+            }
+        }
+
+    }
+
+    //TODO handle the isPrivate in the client side
+    public static List<Video> getVideosOfChannel(long channelId, int perPage, int pageNumber)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
     }
     public static List<Video> getRecentVideosOfChannel(long channelId)
     {
