@@ -203,7 +203,7 @@ public class Header {
 
 
     public List<Long> extractIds() throws IllegalArgumentException {
-        final String ENDPOINT_PATTERN = "^/api/(video|account|comment|playlist|channel)/[0-9]+(/(categories|most-viewed-categories|delete|category/[0-9]+/delete|watch-history(/(video|timestamp))?|edit|videos(/all-views|/popular)?|channels|video/[0-9]+/delete|video|channel/[0-9]+/delete))?$";
+        final String ENDPOINT_PATTERN = "^/api/(video|account|comment|playlist|channel)/[0-9]+(/(categories|most-viewed-categories|delete|category/[0-9]+/delete|watch-history(/(video|timestamp))?|edit|videos|playlists(/all-views|/popular|/recent)?|channels|video/[0-9]+/delete|video|channel/[0-9]+/delete))?$";
         final String ID_REGEX = "\\b\\d+\\b";
         Pattern idPattern = Pattern.compile(ID_REGEX);
 
