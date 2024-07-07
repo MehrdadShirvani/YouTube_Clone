@@ -72,6 +72,7 @@ public class Body {
     private List<Playlist> playlists;
     private List<Long> playlistIds;
     private boolean isSelf;
+    private List<Video> videosOfChannel;
 
 
 
@@ -557,5 +558,13 @@ public class Body {
 
     public void setSelf(boolean self) {
         isSelf = self;
+    }
+
+    public List<Video> getVideosOfChannel() {
+        return videosOfChannel;
+    }
+
+    public void setVideosOfChannel(List<Video> videosOfChannel) {
+        this.videosOfChannel = videosOfChannel;
     }
 }
