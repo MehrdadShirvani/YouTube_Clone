@@ -1759,6 +1759,30 @@ public class Client {
         return null;
     }
 
+
+    public CommentReaction getCommentReaction(Long channelId , Long commentId) {
+        String endpoint = "/api/comment/" + commentId + "/reaction";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getCommentReaction();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
