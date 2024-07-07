@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.AuthenticatorSetUpController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="631.0" text="Authentication App">
          <font>
@@ -23,11 +22,11 @@
       </Label>
       <AnchorPane prefHeight="168.0" prefWidth="600.0">
          <children>
-            <ImageView fx:id="QrCodeImageViiew" fitHeight="170.0" fitWidth="200.0" layoutX="200.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="QrCodeImageView" fitHeight="170.0" fitWidth="200.0" layoutX="200.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
       <Label alignment="CENTER" prefHeight="27.0" prefWidth="644.0" text="Enter Authentication Code" />
       <TextField fx:id="authCodeField" alignment="CENTER" promptText="Code" />
-      <Button mnemonicParsing="false" text="Set Up" />
+      <Button mnemonicParsing="false" onAction="#setUpButton" text="Set Up" />
    </children>
 </VBox>
