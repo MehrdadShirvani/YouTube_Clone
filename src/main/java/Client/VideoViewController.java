@@ -202,16 +202,11 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-        try {
-            Path path = new File("src/main/resources/Client/video-player.html").toPath();
-            String htmlContent = new String(Files.readAllBytes(path));
+//            Path path = new File("src/main/resources/Client/video-player.html").toPath();
+            String path = HomeController.class.getResource("video-player.html").toExternalForm();
 //            videoWebView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId()+""));
             engine = videoWebView.getEngine();
-            engine.loadContent(htmlContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+            engine.load(path);
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
