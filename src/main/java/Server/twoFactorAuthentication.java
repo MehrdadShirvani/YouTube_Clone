@@ -22,7 +22,6 @@ public class twoFactorAuthentication {
     private String secretKey;
     private final String FILE_PATH = "src/main/java/Client/.cache/.QrCode.png";
     private final String APP_NAME = "MemoliYT";
-    private String email;
 
     public twoFactorAuthentication(String email) throws IOException, WriterException {
         googleAuthenticator = new GoogleAuthenticator();
@@ -34,6 +33,7 @@ public class twoFactorAuthentication {
 
     public twoFactorAuthentication(String secretKey , String email) {
         googleAuthenticator = new GoogleAuthenticator();
+        //TODO : Get secret key from database manager
         this.secretKey = secretKey;
     }
 
@@ -41,6 +41,10 @@ public class twoFactorAuthentication {
     public void generateSecretKey() {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
         this.secretKey = key.getKey();
+    }
+
+    public boolean verifyCode(int code) {
+        return googleAuthenticator.authorize(this.secretKey, code);
     }
 
     public void generateQRCodeImage(String barcodeText) throws WriterException, IOException {
