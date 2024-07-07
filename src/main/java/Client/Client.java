@@ -1879,6 +1879,35 @@ public class Client {
         return null;
     }
 
+
+    public Boolean authenticatorVerify() {
+        String endpoint = "/api/2fa/authenticator/verify";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+
+        //TODO : get secretKey from database
+        String secretKey = "";
+
+        requestBody.setRecipientsEmail(this.account.getEmail());
+        requestBody.setToken(secretKey);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isVerified();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
     public Account getAccount()
     {
         return account;
