@@ -2158,6 +2158,31 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetMostPopularVideosOfChannel(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null");
+            return;
+        }
+
+        List<Video> popularVideosOfChannel = DatabaseManager.getMostPopularVideosOfChannel(channelId , perPage , pageNumber);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVideosOfChannel(popularVideosOfChannel);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
