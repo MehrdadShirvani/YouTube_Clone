@@ -6,6 +6,7 @@ import Shared.Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.zxing.WriterException;
 import javafx.beans.binding.NumberExpressionBase;
 import javafx.scene.chart.PieChart;
 import org.hibernate.dialect.Database;
@@ -2333,6 +2334,36 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setTwoFactorDigit(twoFactorCode);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
+    public void handleAuthenticatorAdd(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        String recipientsEmail = requestBody.getRecipientsEmail();
+        HashMap<String , String> twoFactorData = null;
+
+        Body responseBody = new Body();
+
+        try {
+            TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(recipientsEmail);
+            twoFactorData.put(recipientsEmail , twoFactorAuthentication.generateQrCodeData());
+
+        } catch (IOException | WriterException e) {
+            sendNullErrorResponse(requestHeader , "There was a error in twoFactorAuthentication!");
+            throw new RuntimeException(e);
+        }
+
+        //TODO : update secretKey in account table
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setTwoFactorData(twoFactorData);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
