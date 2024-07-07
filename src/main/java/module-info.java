@@ -20,6 +20,8 @@ module org.example.youtube {
     requires org.bytedeco.javacv;
     requires java.mail;
     requires googleauth;
+    requires com.google.zxing;
+    requires com.google.zxing.javase;
 
     opens Server to javafx.fxml;
     exports Server;
