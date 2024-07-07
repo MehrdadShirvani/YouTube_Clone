@@ -724,7 +724,11 @@ public static Long getAllViewsOfChannel(long channelId)
     }
     public static void deleteVideoPlaylists(Long playlistId)
     {
-        //TODO
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            entityManager.createQuery("DELETE FROM PlaylistVideo p WHERE p.playlistId = :playlistId")
+                    .setParameter("playlistId", playlistId)
+                    .executeUpdate();
+        }
     }
 
     public static void deleteVideoPlaylist(Long videoId, Long playlistId)
