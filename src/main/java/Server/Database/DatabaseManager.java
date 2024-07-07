@@ -1361,23 +1361,28 @@ public static Long getAllViewsOfChannel(long channelId)
             return query.getResultList();
         }
     }
-    public static List<VideoCategory> addVideoCategories(Long videoId, List<Integer> categoryId) {
-        return new ArrayList<>();
-        //TODO
-    }
-
-    public static void deleteVideoCategories(Long videoId)
-    {
+    public static List<VideoCategory> addVideoCategories(Long videoId, List<Integer> categoryIds) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId", VideoCategory.class);
-            query.setParameter("videoId", videoId);
-
-            //TODO delete
+            List<VideoCategory> videoCategories = new ArrayList<>();
+            for(Integer categoryId : categoryIds)
+            {
+                EntityTransaction transaction = entityManager.getTransaction();
+                transaction.begin();
+                TypedQuery<VideoCategory> query = entityManager.createQuery(
+                        "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
+                query.setParameter("videoId", videoId);
+                query.setParameter("categoryId", categoryId);
+                VideoCategory videoCategory = new VideoCategory(videoId,categoryId);
+                try
+                {
+                    videoCategories.add(query.getSingleResult());
+                }
+                catch (NoResultException e){
+                    entityManager.persist(videoCategory);
+                    transaction.commit();
+                }
+            }
 
             entityManager.close();
         }
