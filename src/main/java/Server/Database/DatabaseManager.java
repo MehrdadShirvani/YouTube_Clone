@@ -1245,10 +1245,38 @@ public static Long getAllViewsOfChannel(long channelId)
             }
         }
     }
-    public static List<Video> getMostPopularVideosOfChannel(long channelId)
+    public static List<Video> getMostPopularVideosOfChannel(long channelId, int perPage, int pageNumber)
     {
-        //TODO
-        return new ArrayList<>();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount ")
+                    .append("FROM Video v ")
+                    .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId = :channelId AND v.videoTypeId = 1 ");
+
+
+            jpql.append("GROUP BY v.videoId, v.name ")
+                    .append("ORDER BY viewCount DESC");
+
+            TypedQuery<Object[]> query = entityManager.createQuery(jpql.toString(), Object[].class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            List<Object[]> results = query.getResultList();
+            List<Video> videos = results.stream()
+                    .map(result -> (Video) result[0])
+                    .collect(Collectors.toList());
+
+            return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
     }
 
     public static void deleteVideo(Long videoId)
