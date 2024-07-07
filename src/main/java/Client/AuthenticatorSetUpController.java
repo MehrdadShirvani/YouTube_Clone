@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -32,5 +33,22 @@ public class AuthenticatorSetUpController{
         Image qrCodeImage = new Image(QrCodeGenerator.FILE_PATH);
 
         QrCodeImageView.setImage(qrCodeImage);
+    }
+
+
+    public void setUpButton(ActionEvent actionEvent) {
+        String authCode = authCodeField.getText();
+
+        int code = Integer.getInteger(authCode);
+
+        Boolean isVerified = YouTube.client.authenticatorVerify(code);
+
+        if (isVerified) {
+            //TODO : change the scene
+
+        } else {
+            //TODO Ehsan : make a pop up error
+
+        }
     }
 }
