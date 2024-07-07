@@ -51,3 +51,6 @@ src/main/resources/META-INF
 
 ### EmailVerification data ###
 .EmailData.txt
+
+### Thumbnail TempFiles ###
+src/main/resources/Client/tempImages

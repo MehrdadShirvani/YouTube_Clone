@@ -23,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -157,6 +158,12 @@ public class Client {
             encryptedJson = this.bufferedReader.readLine();
             decryptedJson = this.clientEncryption.decryptDataAES(encryptedJson);
             response = objectMapper.readValue(decryptedJson , Response.class);
+
+            if (Objects.equals(response.getHeader().getEndpoint(), "/api/notifications/poll")) {
+                //TODO : update notification ui
+                return handleResponse();
+            }
+
 
             return response;
 
@@ -1118,8 +1125,8 @@ public class Client {
     }
 
 
-    public List<Video> getWatchHistory(int perPage , int pageNumber) {
-         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history";
+    public List<Video> getWatchHistoryVideo(int perPage , int pageNumber) {
+         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history/video";
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
          Body requestBody = new Body();
@@ -1134,6 +1141,29 @@ public class Client {
          if (responseBody.isSuccess()) {
              return responseBody.getWatchHistoryVideos();
          }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+
+    public List<Date> getWatchHistoryDates(int perPage , int pageNumber) {
+        String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history/timestamp";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getWatchHistoryDates();
+        }
 
         System.out.println(responseBody.getMessage());
         return null;
@@ -1598,6 +1628,277 @@ public class Client {
 
         if (responseBody.isSuccess()) {
             return requestBody.getPlaylists();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+    public List<Video> searchPlaylist(String searchKeywords , int perPage , int pageNumber , Long channelId) {
+        String endpoint = "/api/playlist/search";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+        requestBody.setSearchTerms(searchKeywords);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getSearchVideos();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Video> getVideosOfChannel(Long channelId , int perPage , int pageNumber) {
+        String endpoint = "/api/channel/" + channelId + "/videos/all";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideosOfChannel();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Video> getRecentVideosOfChannel(Long channelId , int perPage , int pageNumber) {
+        String endpoint = "/api/channel/" + channelId + "/videos/recent";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideosOfChannel();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+
+    public List<Video> getMostPopularVideosOfChannel(Long channelId , int perPage , int pageNumber) {
+        String endpoint = "/api/channel/" + channelId + "/videos/popular";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getVideosOfChannel();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+
+    public Long getAllViewsOfChannel(Long channelId) {
+        String endpoint = "/api/channel/" + channelId + "/videos/all-views";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getNumberOfViews();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public CommentReaction getCommentReaction(Long channelId , Long commentId) {
+        String endpoint = "/api/comment/" + commentId + "/reaction";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setChannelId(channelId);
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getCommentReaction();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public Long getCountOfVideosOfChannel(Long channelId) {
+        String endpoint = "/api/channel/" + channelId+ "/videos/count";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getNumberOfVideos();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public String verifyEmail() {
+        String endpoint = "/api/account/email/verify";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setUsername(this.account.getUsername());
+        requestBody.setRecipientsEmail(this.account.getEmail());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getToken();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public Integer twoFactorEmailSend() {
+        String endpoint = "/api/2fa/email/send";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setUsername(this.account.getUsername());
+        requestBody.setRecipientsEmail(this.account.getEmail());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getTwoFactorDigit();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public HashMap<String , String> authenticatorAdd() {
+        String endpoint = "/api/2fa/authenticator/add";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setRecipientsEmail(this.account.getEmail());
+        requestBody.setChannelId(this.account.getChannelId());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getTwoFactorData();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public Boolean authenticatorVerify(int code) {
+        String endpoint = "/api/2fa/authenticator/verify";
+        String method = "POST";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        requestBody.setCode(code);
+        requestBody.setChannelId(this.account.getChannelId());
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.isVerified();
         }
 
         System.out.println(responseBody.getMessage());

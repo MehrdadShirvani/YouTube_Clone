@@ -119,6 +119,7 @@ public class Video {
     }
     public Video(String name, String description, Long channelId, Boolean isPrivate, Boolean isAgeRestricted, int duration, int videoTypeId)
     {
+        this.videoId = -1L;
         this.name = name;
         this.description = description;
         this.channelId = channelId;

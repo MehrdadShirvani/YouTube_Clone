@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -398,7 +399,7 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<Comment> query = entityManager.createQuery(
-                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId AND r.videoId = :videoId", Comment.class);
+                    "SELECT c FROM Comment c WHERE c.repliedCommentId = :repliedCommentId", Comment.class);
             query.setParameter("repliedCommentId", commentId);
             return  query.getResultList();
         }
@@ -454,16 +455,26 @@ public class DatabaseManager {
     }
     public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
+        try {
+            CompletableFuture<List<CommentReaction>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    EntityTransaction transaction = entityManager.getTransaction();
+                    transaction.begin();
 
-            TypedQuery<CommentReaction> query = entityManager.createQuery(
-                    "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
-            query.setParameter("commentId", commentId);
-            return  query.getResultList();
+                    TypedQuery<CommentReaction> query = entityManager.createQuery(
+                            "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
+                    query.setParameter("commentId", commentId);
+                    return  query.getResultList();
+                }
+            });
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
+
+
     }
     public static CommentReaction getCommentReaction(Long channelId, Long commentId)
     {
@@ -534,24 +545,22 @@ public class DatabaseManager {
 
     public static List<Video> getVideosOfPlaylist(Long playlistId)
     {
-        Playlist playlist = getPlaylist(playlistId);
-        if(playlist == null)
-        {
-            return null;
-        }
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Video> cq = cb.createQuery(Video.class).distinct(true);
-            Root<Video> videoRoot = cq.from(Video.class);
-            Join<Video, VideoPlaylist> vidoePlaylists = videoRoot.join("VideoPlaylist", JoinType.INNER);
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT v ")
+                    .append("FROM Video v ")
+                    .append("Inner JOIN VideoPlaylist vp ON v.videoId = vp.videoId ")
+                    .append("Where vp.playlistId = :playlistId");
 
-            cq.select(videoRoot)
-                    .where(cb.equal(vidoePlaylists.get("playlistId"), playlistId));
-
-            TypedQuery<Video> query = entityManager.createQuery(cq);
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("playlistId", playlistId);
             return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 
@@ -571,13 +580,46 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
-
+public static Long getAllViewsOfChannel(long channelId)
+{
+    try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+    {
+        entityManager.getTransaction().begin();
+        TypedQuery<VideoView> query = entityManager.createQuery("SELECT vv FROM VideoView vv " +
+                "Inner Join Video v on v.videoId = vv.videoId " +
+                "WHERE v.channelId = :channelId", VideoView.class);
+        query.setParameter("channelId",channelId);
+        List<VideoView> results = query.getResultList();
+        if(results != null)
+        {
+            return (long) results.size();
+        }
+        return 0L;
+    }
+}
+//Playlist
     public static List<Playlist> getPlaylistsOfChannel(Long channelId, boolean isSelf)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            //TODO
-          return new ArrayList<>();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT p ")
+                    .append("FROM Playlist p ")
+                    .append("Inner JOIN ChannelPlaylist cp ON cp.channelId = p.channelId ")
+                    .append("Where cp.channelId = :channelId ");
+            if(!isSelf)
+            {
+                jpql.append("AND p.isPrivate = 0 ");
+            }
+
+            TypedQuery<Playlist> query = entityManager.createQuery(jpql.toString(), Playlist.class);
+            query.setParameter("channelId", channelId);
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static List<Playlist> getPublicPlaylistsForUser(Long channelId)
@@ -620,9 +662,9 @@ public class DatabaseManager {
             transaction.begin();
 
             TypedQuery<VideoPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM VideoPlaylist v WHERE v.VideoId = :VideoId AND s.PlaylistId = :PlaylistId", VideoPlaylist.class);
-            query.setParameter("VideoId", videoId);
-            query.setParameter("PlaylistId", playlistId);
+                    "SELECT vp FROM VideoPlaylist vp WHERE vp.videoId = :videoId AND vp.playlistId = :playlistId", VideoPlaylist.class);
+            query.setParameter("videoId", videoId);
+            query.setParameter("playlistId", playlistId);
             VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
 
             try
@@ -639,7 +681,31 @@ public class DatabaseManager {
         }
     }
     public static List<VideoPlaylist> addVideoPlaylists(Long videoId, List<Long> playlistIds) {
-        return new ArrayList<>();
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            List<VideoPlaylist> videoPlaylists = new ArrayList<>();
+            for(Long playlistId : playlistIds)
+            {
+                EntityTransaction transaction = entityManager.getTransaction();
+                transaction.begin();
+                TypedQuery<VideoPlaylist> query = entityManager.createQuery(
+                        "SELECT v FROM VideoPlaylist v WHERE v.videoId = :videoId AND v.playlistId = :playlistId", VideoPlaylist.class);
+                query.setParameter("videoId", videoId);
+                query.setParameter("playlistId", playlistId);
+                VideoPlaylist videoPlaylist = new VideoPlaylist(videoId,playlistId);
+                try
+                {
+                    videoPlaylists.add(query.getSingleResult());
+                }
+                catch (NoResultException e){
+                    entityManager.persist(videoPlaylist);
+                    transaction.commit();
+                }
+            }
+
+            entityManager.close();
+            return videoPlaylists;
+        }
     }
 
     public static void deleteVideoPlaylist(VideoPlaylist videoPlaylist)
@@ -658,7 +724,11 @@ public class DatabaseManager {
     }
     public static void deleteVideoPlaylists(Long playlistId)
     {
-        //TODO
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            entityManager.createQuery("DELETE FROM PlaylistVideo p WHERE p.playlistId = :playlistId")
+                    .setParameter("playlistId", playlistId)
+                    .executeUpdate();
+        }
     }
 
     public static void deleteVideoPlaylist(Long videoId, Long playlistId)
@@ -953,7 +1023,7 @@ public class DatabaseManager {
                         .append("FROM Video v ")
                         .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                         .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
-                        .append("WHERE v.channelId != :channelId AND v.videoTypeId = 2 ");
+                        .append("WHERE v.channelId != :channelId AND v.videoTypeId = 2 AND v.isPrivate = 0");
 
                 if (categories != null && !categories.isEmpty()) {
                     jpql.append("AND vc.categoryId IN :categoryIds ");
@@ -1012,7 +1082,7 @@ public class DatabaseManager {
                     .append("FROM Video v ")
                     .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
-                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ");
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 AND v.isPrivate = 0 ");
 
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId IN :categoryIds ");
@@ -1109,6 +1179,106 @@ public class DatabaseManager {
         }
 
     }
+    public static Long getCountOfVideosOfChannel(long channelId)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+            return (long) query.getResultList().size();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+                return 0L;
+            }
+        }
+
+    }
+
+    //TODO handle the isPrivate in the client side
+    public static List<Video> getVideosOfChannel(long channelId, int perPage, int pageNumber)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static List<Video> getRecentVideosOfChannel(long channelId, int perPage, int pageNumber)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v ")
+                    .append("FROM Video WHERE c.channelId = :channelId ORDER BY viewDateTime DESC ");
+
+            TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static List<Video> getMostPopularVideosOfChannel(long channelId, int perPage, int pageNumber)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT v, COUNT(vv.videoId) AS viewCount ")
+                    .append("FROM Video v ")
+                    .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId = :channelId AND v.videoTypeId = 1 ");
+
+
+            jpql.append("GROUP BY v.videoId, v.name ")
+                    .append("ORDER BY viewCount DESC");
+
+            TypedQuery<Object[]> query = entityManager.createQuery(jpql.toString(), Object[].class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            List<Object[]> results = query.getResultList();
+            List<Video> videos = results.stream()
+                    .map(result -> (Video) result[0])
+                    .collect(Collectors.toList());
+
+            return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+
     public static void deleteVideo(Long videoId)
     {
         if(getVideo(videoId) == null)
@@ -1161,28 +1331,23 @@ public class DatabaseManager {
         }
     }
     public static List<Category> getCategoriesOfVideo(Long videoId) {
-
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<Category>> future = CompletableFuture.supplyAsync(() -> {
-                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-                {
-                    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-                    CriteriaQuery<Category> cq = cb.createQuery(Category.class).distinct(true);
-                    Root<Category> categoryRoot = cq.from(Category.class);
-                    Join<Category, VideoCategory> videoViewJoin = categoryRoot.join("VideoCategory", JoinType.INNER);
+            entityManager = entityManagerFactory.createEntityManager();
 
-                    cq.select(categoryRoot)
-                            .where(cb.equal(videoViewJoin.get("videoId"), videoId));
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT c ")
+                    .append("FROM Video v ")
+                    .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
+                    .append("LEFT JOIN Category c ON vc.categoryId = c.categoryId ")
+                    .append("Where v.videoId = :videoId");
 
-                    TypedQuery<Category> query = entityManager.createQuery(cq);
-                    return query.getResultList();
-                }
-            });
-
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+            TypedQuery<Category> query = entityManager.createQuery(jpql.toString(), Category.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static List<VideoCategory> getVideoCategories(Long videoId) {
@@ -1196,27 +1361,41 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
-    public static List<VideoCategory> addVideoCategories(Long videoId, List<Integer> categoryId) {
-        return new ArrayList<>();
-        //TODO
+    public static List<VideoCategory> addVideoCategories(Long videoId, List<Integer> categoryIds) {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            List<VideoCategory> videoCategories = new ArrayList<>();
+            for(Integer categoryId : categoryIds)
+            {
+                EntityTransaction transaction = entityManager.getTransaction();
+                transaction.begin();
+                TypedQuery<VideoCategory> query = entityManager.createQuery(
+                        "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId AND vc.categoryId = :categoryId", VideoCategory.class);
+                query.setParameter("videoId", videoId);
+                query.setParameter("categoryId", categoryId);
+                VideoCategory videoCategory = new VideoCategory(videoId,categoryId);
+                try
+                {
+                    videoCategories.add(query.getSingleResult());
+                }
+                catch (NoResultException e){
+                    entityManager.persist(videoCategory);
+                    transaction.commit();
+                }
+            }
+
+            entityManager.close();
+            return videoCategories;
+        }
     }
 
     public static void deleteVideoCategories(Long videoId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            TypedQuery<VideoCategory> query = entityManager.createQuery(
-                    "SELECT vc FROM VideoCategory vc WHERE vc.videoId = :videoId", VideoCategory.class);
-            query.setParameter("videoId", videoId);
-
-            //TODO delete
-
-            entityManager.close();
-        }
-    }
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            entityManager.createQuery("DELETE FROM VideoCategory vc WHERE vc.videoId = :videoId")
+                    .setParameter("videoId", videoId)
+                    .executeUpdate();
+        }    }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
         if(getVideo(videoId) == null || getCategory(categoryId) == null)
         {
@@ -1382,6 +1561,31 @@ public class DatabaseManager {
                     .collect(Collectors.toList());
 
             return videos;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static List<Date> getWatchHistoryDates(Long channelId, int perPage, int pageNumber) {
+
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT vv.viewDateTime ")
+                    .append("FROM Video v ")
+                    .append("INNER JOIN VideoView vv ON v.videoId = vv.videoId ")
+                    .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 ")
+                    .append(" ORDER BY viewDateTime DESC");
+
+            TypedQuery<Date> query = entityManager.createQuery(jpql.toString(), Date.class);
+            query.setParameter("channelId", channelId);
+
+            query.setFirstResult((pageNumber - 1) * perPage);
+            query.setMaxResults(perPage);
+
+            return query.getResultList();
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();

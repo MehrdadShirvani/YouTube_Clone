@@ -4,7 +4,9 @@ package Shared.Api.dto;
 import Shared.Models.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private List<Video> watchHistoryVideos;
+    private List<Date> watchHistoryDates;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
@@ -70,7 +73,14 @@ public class Body {
     private List<Playlist> playlists;
     private List<Long> playlistIds;
     private boolean isSelf;
-
+    private List<Video> videosOfChannel;
+    private Long numberOfVideos;
+    private String recipientsEmail;
+    private String token;
+    private int twoFactorDigit;
+    private boolean isVerified;
+    private HashMap<String , String> twoFactorData;
+    private int code;
 
 
     public Body() {
@@ -429,6 +439,14 @@ public class Body {
         this.watchHistoryVideos = watchHistoryVideos;
     }
 
+    public List<Date> getWatchHistoryDates() {
+        return watchHistoryDates;
+    }
+
+    public void setWatchHistoryDates(List<Date> watchHistoryDates) {
+        this.watchHistoryDates = watchHistoryDates;
+    }
+
     public boolean isChannelNameUnique() {
         return isChannelNameUnique;
     }
@@ -547,5 +565,69 @@ public class Body {
 
     public void setSelf(boolean self) {
         isSelf = self;
+    }
+
+    public List<Video> getVideosOfChannel() {
+        return videosOfChannel;
+    }
+
+    public void setVideosOfChannel(List<Video> videosOfChannel) {
+        this.videosOfChannel = videosOfChannel;
+    }
+
+    public Long getNumberOfVideos() {
+        return numberOfVideos;
+    }
+
+    public void setNumberOfVideos(Long numberOfVideos) {
+        this.numberOfVideos = numberOfVideos;
+    }
+
+    public String getRecipientsEmail() {
+        return recipientsEmail;
+    }
+
+    public void setRecipientsEmail(String recipientsEmail) {
+        this.recipientsEmail = recipientsEmail;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public int getTwoFactorDigit() {
+        return twoFactorDigit;
+    }
+
+    public void setTwoFactorDigit(int twoFactorDigit) {
+        this.twoFactorDigit = twoFactorDigit;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public HashMap<String, String> getTwoFactorData() {
+        return twoFactorData;
+    }
+
+    public void setTwoFactorData(HashMap<String, String> twoFactorData) {
+        this.twoFactorData = twoFactorData;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

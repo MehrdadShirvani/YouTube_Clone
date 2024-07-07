@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<VBox alignment="TOP_CENTER" prefHeight="163.0" prefWidth="619.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallWatchHistoryController">
+   <stylesheets>
+      <URL value="@small-video-view.css" />
+   </stylesheets>
+   <children>
+      <HBox prefHeight="223.0" prefWidth="555.0">
+         <children>
+            <StackPane prefHeight="223.0" prefWidth="252.0">
+               <children>
+                  <WebView fx:id="webView" disable="true" onMouseClicked="#clicked" prefHeight="223.0" prefWidth="268.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </WebView>
+               </children>
+            </StackPane>
+            <VBox prefHeight="163.0" prefWidth="367.0">
+               <children>
+                  <HBox prefHeight="39.0" prefWidth="367.0">
+                     <children>
+                        <Label fx:id="titleLabel" graphicTextGap="0.0" prefHeight="28.0" prefWidth="371.0" style="-fx-font-weight: bold;" text="trees forest woods" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+                  <HBox prefHeight="21.0" prefWidth="367.0" style="-fx-spacing: 8;">
+                     <children>
+                        <Label fx:id="authorLabel" styleClass="caption" text="James Gouse" />
+                        <Label fx:id="viewsLabel" prefHeight="15.0" prefWidth="175.0" styleClass="caption" text="15K Views .1 week ago">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets></Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="descriptionLabel" alignment="TOP_LEFT" prefHeight="107.0" prefWidth="382.0" styleClass="caption" text="blah blah blah yeah this is descripton of video not trees me forest but">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
+   </children>
+</VBox>

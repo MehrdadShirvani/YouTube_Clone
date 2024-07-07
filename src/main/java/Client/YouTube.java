@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Account;
+import Shared.Models.Video;
 import Shared.Utils.CacheUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class YouTube extends Application {
     public static Stage primaryStage;
@@ -64,28 +66,39 @@ public class YouTube extends Application {
             System.out.println("THERE IS NO CONNECTION !");
         }
 
-        try {
-            if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
-                System.out.println("Login with cached account !");
-                Account account = CacheUtil.readAccountFromCache();
-                boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
 
-                if (isLoggedIn) {
-                    viewName = "home-view.fxml";
-                } else {
-                    System.out.println("Failed to Login using cached account !");
-                    System.out.println("Login Normally !");
-                    viewName = "login-view.fxml";
-                }
-            } else {
-                viewName = "login-view.fxml";
-                System.out.println("Login Normally !");
-
+        if (!Objects.equals(viewName, "elements/retry-page.fxml")) {
+            try {
+                viewName = loginUsingCache();
+            } catch (Exception e) {
+                System.out.println("An error occurred");
             }
-        } catch (Exception e) {
-            System.out.println("An error occurred");
         }
 
         launch();
+    }
+
+
+    public static String loginUsingCache() throws IOException {
+        String viewAddress;
+
+        if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
+            System.out.println("Login with cached account !");
+            Account account = CacheUtil.readAccountFromCache();
+            boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
+
+            if (isLoggedIn) {
+                viewAddress = "home-view.fxml";
+            } else {
+                System.out.println("Failed to Login using cached account !");
+                System.out.println("Login Normally !");
+                viewAddress = "login-view.fxml";
+            }
+        } else {
+            viewAddress = "login-view.fxml";
+            System.out.println("Login Normally !");
+        }
+
+        return viewAddress;
     }
 }
