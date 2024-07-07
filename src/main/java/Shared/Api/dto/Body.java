@@ -77,6 +77,7 @@ public class Body {
     private Long numberOfVideos;
     private String recipientsEmail;
     private String token;
+    private int twoFactorDigit;
 
 
     public Body() {
@@ -593,5 +594,13 @@ public class Body {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getTwoFactorDigit() {
+        return twoFactorDigit;
+    }
+
+    public void setTwoFactorDigit(int twoFactorDigit) {
+        this.twoFactorDigit = twoFactorDigit;
     }
 }
