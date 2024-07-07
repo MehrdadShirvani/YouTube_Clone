@@ -1856,7 +1856,7 @@ public class Client {
     }
 
 
-    public String authenticatorAdd() {
+    public HashMap<String , String> authenticatorAdd() {
         String endpoint = "/api/2fa/authenticator/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -1872,7 +1872,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return responseBody.getToken();
+            return responseBody.getTwoFactorData();
         }
 
         System.out.println(responseBody.getMessage());
