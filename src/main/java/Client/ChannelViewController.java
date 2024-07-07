@@ -74,6 +74,9 @@ public class ChannelViewController {
     @FXML
     FlowPane videosFlowPane;
     private Rectangle maskcommentProfileRec;
+    private boolean isChannelSubscribed;
+    private Channel channel;
+    private HomeController homeController;
 
     public void initialize() throws IOException {
         //Mask
