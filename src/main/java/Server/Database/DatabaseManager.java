@@ -597,12 +597,29 @@ public static Long getAllViewsOfChannel(long channelId)
         return 0L;
     }
 }
+//Playlist
     public static List<Playlist> getPlaylistsOfChannel(Long channelId, boolean isSelf)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            //TODO
-          return new ArrayList<>();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT p ")
+                    .append("FROM Playlist p ")
+                    .append("Inner JOIN ChannelPlaylist cp ON cp.channelId = p.channelId ")
+                    .append("Where cp.channelId = :channelId ");
+            if(!isSelf)
+            {
+                jpql.append("AND p.isPrivate = 0 ");
+            }
+
+            TypedQuery<Playlist> query = entityManager.createQuery(jpql.toString(), Playlist.class);
+            query.setParameter("channelId", channelId);
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static List<Playlist> getPublicPlaylistsForUser(Long channelId)
