@@ -767,9 +767,9 @@ public static Long getAllViewsOfChannel(long channelId)
             transaction.begin();
 
             TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM ChannelPlaylist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
-            query.setParameter("ChannelId", channelId);
-            query.setParameter("PlaylistId", playlistId);
+                    "SELECT v FROM ChannelPlaylist v WHERE v.channelId = :channelId AND v.playlistId = :playlistId", ChannelPlaylist.class);
+            query.setParameter("channelId", channelId);
+            query.setParameter("playlistId", playlistId);
             ChannelPlaylist channelPlaylist = new ChannelPlaylist(channelId,playlistId);
 
             try
