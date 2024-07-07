@@ -13,6 +13,7 @@ public class TwoFactorAuthentication {
     private String secretKey;
     private final String APP_NAME = "MemoliYT";
     private String email;
+    private int code;
 
     public TwoFactorAuthentication(String email) throws IOException, WriterException {
         googleAuthenticator = new GoogleAuthenticator();
@@ -20,10 +21,11 @@ public class TwoFactorAuthentication {
         this.email = email;
     }
 
-    public TwoFactorAuthentication(String secretKey , String email) {
+    public TwoFactorAuthentication(String secretKey , int code) {
         googleAuthenticator = new GoogleAuthenticator();
         //TODO : Get secret key from database manager
         this.secretKey = secretKey;
+        this.code = code;
     }
 
 
@@ -32,8 +34,8 @@ public class TwoFactorAuthentication {
         this.secretKey = key.getKey();
     }
 
-    public boolean verifyCode(int code) {
-        return googleAuthenticator.authorize(this.secretKey, code);
+    public boolean verifyCode() {
+        return googleAuthenticator.authorize(this.secretKey, this.code);
     }
 
     public String generateQrCodeData() {
