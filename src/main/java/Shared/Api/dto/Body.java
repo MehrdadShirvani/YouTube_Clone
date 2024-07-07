@@ -73,7 +73,7 @@ public class Body {
     private List<Long> playlistIds;
     private boolean isSelf;
     private List<Video> videosOfChannel;
-    private int numberOfVideos;
+    private Long numberOfVideos;
 
 
 
@@ -569,11 +569,11 @@ public class Body {
         this.videosOfChannel = videosOfChannel;
     }
 
-    public int getNumberOfVideos() {
+    public Long getNumberOfVideos() {
         return numberOfVideos;
     }
 
-    public void setNumberOfVideos(int numberOfVideos) {
+    public void setNumberOfVideos(Long numberOfVideos) {
         this.numberOfVideos = numberOfVideos;
     }
 }
