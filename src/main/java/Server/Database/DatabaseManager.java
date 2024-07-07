@@ -582,7 +582,20 @@ public class DatabaseManager {
     }
 public static Long getAllViewsOfChannel(long channelId)
 {
-return 1L;
+    try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+    {
+        entityManager.getTransaction().begin();
+        TypedQuery<VideoView> query = entityManager.createQuery("SELECT vv FROM VideoView vv " +
+                "Inner Join Video v on v.videoId = vv.videoId " +
+                "WHERE v.channelId = :channelId", VideoView.class);
+        query.setParameter("channelId",channelId);
+        List<VideoView> results = query.getResultList();
+        if(results != null)
+        {
+            return (long) results.size();
+        }
+        return 0L;
+    }
 }
     public static List<Playlist> getPlaylistsOfChannel(Long channelId, boolean isSelf)
     {
