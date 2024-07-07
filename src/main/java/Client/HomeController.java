@@ -360,7 +360,7 @@ public class HomeController {
     public void setPlaylistPage(Playlist playlist)
     {
         mainBorderPane.setCenter(null);
-        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-playlist-view.fxml"));
         try {
             mainBorderPane.setCenter(fxmlLoader.load());
         } catch (IOException e) {
