@@ -203,7 +203,7 @@ public class Header {
 
 
     public List<Long> extractIds() throws IllegalArgumentException {
-        final String ENDPOINT_PATTERN = "^/api/(video|account|comment|playlist)/[0-9]+(/(categories|most-viewed-categories|delete|category/[0-9]+/delete|watch-history(/(video|timestamp))?|edit|videos|channels|video/[0-9]+/delete|video|channel/[0-9]+/delete))?$";
+        final String ENDPOINT_PATTERN = "^/api/(video|account|comment|playlist|channel)/[0-9]+(/(categories|most-viewed-categories|delete|category/[0-9]+/delete|watch-history(/(video|timestamp))?|edit|videos(/all-views)?|channels|video/[0-9]+/delete|video|channel/[0-9]+/delete))?$";
         final String ID_REGEX = "\\b\\d+\\b";
         Pattern idPattern = Pattern.compile(ID_REGEX);
 
@@ -212,7 +212,7 @@ public class Header {
         }
 
         List<Long> ids = new ArrayList<>();
-        Matcher matcher = idPattern.matcher(this.endpoint);
+        Matcher matcher = idPattern.matcher(endpoint);
 
         while (matcher.find()) {
             String idAsStr = matcher.group();
@@ -223,7 +223,7 @@ public class Header {
                 ids.add(idAsLong);
 
             } catch (Exception e) {
-                System.out.println("An error while converting id to Long");
+                System.out.println("An error occurred while converting id to Long");
             }
         }
 
