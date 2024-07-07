@@ -2205,6 +2205,30 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetCommentReaction(Request request , Long commentId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+
+        Body responseBody = new Body();
+
+        if (commentId == null | channelId == null) {
+            sendNullErrorResponse(requestHeader , "The channelId or commentId that sent is null");
+            return;
+        }
+
+        CommentReaction commentReaction = DatabaseManager.getCommentReaction(channelId , commentId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCommentReaction(commentReaction);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
