@@ -69,28 +69,36 @@ public class YouTube extends Application {
 
         if (!Objects.equals(viewName, "elements/retry-page.fxml")) {
             try {
-                if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
-                    System.out.println("Login with cached account !");
-                    Account account = CacheUtil.readAccountFromCache();
-                    boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
-
-                    if (isLoggedIn) {
-                        viewName = "home-view.fxml";
-                    } else {
-                        System.out.println("Failed to Login using cached account !");
-                        System.out.println("Login Normally !");
-                        viewName = "login-view.fxml";
-                    }
-                } else {
-                    viewName = "login-view.fxml";
-                    System.out.println("Login Normally !");
-
-                }
+                viewName = loginUsingCache();
             } catch (Exception e) {
                 System.out.println("An error occurred");
             }
         }
 
         launch();
+    }
+
+
+    public static String loginUsingCache() throws IOException {
+        String viewAddress;
+
+        if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
+            System.out.println("Login with cached account !");
+            Account account = CacheUtil.readAccountFromCache();
+            boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
+
+            if (isLoggedIn) {
+                viewAddress = "home-view.fxml";
+            } else {
+                System.out.println("Failed to Login using cached account !");
+                System.out.println("Login Normally !");
+                viewAddress = "login-view.fxml";
+            }
+        } else {
+            viewAddress = "login-view.fxml";
+            System.out.println("Login Normally !");
+        }
+
+        return viewAddress;
     }
 }
