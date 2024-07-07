@@ -2370,6 +2370,30 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleAuthenticatorVerify(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        Long channelId = requestBody.getChannelId();
+        int code = requestBody.getCode();
+
+        Body responseBody = new Body();
+
+        //TOOD : Get secretKey from database
+        String secretKey = "";
+
+        TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(secretKey , code);
+        boolean isVerified = twoFactorAuthentication.verifyCode();
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setVerified(isVerified);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
