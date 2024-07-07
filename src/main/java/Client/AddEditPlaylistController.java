@@ -15,7 +15,7 @@ public class AddEditPlaylistController {
     public Button SubmitBtn;
     private Playlist playlist;
 
-    public void setPlaylist(Playlist playlist)
+    public void setPlaylist(Playlist playlist, HomeController controller)
     {
         this.playlist = playlist;
         TxtName.setText(playlist.getName());
