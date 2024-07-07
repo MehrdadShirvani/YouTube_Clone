@@ -102,4 +102,192 @@ public class ChannelViewController {
 //        homeVBox.setAlignment(Pos.CENTER_LEFT);
 
     }
+
+
+    public void setChannel(Channel channel, HomeController homeController) throws IOException {
+        this.channel = channel;
+        this.homeController = homeController;
+
+        if(Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId()))
+        {
+            otherNoContent.setVisible(false);
+            otherNoContent2.setVisible(false);
+            otherNoContent3.setVisible(false);
+            otherNoContentWebView.setVisible(false);
+            otherNoContentWebView2.setVisible(false);
+            otherNoContentWebView3.setVisible(false);
+        }
+        else
+        {
+//            myNoContent.setVisible(false);
+            myNoContent2.setVisible(false);
+            myNoContent3.setVisible(false);
+            myNoContentWebView.setVisible(false);
+            myNoContentWebView2.setVisible(false);
+            myNoContentWebView3.setVisible(false);
+        }
+
+        authorLabel.setText(channel.getName());
+        descLabel.setText(channel.getDescription());
+        locationLabel.setText(channel.getLocation());
+        joinLabel.setText(DateFormats.formatTimestamp(channel.getCreatedDateTime()));
+
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        Long numberOfViews = YouTube.client.getAllViewsOfChannel(channel.getChannelId());
+        NumberOfViewsLabel.setText(formatter.format(numberOfViews) + " views ");
+        Long numberOfVideos = YouTube.client.getCountOfVideosOfChannel(channel.getChannelId());
+        NumberOfVideosLabel.setText(formatter.format(numberOfVideos) + " videos ");
+        try {
+            //TODO the big channel image
+            Path path = new File("src/main/resources/Client/image-view.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            headerPictureWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/H_" + channel.getChannelId()));
+
+            path = new File("src/main/resources/Client/profile.html").toPath();
+            htmlContent = new String(Files.readAllBytes(path));
+            profileWebView.getEngine().loadContent(htmlContent.replace("@id", channel.getChannelId() + ""));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<Channel> subscribers = YouTube.client.getChannelSubscribers(channel.getChannelId());
+        if(subscribers != null) {
+            subsLabel.setText(subscribers.size() + " subscribers ");
+            subsLabel2.setText(subscribers.size() + " subscribers ");
+        }
+        else {
+            subsLabel.setText("no subscribers");
+            subsLabel2.setText("no subscribers");
+        }
+        boolean isSelf = Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId());
+        Task<Void> loaderView = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    List<Video> popularVideos = YouTube.client.getMostPopularVideosOfChannel(channel.getChannelId(),10, 1);
+                    popularHBox.getChildren().clear();
+                    for (Video recVideo : popularVideos) {
+                        if(!isSelf && recVideo.getPrivate())
+                        {
+                            continue;
+                        }
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+                        Parent smallVideo = null;
+                        try {
+                            smallVideo = fxmlLoader.load();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        SmallVideoView smallVideoController = fxmlLoader.getController();
+                        smallVideoController.setVideo(recVideo, homeController);
+                        popularHBox.getChildren().add(smallVideo);
+                    }
+
+                    List<Video> recentVideos = YouTube.client.getRecentVideosOfChannel(channel.getChannelId(),10, 1);
+                    recentHBox.getChildren().clear();
+                    for (Video recVideo : recentVideos) {
+                        if(!isSelf && recVideo.getPrivate())
+                        {
+                            continue;
+                        }
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+                        Parent smallVideo = null;
+                        try {
+                            smallVideo = fxmlLoader.load();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        SmallVideoView smallVideoController = fxmlLoader.getController();
+                        smallVideoController.setVideo(recVideo, homeController);
+                        recentHBox.getChildren().add(smallVideo);
+                    }
+                    List<Playlist> playlists =  YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
+                    if(playlists != null)
+                    {
+                        for (Playlist playlist : playlists) {
+                            //TODO Ehsan add playlistview
+                        }
+                    }
+
+                    videosFlowPane.getChildren().clear();
+                    List<Video> allVideos = YouTube.client.getVideosOfChannel(channel.getChannelId(), 20, 1);
+                    for(Video video : allVideos)
+                    {
+                        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+                        try {
+                            videosFlowPane.getChildren().add(fxmlLoader.load());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        ((SmallVideoView)fxmlLoader.getController()).setPref(1,false,false);
+                        ((SmallVideoView)fxmlLoader.getController()).setVideo(video, homeController);
+                    }
+
+
+                    if (Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId())) {
+                        subsButton.setVisible(false);
+                    }
+                    else
+                    {
+                        isChannelSubscribed = YouTube.client.isSubscribedToChannel(channel.getChannelId());
+                        if (isChannelSubscribed) {
+                            subsIcon.setContent("M10 20H14C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20ZM20 17.35V19H4V17.35L6 15.47V10.32C6 7.40001 7.56 5.10001 10 4.34001V3.96001C10 2.54001 11.49 1.46001 12.99 2.20001C13.64 2.52001 14 3.23001 14 3.96001V4.35001C16.44 5.10001 18 7.41001 18 10.33V15.48L20 17.35ZM19 17.77L17 15.89V10.42C17 7.95001 15.81 6.06001 13.87 5.32001C12.61 4.79001 11.23 4.82001 10.03 5.35001C8.15 6.11001 7 7.99001 7 10.42V15.89L5 17.77V18H19V17.77Z");
+                            subsButton.setText("Unsubscribe");
+                        } else {
+                            subsIcon.setContent("");
+                            subsButton.setText("Subscribe");
+                        }
+                    }
+                });
+                return null;
+            }
+        };
+
+        Thread thread = new Thread(loaderView);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public void subscribeToggleAction(ActionEvent actionEvent) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                if (isChannelSubscribed) {
+                    YouTube.client.sendUnsubscribeRequest(YouTube.client.getAccount().getChannelId(), channel.getChannelId());
+                    Platform.runLater(() -> {
+                        subsIcon.setContent("");
+                        subsButton.setText("Subscribe");
+                    });
+                } else {
+                    YouTube.client.sendSubscribeRequest(YouTube.client.getAccount().getChannelId(), channel.getChannelId());
+                    Platform.runLater(() -> {
+                        subsIcon.setContent("M10 20H14C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20ZM20 17.35V19H4V17.35L6 15.47V10.32C6 7.40001 7.56 5.10001 10 4.34001V3.96001C10 2.54001 11.49 1.46001 12.99 2.20001C13.64 2.52001 14 3.23001 14 3.96001V4.35001C16.44 5.10001 18 7.41001 18 10.33V15.48L20 17.35ZM19 17.77L17 15.89V10.42C17 7.95001 15.81 6.06001 13.87 5.32001C12.61 4.79001 11.23 4.82001 10.03 5.35001C8.15 6.11001 7 7.99001 7 10.42V15.89L5 17.77V18H19V17.77Z");
+                        subsButton.setText("Unsubscribe");
+                    });
+                }
+
+                isChannelSubscribed = !isChannelSubscribed;
+                int subscribersCount = YouTube.client.getChannelSubscribers(channel.getChannelId()).size();
+                Platform.runLater(() -> subsLabel.setText(subscribersCount + " subscribers "));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void createVideoAction(ActionEvent actionEvent)
+    {
+        homeController.setVideoEditingPage(null);
+    }
+
+    public void playlistCreateAction(ActionEvent actionEvent)
+    {
+        homeController.setPlaylistPage(null);
+    }
 }
