@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class Body {
     private List<Category> categories;
     private List<Video> searchVideos;
     private List<Video> watchHistoryVideos;
-    private List<Timestamp> watchHistoryTimestamps;
+    private List<Date> watchHistoryDates;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
     private boolean isSubscribedToChannel;
@@ -433,12 +434,12 @@ public class Body {
         this.watchHistoryVideos = watchHistoryVideos;
     }
 
-    public List<Timestamp> getWatchHistoryTimestamps() {
-        return watchHistoryTimestamps;
+    public List<Date> getWatchHistoryDates() {
+        return watchHistoryDates;
     }
 
-    public void setWatchHistoryTimestamps(List<Timestamp> watchHistoryTimestamps) {
-        this.watchHistoryTimestamps = watchHistoryTimestamps;
+    public void setWatchHistoryDates(List<Date> watchHistoryDates) {
+        this.watchHistoryDates = watchHistoryDates;
     }
 
     public boolean isChannelNameUnique() {
