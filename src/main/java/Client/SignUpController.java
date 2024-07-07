@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Account;
+import Shared.Models.Playlist;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -154,6 +155,9 @@ public class SignUpController {
             alert.showAndWait();
             return;
         }
+
+        Playlist newPlaylist =  YouTube.client.addPlaylist(new Playlist("Watch Later",(short)1, true));
+        YouTube.client.addChannelPlaylist(YouTube.client.getAccount().getChannelId(),newPlaylist.getPlaylistId());
 
         YouTube.changeScene("home-view.fxml");
 
