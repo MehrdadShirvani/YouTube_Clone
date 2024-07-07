@@ -1887,12 +1887,8 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-
-        //TODO : get secretKey from database
-        String secretKey = "";
-
         requestBody.setCode(code);
-        requestBody.setToken(secretKey);
+        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 
