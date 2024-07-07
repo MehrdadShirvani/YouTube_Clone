@@ -79,7 +79,7 @@ public class EmailVerification {
     }
 
 
-    public boolean verifyToken(String token) {
-        return this.token.equals(token);
+    public String getToken() {
+        return token;
     }
 }
