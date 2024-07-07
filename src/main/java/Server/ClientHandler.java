@@ -195,6 +195,26 @@ public class ClientHandler implements Runnable {
                 handleAddVideoPlaylists(request);
 
             }
+        } else if (endpoint.equals("2fa")) {
+            if (endpointParsed[3].equals("email")) {
+                if (endpointParsed[4].equals("send")) {
+                    handleTwoFactorEmailSend(request);
+
+                }
+            } else if (endpointParsed[3].equals("authenticator")) {
+                if (endpointParsed[4].equals("add")) {
+                    handleAuthenticatorAdd(request);
+
+                } else if (endpointParsed[4].equals("verify")) {
+                    handleAuthenticatorVerify(request);
+
+                } else {
+                    handleBadRequest(header);
+                }
+
+            } else {
+                handleBadRequest(header);
+            }
         } else {
             handleBadRequest(header);
         }
@@ -219,6 +239,11 @@ public class ClientHandler implements Runnable {
             } else if (endpoint.equals("unsubscribe")) {
                 handleAccountUnsubscribeRequests(request);
 
+            } else if (endpoint.equals("email")) {
+                if (endpointParsed[4].equals("verify")) {
+                    handleVerifyEmail(request);
+
+                }
             } else {
                 handleBadRequest(header);
 
