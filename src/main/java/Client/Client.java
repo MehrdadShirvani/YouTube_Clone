@@ -1881,7 +1881,7 @@ public class Client {
     }
 
 
-    public Boolean authenticatorVerify() {
+    public Boolean authenticatorVerify(int code) {
         String endpoint = "/api/2fa/authenticator/verify";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -1891,7 +1891,7 @@ public class Client {
         //TODO : get secretKey from database
         String secretKey = "";
 
-        requestBody.setRecipientsEmail(this.account.getEmail());
+        requestBody.setCode(code);
         requestBody.setToken(secretKey);
 
         Request request = new Request(requestHeader , requestBody);
