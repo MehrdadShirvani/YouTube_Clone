@@ -1863,6 +1863,7 @@ public class Client {
         Body requestBody = new Body();
 
         requestBody.setRecipientsEmail(this.account.getEmail());
+        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 
