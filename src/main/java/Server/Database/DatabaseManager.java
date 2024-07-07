@@ -580,7 +580,10 @@ public class DatabaseManager {
             return query.getResultList();
         }
     }
-
+public static Long getAllViewsOfChannel(long channelId)
+{
+return 1L;
+}
     public static List<Playlist> getPlaylistsOfChannel(Long channelId, boolean isSelf)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
@@ -1118,6 +1121,24 @@ public class DatabaseManager {
         }
 
     }
+
+    public static List<Video> getVideosOfChannel(long channelId)
+    {
+        //TODO
+        return new ArrayList<>();
+    }
+    public static List<Video> getRecentVideosOfChannel(long channelId)
+    {
+        //TODO
+        return new ArrayList<>();
+
+    }
+    public static List<Video> getMostPopularVideosOfChannel(long channelId)
+    {
+        //TODO
+        return new ArrayList<>();
+    }
+
     public static void deleteVideo(Long videoId)
     {
         if(getVideo(videoId) == null)
