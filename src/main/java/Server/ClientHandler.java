@@ -2183,6 +2183,28 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleGetAllViewsOfChannel(Request request , Long channelId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (channelId == null) {
+            sendNullErrorResponse(requestHeader , "The channelId that sent is null");
+            return;
+        }
+
+        Long numberOfViews = DatabaseManager.getAllViewsOfChannel(channelId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setNumberOfViews(numberOfViews);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
