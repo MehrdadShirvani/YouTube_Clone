@@ -65,11 +65,11 @@ public class Playlist {
     {
 
     }
-    public Playlist(String name, Short playlistTypeId,  Boolean isPrivate,Timestamp createdDateTime)
+    public Playlist(String name, Short playlistTypeId,  Boolean isPrivate)
     {
         this.name = name;
         this.playlistTypeId = playlistTypeId;
         this.isPrivate = isPrivate;
-        this.createdDateTime = createdDateTime;
+        this.createdDateTime =  new Timestamp(System.currentTimeMillis());
     }
 }
