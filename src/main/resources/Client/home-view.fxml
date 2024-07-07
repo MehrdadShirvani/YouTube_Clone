@@ -21,7 +21,7 @@
             <left>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <ImageView fx:id="swipMenuImage" fitHeight="13.0" fitWidth="34.0" onMouseClicked="#menuSwip" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="swipMenuImage" fitHeight="13.0" fitWidth="34.0" onMouseClicked="#menuSwipe" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@elements/menu-icon.png" />
                             </image>

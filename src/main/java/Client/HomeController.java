@@ -1,10 +1,10 @@
 package Client;
 
+import Shared.Models.Channel;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +18,6 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
-import javax.swing.text.PlainDocument;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -220,7 +219,7 @@ public class HomeController {
         }
     }
 
-    public void menuSwip(MouseEvent mouseEvent) {
+    public void menuSwipe(MouseEvent mouseEvent) {
 
         if (!isMinimized) {
             Transition transition = new Transition() {
@@ -254,10 +253,10 @@ public class HomeController {
 
     public void checkLetter(KeyEvent keyEvent) {
         // slash for search
-        if (keyEvent.getCode() == KeyCode.SLASH) {
+//        if (keyEvent.getCode() == KeyCode.SLASH) {
 //            searchTextField.requestFocus();
 //            System.out.println(homeScrollPane.getWidth() + " " + homeScrollPane.getHeight());
-        }
+//        }
     }
 
     public void checkLetterSearch(KeyEvent keyEvent) {
@@ -297,5 +296,9 @@ public class HomeController {
             controller.setVideo(video, this);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
+    }
+    public void setChannel(Channel channel)
+    {
+
     }
 }
