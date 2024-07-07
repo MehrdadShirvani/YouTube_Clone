@@ -1739,7 +1739,7 @@ public class Client {
 
 
     public Long getAllViewsOfChannel(Long channelId) {
-        String endpoint = "/api/channel/" + channelId + "/all-views";
+        String endpoint = "/api/channel/" + channelId + "/videos/all-views";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
