@@ -317,23 +317,25 @@ public class HomeController {
             throw new RuntimeException(e);
         }
         ChannelViewController controller = fxmlLoader.getController();
-//        try {
-//            controller.setChannel(channel, this);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            controller.setChannel(channel, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         mainBorderPane.setCenter(videoPage);
     }
 
 
     public void watchHistoryKey(ActionEvent actionEvent) {
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("watch-history-view.fxml"));
+        try {
+            mainBorderPane.setCenter(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         WatchHistoryController watchHistoryController = fxmlLoader.getController();
-
         watchHistoryController.setHomeController(this);
         watchHistoryController.setVideo();
-
-        YouTube.changeScene("watch-history-view.fxml");
     }
 
     public void setVideoEditingPage(Video video) {
