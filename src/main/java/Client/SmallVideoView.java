@@ -15,11 +15,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -167,8 +165,11 @@ public class SmallVideoView {
         profileWebView.getEngine().load(url);
     }
 
-    public void clicked(MouseEvent mouseEvent) {
+    public void videoClicked(MouseEvent mouseEvent) {
         homeController.setVideoPage(video);
+    }
+    public void authorClicked(MouseEvent mouseEvent) {
+        homeController.setChannel(video.getChannel());
     }
 
     public void setPref(double ratio, Boolean avatar, Boolean author) {
