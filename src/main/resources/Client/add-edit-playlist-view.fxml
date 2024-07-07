@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.web.WebView?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Client.AddEditPlaylistController"
+            prefHeight="400.0" prefWidth="600.0">
+    <VBox fx:id="VControls">
+        <TextField fx:id="TxtName" promptText="Name"/>
+        <CheckBox  fx:id="CBIsPrivate" onAction="#cbPrivateAction" text="Is Private"> </CheckBox>
+        <CheckBox fx:id="CBIsCollaborative" text="Is Collaborative"> </CheckBox>
+        <Button fx:id="SubmitBtn" onAction="#submitAction" text="Create"/>
+    </VBox>
+</AnchorPane>
