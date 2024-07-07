@@ -1385,6 +1385,7 @@ public static Long getAllViewsOfChannel(long channelId)
             }
 
             entityManager.close();
+            return videoCategories;
         }
     }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
