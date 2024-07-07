@@ -78,7 +78,8 @@ public class EmailVerification {
         Transport.send(message);
     }
 
-    public String getToken() {
-        return token;
+
+    public boolean verifyToken(String token) {
+        return this.token.equals(token);
     }
 }
