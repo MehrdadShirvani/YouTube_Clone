@@ -20,7 +20,7 @@
         <CheckBox fx:id="CBIsAgeRestricted" text="Is Age Restricted"> </CheckBox>
         <TextField fx:id="TxtDuration" disable="true" promptText="Duration"/>
         <CheckBox fx:id="CBIsShort" text="Is Short"> </CheckBox>
-        <Button fx:id="ChooseVideoBtn" onAction="#chooseFile" text="Choose Video"/>
+        <Button  fx:id="ChooseVideoBtn" onAction="#chooseFile" text="Choose Video"/>
         <Button onAction="#choosePictureFile" text="Choose Picture"/>
         <WebView disable="true"  prefHeight="139.49" prefWidth="248.0"  fx:id="profileWebView"/>
         <Button fx:id="SetDefaultThumbnailBtn" onAction="#setDefaultThumbnail" text="Set thumbnail based on video"/>

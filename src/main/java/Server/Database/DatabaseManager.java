@@ -606,7 +606,7 @@ public static Long getAllViewsOfChannel(long channelId)
 
             StringBuilder jpql = new StringBuilder("SELECT DISTINCT p ")
                     .append("FROM Playlist p ")
-                    .append("Inner JOIN ChannelPlaylist cp ON cp.channelId = p.channelId ")
+                    .append("Inner JOIN ChannelPlaylist cp ON cp.playlistId = p.playlistId ")
                     .append("Where cp.channelId = :channelId ");
             if(!isSelf)
             {
@@ -767,9 +767,9 @@ public static Long getAllViewsOfChannel(long channelId)
             transaction.begin();
 
             TypedQuery<ChannelPlaylist> query = entityManager.createQuery(
-                    "SELECT v FROM ChannelPlaylist v WHERE v.ChannelId = :ChannelId AND s.PlaylistId = :PlaylistId", ChannelPlaylist.class);
-            query.setParameter("ChannelId", channelId);
-            query.setParameter("PlaylistId", playlistId);
+                    "SELECT v FROM ChannelPlaylist v WHERE v.channelId = :channelId AND v.playlistId = :playlistId", ChannelPlaylist.class);
+            query.setParameter("channelId", channelId);
+            query.setParameter("playlistId", playlistId);
             ChannelPlaylist channelPlaylist = new ChannelPlaylist(channelId,playlistId);
 
             try
@@ -1230,7 +1230,7 @@ public static Long getAllViewsOfChannel(long channelId)
             entityManager = entityManagerFactory.createEntityManager();
 
             StringBuilder jpql = new StringBuilder("SELECT v ")
-                    .append("FROM Video WHERE c.channelId = :channelId ORDER BY viewDateTime DESC ");
+                    .append("FROM Video v WHERE v.channelId = :channelId ORDER BY v.createdDateTime DESC ");
 
             TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
             query.setParameter("channelId", channelId);

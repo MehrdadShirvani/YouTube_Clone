@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QrCodeGenerator {
-    private static final String FILE_PATH = "src/main/java/Client/.cache/.QrCode.png";
+    public static final String FILE_PATH = "src/main/java/Client/.cache/.QrCode.png";
 
     public static void generateQRCodeImage(String barcodeText) throws WriterException, IOException {
         QRCodeWriter barcodeWriter = new QRCodeWriter();

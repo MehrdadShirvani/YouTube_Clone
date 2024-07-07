@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Channel;
+import Shared.Models.Playlist;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -299,6 +300,23 @@ public class HomeController {
     }
     public void setChannel(Channel channel)
     {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
+
+        VBox videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ChannelViewController controller = fxmlLoader.getController();
+        try {
+            controller.setChannel(channel, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
     }
 
 
@@ -316,14 +334,39 @@ public class HomeController {
     {
         mainBorderPane.setCenter(null);
         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-video-view.fxml"));
-        BorderPane videoPage = null;
+
         try {
-            videoPage = fxmlLoader.load();
-            AddEditVideoView controller = fxmlLoader.getController();
-            controller .setVideo(video, this);
+            mainBorderPane.setCenter(fxmlLoader.load());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        mainBorderPane.setCenter(videoPage);
+
+        try {
+            AddEditVideoView controller = fxmlLoader.getController();
+            if(video != null)
+            {
+                controller.setVideo(video, this);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void yourChannelAction(ActionEvent actionEvent)
+    {
+        setChannel(YouTube.client.getChannelInfo(YouTube.client.getAccount().getChannelId()));
+    }
+
+    public void setPlaylistPage(Playlist playlist)
+    {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("add-edit-playlist-view.fxml"));
+        try {
+            mainBorderPane.setCenter(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        AddEditPlaylistController controller = fxmlLoader.getController();
+        controller.setPlaylist(playlist, this);
     }
 }
