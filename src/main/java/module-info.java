@@ -19,6 +19,7 @@ module org.example.youtube {
     requires java.net.http;
     requires org.bytedeco.javacv;
     requires java.mail;
+    requires googleauth;
 
     opens Server to javafx.fxml;
     exports Server;
