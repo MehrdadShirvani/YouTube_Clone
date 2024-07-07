@@ -13,7 +13,7 @@
     </stylesheets>
 
     <children>
-        <WebView minHeight="192.0" minWidth="1080.0" prefHeight="192.0" prefWidth="1080.0" />
+        <WebView fx:id="headerPictureWebView" minHeight="192.0" minWidth="1080.0" prefHeight="192.0" prefWidth="1080.0" />
         <BorderPane minHeight="100.0" minWidth="200.0" prefHeight="100.0" prefWidth="200.0">
             <left>
                 <HBox BorderPane.alignment="CENTER">
@@ -33,7 +33,7 @@
                 </HBox>
             </left>
             <right>
-                <ToggleButton fx:id="subsButton" minHeight="35.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Subscribe" BorderPane.alignment="CENTER">
+                <ToggleButton fx:id="subsButton" onAction="#subscribeToggleAction" minHeight="35.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Subscribe" BorderPane.alignment="CENTER">
                     <padding>
                         <Insets left="20.0" right="20.0" />
                     </padding>
@@ -59,7 +59,7 @@
                                                 <WebView fx:id="myNoContentWebView" disable="true" prefHeight="147.0" prefWidth="147.0" style="-fx-background-color: transparent;" />
                                                 <Label styleClass="h1-label" text="Create content on any device" />
                                                 <Label styleClass="h2-label" text="Upload and record at home or on the go.&#10;Everything you make public will appear here." textAlignment="CENTER" />
-                                                <Button minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Create">
+                                                <Button  onAction="#createVideoAction" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Create">
                                                     <padding>
                                                         <Insets left="20.0" right="20.0" />
                                                     </padding>
@@ -159,7 +159,7 @@
                                                 <WebView fx:id="myNoContentWebView3" disable="true" prefHeight="147.0" prefWidth="147.0" style="-fx-background-color: transparent;" />
                                                 <Label styleClass="h1-label" text="Create playlist on any device" />
                                                 <Label styleClass="h2-label" text="Create your own playlist" textAlignment="CENTER" />
-                                                <Button minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Create">
+                                                <Button minHeight="40.0" onAction="#playlistCreateAction" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Create">
                                                     <padding>
                                                         <Insets left="20.0" right="20.0" />
                                                     </padding>
@@ -187,32 +187,32 @@
                         <VBox alignment="CENTER_LEFT" spacing="15.0">
                      <children>
                         <Label styleClass="h0-label" text="About" />
-                        <Label styleClass="des-label" text="آقای فریمن یک مجموعه اینترنتی متحرک است که به نام شخصیت اصلی آن نامگذاری شده است. محتوای اصلی سریال مونولوگ هایی است که به شیوه ای تند سبک زندگی هر انسان مدرن را نقد می کند. همچنین مشخص است که در واقعیت هیچ کس نمی داند چه کسی روی این سریال کار کرده است... نسخه فارسی توسط مهدی قنبری ترجمه و دوبله شده است." textAlignment="JUSTIFY" wrapText="true">
+                        <Label fx:id="descLabel" styleClass="des-label" text="آقای فریمن یک مجموعه اینترنتی متحرک است که به نام شخصیت اصلی آن نامگذاری شده است. محتوای اصلی سریال مونولوگ هایی است که به شیوه ای تند سبک زندگی هر انسان مدرن را نقد می کند. همچنین مشخص است که در واقعیت هیچ کس نمی داند چه کسی روی این سریال کار کرده است... نسخه فارسی توسط مهدی قنبری ترجمه و دوبله شده است." textAlignment="JUSTIFY" wrapText="true">
                            <VBox.margin>
                               <Insets left="20.0" right="20.0" />
                            </VBox.margin></Label>
                         <Label styleClass="h0-label" text="Channel details" />
-                        <Label graphicTextGap="20.0" styleClass="des-label" text="4.3K subscribers">
+                        <Label fx:id="subsLabel2" graphicTextGap="20.0" styleClass="des-label" text="4.3K subscribers">
                            <graphic>
                               <SVGPath content="M11.72 11.93C13.58 11.59 15 9.96 15 8c0-2.21-1.79-4-4-4S7 5.79 7 8c0 1.96 1.42 3.59 3.28 3.93C4.77 12.21 2 15.76 2 20h18c0-4.24-2.77-7.79-8.28-8.07zM8 8c0-1.65 1.35-3 3-3s3 1.35 3 3-1.35 3-3 3-3-1.35-3-3zm3 4.9c5.33 0 7.56 2.99 7.94 6.1H3.06c.38-3.11 2.61-6.1 7.94-6.1zm5.68-1.46-.48-.88C17.31 9.95 18 8.77 18 7.5s-.69-2.45-1.81-3.06l.49-.88C18.11 4.36 19 5.87 19 7.5c0 1.64-.89 3.14-2.32 3.94zm2.07 1.69-.5-.87c1.7-.98 2.75-2.8 2.75-4.76s-1.05-3.78-2.75-4.76l.5-.87C20.75 3.03 22 5.19 22 7.5s-1.24 4.47-3.25 5.63z" fill="#f1f1f1" />
                            </graphic>
                         </Label>
-                        <Label graphicTextGap="20.0" layoutX="10.0" layoutY="403.0" styleClass="des-label" text="11 videos">
+                        <Label fx:id="NumberOfVideosLabel" graphicTextGap="20.0" layoutX="10.0" layoutY="403.0" styleClass="des-label" text="11 videos">
                            <graphic>
                               <SVGPath content="m10 8 6 4-6 4V8zm11-5v18H3V3h18zm-1 1H4v16h16V4z" fill="#f1f1f1" />
                            </graphic>
                         </Label>
-                        <Label graphicTextGap="20.0" layoutX="10.0" layoutY="403.0" styleClass="des-label" text="229,064 views">
+                        <Label fx:id="NumberOfViewsLabel" graphicTextGap="20.0" layoutX="10.0" layoutY="403.0" styleClass="des-label" text="229,064 views">
                            <graphic>
                               <SVGPath content="M22 6v7h-1V7.6l-8.5 7.6-4-4-5.6 5.6-.7-.7 6.4-6.4 4 4L20.2 7H15V6h7z" fill="#f1f1f1" />
                            </graphic>
                         </Label>
-                        <Label graphicTextGap="20.0" layoutX="10.0" layoutY="421.0" styleClass="des-label" text="Joined Jan 23, 2024">
+                        <Label fx:id="joinLabel" graphicTextGap="20.0" layoutX="10.0" layoutY="421.0" styleClass="des-label" text="Joined Jan 23, 2024">
                            <graphic>
                               <SVGPath content="M13 17h-2v-6h2v6zm0-10h-2v2h2V7zm-1-4c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z" fill="#f1f1f1" />
                            </graphic>
                         </Label>
-                        <Label graphicTextGap="20.0" layoutX="10.0" layoutY="456.0" styleClass="des-label" text="United States">
+                        <Label fx:id="locationLabel" graphicTextGap="20.0" layoutX="10.0" layoutY="456.0" styleClass="des-label" text="United States">
                            <graphic>
                               <SVGPath content="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM3 12c0-.7.09-1.37.24-2.02L8 14.71v.79c0 1.76 1.31 3.22 3 3.46v1.98c-4.49-.5-8-4.32-8-8.94zm8.5 6C10.12 18 9 16.88 9 15.5v-1.21l-5.43-5.4C4.84 5.46 8.13 3 12 3c1.05 0 2.06.19 3 .53V5c0 .55-.45 1-1 1h-3v2c0 .55-.45 1-1 1H8v3h6c.55 0 1 .45 1 1v4h2c.55 0 1 .45 1 1v.69C16.41 20.12 14.31 21 12 21v-3h-.5zm7.47-.31C18.82 16.73 18 16 17 16h-1v-3c0-1.1-.9-2-2-2H9v-1h1c1.1 0 2-.9 2-2V7h2c1.1 0 2-.9 2-2V3.95c2.96 1.48 5 4.53 5 8.05 0 2.16-.76 4.14-2.03 5.69z" fill="#f1f1f1" />
                            </graphic>
