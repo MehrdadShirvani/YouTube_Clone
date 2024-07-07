@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.Channel;
+import Shared.Models.Playlist;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -354,5 +355,18 @@ public class HomeController {
     public void yourChannelAction(ActionEvent actionEvent)
     {
         setChannel(YouTube.client.getChannelInfo(YouTube.client.getAccount().getChannelId()));
+    }
+
+    public void setPlaylistPage(Playlist playlist)
+    {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        try {
+            mainBorderPane.setCenter(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        AddEditPlaylistController controller = fxmlLoader.getController();
+        controller.setPlaylist(playlist, this);
     }
 }
