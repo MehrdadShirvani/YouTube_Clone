@@ -1148,7 +1148,7 @@ public class Client {
 
 
 
-    public List<Date> getWatchHistoryDate(int perPage , int pageNumber) {
+    public List<Date> getWatchHistoryDates(int perPage , int pageNumber) {
         String endpoint = "/api/account/" + this.account.getChannelId() + "/watch-history/timestamp";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);

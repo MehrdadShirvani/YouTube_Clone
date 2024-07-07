@@ -9,10 +9,7 @@ import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WatchHistoryController {
     @FXML
@@ -35,7 +32,7 @@ public class WatchHistoryController {
     public void setVideo() {
         List<Video> watchHistoryVideos = YouTube.client.getWatchHistoryVideo(PER_PAGE , pageNumber);
         System.out.println(watchHistoryVideos.toString());
-        List<Timestamp> watchHistoryTimestamps = YouTube.client.getWatchHistoryTimestamp(PER_PAGE , pageNumber);
+        List<Date> watchHistoryTimestamps = YouTube.client.getWatchHistoryDates(PER_PAGE , pageNumber);
         pageNumber++;
 
 
