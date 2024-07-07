@@ -1,9 +1,16 @@
 package Client;
 
+import Shared.Models.Channel;
+import Shared.Models.Playlist;
+import Shared.Models.Video;
+import Shared.Utils.DateFormats;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -13,9 +20,31 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebView;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class ChannelViewController {
+    public Label authorLabel;
+    public Label subsLabel;
+    public VBox otherNoContent;
+    public VBox myNoContent2;
+    public VBox otherNoContent2;
+    public VBox myNoContent3;
+    public VBox otherNoContent3;
+    public VBox myNoContent;
+    public Label descLabel;
+    public Label subsLabel2;
+    public Label NumberOfVideosLabel;
+    public Label NumberOfViewsLabel;
+    public Label joinLabel;
+    public Label locationLabel;
+    public WebView headerPictureWebView;
     @FXML
     ToggleButton subsButton;
     @FXML
