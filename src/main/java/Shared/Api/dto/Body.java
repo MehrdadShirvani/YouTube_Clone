@@ -80,6 +80,7 @@ public class Body {
     private int twoFactorDigit;
     private boolean isVerified;
     private HashMap<String , String> twoFactorData;
+    private int code;
 
 
     public Body() {
@@ -620,5 +621,13 @@ public class Body {
 
     public void setTwoFactorData(HashMap<String, String> twoFactorData) {
         this.twoFactorData = twoFactorData;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }
