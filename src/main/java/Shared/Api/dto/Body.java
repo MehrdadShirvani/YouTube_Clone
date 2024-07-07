@@ -79,6 +79,7 @@ public class Body {
     private String token;
     private int twoFactorDigit;
     private boolean isVerified;
+    private HashMap<String , String> twoFactorData;
 
 
     public Body() {
@@ -611,5 +612,13 @@ public class Body {
 
     public void setVerified(boolean verified) {
         isVerified = verified;
+    }
+
+    public HashMap<String, String> getTwoFactorData() {
+        return twoFactorData;
+    }
+
+    public void setTwoFactorData(HashMap<String, String> twoFactorData) {
+        this.twoFactorData = twoFactorData;
     }
 }
