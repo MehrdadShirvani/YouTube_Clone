@@ -2310,6 +2310,35 @@ public class ClientHandler implements Runnable {
     }
 
 
+    public void handleTwoFactorEmailSend(Request request) {
+        Response response;
+        Header requestHeader = request.getHeader();
+        Body requestBody = request.getBody();
+        String username = requestBody.getUsername();
+        String recipientsEmail = requestBody.getRecipientsEmail();
+        int twoFactorCode;
+
+        Body responseBody = new Body();
+
+        try {
+            EmailVerification emailVerification = new EmailVerification(recipientsEmail , username);
+            emailVerification.sendTwoFactorEmail();
+            twoFactorCode = emailVerification.getTwoFactorCode();
+
+        } catch (MessagingException e) {
+            sendNullErrorResponse(requestHeader , "There was a error in sending email !");
+            throw new RuntimeException(e);
+        }
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setTwoFactorDigit(twoFactorCode);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
     public HashMap<String , Double> dataConversion(HashMap<String , Integer>  data, double percentage) throws Exception {
         HashMap<String, Double> result = new HashMap<>();
         for (Map.Entry<String, Integer> set : data.entrySet()) {
