@@ -7,20 +7,20 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
 import java.io.IOException;
 
-public class twoFactorAuthentication {
+public class TwoFactorAuthentication {
 
     private GoogleAuthenticator googleAuthenticator;
     private String secretKey;
     private final String APP_NAME = "MemoliYT";
     private String email;
 
-    public twoFactorAuthentication(String email) throws IOException, WriterException {
+    public TwoFactorAuthentication(String email) throws IOException, WriterException {
         googleAuthenticator = new GoogleAuthenticator();
         generateSecretKey();
         this.email = email;
     }
 
-    public twoFactorAuthentication(String secretKey , String email) {
+    public TwoFactorAuthentication(String secretKey , String email) {
         googleAuthenticator = new GoogleAuthenticator();
         //TODO : Get secret key from database manager
         this.secretKey = secretKey;
