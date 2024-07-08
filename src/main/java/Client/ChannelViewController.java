@@ -246,10 +246,6 @@ public class ChannelViewController {
                         recentHBox.getChildren().add(smallVideo);
                     }
                     List<Playlist> playlists = YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
-                    playlists.add(new Playlist());
-                    playlists.add(new Playlist());
-                    playlists.add(new Playlist());
-                    playlists.add(new Playlist());
                     if (!playlists.isEmpty())
                         if (isSelf)
                             ((VBox) myNoContent3.getParent()).getChildren().remove(myNoContent3);
