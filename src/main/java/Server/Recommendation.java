@@ -2,12 +2,11 @@ package Server;
 
 import Server.Database.DatabaseManager;
 import Shared.Models.Category;
+import Shared.Models.Comment;
+import Shared.Models.Reaction;
 import Shared.Models.Video;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Date;
-import java.util.Calendar;
+import java.util.*;
 
 public class Recommendation {
     private Long channelId;
@@ -53,6 +52,31 @@ public class Recommendation {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+
+    private List<Video> trendedVideos() {
+        List<Video> videos = DatabaseManager.searchVideo(this.channelId , null , "" , 40 , 1);
+        HashMap<Video , Double> trendingRate = new HashMap<>();
+
+        for (Video video : videos) {
+            Long videoId = video.getVideoId();
+            Long viewCount = DatabaseManager.getNumberOfViews(videoId);
+            List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
+            List<Comment> comments = DatabaseManager.getVideoComments(videoId);
+            Long numberOfLikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count() : 0;
+            Long numberOfDislikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count() : 0;
+            Long numberOfComments = (comments != null) ? (long) comments.size() : 0;
+
+            Double rating = calculateRating(numberOfLikes , numberOfDislikes , numberOfComments , viewCount);
+            trendingRate.put(video , rating);
+        }
+
+        List<Map.Entry<Video , Double>> trendingRateSet = new ArrayList<>(trendingRate.entrySet());
+        Collections.sort(trendingRateSet , Map.Entry.comparingByValue());
+        List<Video> result = trendingRateSet.reversed().stream().map(Map.Entry::getKey).toList();
+
+        return result;
     }
 
 
