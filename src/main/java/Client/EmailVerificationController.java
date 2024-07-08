@@ -1,10 +1,10 @@
 package Client;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.awt.event.ActionEvent;
 
 public class EmailVerificationController {
     @FXML
@@ -12,17 +12,19 @@ public class EmailVerificationController {
 
     @FXML
     private TextField tokenField;
+    private String originalToken;
 
     public void initialize() {
         String email = YouTube.client.getAccount().getEmail();
         String emailSentText = "We've sent an token to " + email;
 
         emailSentLabel.setText(emailSentText);
+
+        originalToken = YouTube.client.verifyEmail();
     }
 
     public void verifyKey(ActionEvent actionEvent) {
         String inputToken = tokenField.getText();
-        String originalToken = YouTube.client.verifyEmail();
 
         if (inputToken == null) {
             //TODO Ehsan : make a pop up error that input token can't be null
@@ -30,7 +32,7 @@ public class EmailVerificationController {
         }
 
         if (inputToken.equals(originalToken)) {
-            //TODO : change to next scene
+            YouTube.changeScene("home-view.fxml");
         } else {
             //TODO Ehsan : pop up error that it's not equals
         }
