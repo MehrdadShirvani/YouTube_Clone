@@ -2,6 +2,7 @@ package Server;
 
 import Server.Database.DatabaseManager;
 import Shared.Models.Category;
+import Shared.Models.Video;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,12 @@ public class Recommendation {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+
+    private double getEngagementRate(Long numberOfLikes , Long numberOfDislikes , Long numberOfComments , Long viewCount) {
+        Long totalInteractions = numberOfLikes + numberOfDislikes + numberOfComments;
+        return (double) totalInteractions / viewCount;
     }
 
 
