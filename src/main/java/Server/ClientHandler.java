@@ -2398,22 +2398,21 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long channelId = requestBody.getChannelId();
         String recipientsEmail = requestBody.getRecipientsEmail();
-        HashMap<String , String> twoFactorData = null;
+        HashMap<String , String> twoFactorData = new HashMap<>();
 
         Body responseBody = new Body();
 
         try {
             TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(recipientsEmail);
             twoFactorData.put(recipientsEmail , twoFactorAuthentication.generateQrCodeData());
+            account.setSecretKey(twoFactorAuthentication.getSecretKey());
+            DatabaseManager.editAccount(account);
 
         } catch (IOException | WriterException e) {
             sendNullErrorResponse(requestHeader , "There was a error in twoFactorAuthentication!");
             throw new RuntimeException(e);
         }
-
-        //TODO : update secretKey in account table
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
@@ -2428,13 +2427,11 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long channelId = requestBody.getChannelId();
         int code = requestBody.getCode();
 
         Body responseBody = new Body();
 
-        //TOOD : Get secretKey from database
-        String secretKey = "";
+        String secretKey = account.getSecretKey();
 
         TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(secretKey , code);
         boolean isVerified = twoFactorAuthentication.verifyCode();
