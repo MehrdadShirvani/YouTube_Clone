@@ -632,15 +632,14 @@ public class Client {
     }
 
 
-    public List<Video> getHomepageVideos() {
+    public List<Video> getHomepageVideos(int perPage , int pageNumber) {
         String endpoint = "/api/account/homepage";
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
-        ArrayList<String> searchHistory = readSearchHistory();
-
-        requestBody.setAccountId(this.account.getAccountId());
-        requestBody.setSearchHistory(searchHistory);
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
+        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 
