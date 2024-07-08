@@ -22,11 +22,12 @@
          </children>
       </HBox>
       <TextArea fx:id="codeField" nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
-      <HBox prefHeight="89.0" prefWidth="600.0">
+      <HBox prefHeight="27.0" prefWidth="600.0">
          <children>
             <Button mnemonicParsing="false" onAction="#useAuthenticatorButton" prefHeight="25.0" prefWidth="278.0" text="Use Authenticator app" />
             <Button mnemonicParsing="false" onAction="#loginButton" prefHeight="25.0" prefWidth="322.0" text="Log In" />
          </children>
       </HBox>
+      <Button mnemonicParsing="false" onAction="#resendEmail" prefHeight="29.0" prefWidth="199.0" text="Button" />
    </children>
 </VBox>
