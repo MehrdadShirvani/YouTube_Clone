@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Utils.CacheUtil;
 import Shared.Utils.QrCodeGenerator;
 import com.google.zxing.WriterException;
 import javafx.application.Platform;
@@ -52,6 +53,7 @@ public class AuthenticatorSetUpController{
             try {
                 Path path = Paths.get(QrCodeGenerator.FILE_PATH);
                 Files.deleteIfExists(path);
+                CacheUtil.cacheAccount(YouTube.client.getAccount());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
