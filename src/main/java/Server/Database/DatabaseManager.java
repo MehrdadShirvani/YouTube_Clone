@@ -1131,8 +1131,8 @@ public static Long getAllViewsOfChannel(long channelId)
     }
 
 
-    public static HashMap<String, Long> dataAnalysis(long channelId, Date startDate, Date endDate) {
-        HashMap<String, Long> resultMap = new HashMap<>();
+    public static HashMap<Category, Long> dataAnalysis(long channelId, Date startDate, Date endDate) {
+        HashMap<Category, Long> resultMap = new HashMap<>();
         List<Category> categories = getCategories();
         EntityManager entityManager = null;
         try {
@@ -1147,7 +1147,7 @@ public static Long getAllViewsOfChannel(long channelId)
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId = :categoryId ");
             }
-            long allCount = 0;
+
             for(Category category : categories)
             {
                 TypedQuery<VideoView> query = entityManager.createQuery(jpql.toString(), VideoView.class);
@@ -1156,10 +1156,8 @@ public static Long getAllViewsOfChannel(long channelId)
                 query.setParameter("endDate", endDate);
                 query.setParameter("categoryId", category.getCategoryId());
                 List<VideoView> results = query.getResultList();
-                resultMap.put(category.getName(), (long) results.size());
-                allCount += (long) results.size();
+                resultMap.put(category, (long) results.size());
             }
-            resultMap.put("all", allCount);
             return resultMap;
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
