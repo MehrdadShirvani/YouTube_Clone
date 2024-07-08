@@ -36,4 +36,9 @@ public class TwoFactorEmailController {
             //TODO : pop up error
         }
     }
+
+
+    public void resendEmail(ActionEvent actionEvent) {
+        this.codeDigit = YouTube.client.twoFactorEmailSend();
+    }
 }
