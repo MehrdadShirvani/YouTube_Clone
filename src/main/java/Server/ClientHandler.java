@@ -469,10 +469,11 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("edit")) {
             handleEditComment(request);
 
-        } else if (endpointParsed[4].equals("reaction")) {
-            Long commentId = header.extractIds().getFirst();
-            handleGetCommentReaction(request , commentId);
-
+        } else if (endpointParsed.length >= 5) {
+            if (endpointParsed[4].equals("reaction")) {
+                Long commentId = header.extractIds().getFirst();
+                handleGetCommentReaction(request, commentId);
+            }
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
             handleIsCommentLikedRequest(request , channelId);
