@@ -125,6 +125,6 @@ public class EmailVerification {
     }
 
     public int getTwoFactorCode() {
-        return twoFactorDigit();
+        return twoFactorCode;
     }
 }
