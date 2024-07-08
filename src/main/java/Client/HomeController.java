@@ -350,9 +350,7 @@ public class HomeController {
 
         try {
             AddEditVideoView controller = fxmlLoader.getController();
-            if (video != null) {
-                controller.setVideo(video, this);
-            }
+            controller.setVideo(video, this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
