@@ -562,6 +562,27 @@ public class DatabaseManager {
         }
     }
 
+    public static List<Playlist> getPlaylistsOfVideo(Long videoId)
+    {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT p ")
+                    .append("FROM Playlist p ")
+                    .append("Inner JOIN VideoPlaylist vp ON v.videoId = vp.videoId ")
+                    .append("Where v.videoId = :videoId");
+
+            TypedQuery<Playlist> query = entityManager.createQuery(jpql.toString(), Playlist.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+
     public static List<VideoPlaylist> getVideoPlaylists(Long videoId) {
         if(getVideo(videoId) == null)
         {
