@@ -3,6 +3,7 @@ package Client;
 import Shared.Api.dto.*;
 import Shared.Models.*;
 import Shared.Utils.CacheUtil;
+import Shared.Utils.Notification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -161,6 +162,8 @@ public class Client {
 
             if (Objects.equals(response.getHeader().getEndpoint(), "/api/notifications/poll")) {
                 //TODO : update notification ui
+                Video uploadedVideo = response.getBody().getVideo();
+                Notification.sendNotification(uploadedVideo.getName() , uploadedVideo.getDescription());
                 return handleResponse();
             }
 
