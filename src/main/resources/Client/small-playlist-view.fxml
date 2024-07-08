@@ -4,7 +4,9 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
@@ -12,18 +14,26 @@
     <stylesheets>
         <URL value="@small-video-view.css" />
     </stylesheets>
-   <StackPane onMouseClicked="#playlistClicked">
+   <StackPane alignment="BOTTOM_CENTER">
       <children>
-      
-          <WebView fx:id="webView" disable="true" onMouseClicked="#playlistClicked" prefHeight="139.49" prefWidth="248.0">
+         <StackPane alignment="BOTTOM_CENTER" onMouseClicked="#playlistClicked">
+            <children>
+            
+                <WebView fx:id="webView" disable="true" onMouseClicked="#playlistClicked" prefHeight="139.49" prefWidth="248.0">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+               </WebView>
+            </children>
             <cursor>
                <Cursor fx:constant="HAND" />
             </cursor>
-         </WebView>
+            <effect>
+               <InnerShadow blurType="GAUSSIAN" choke="0.7" height="255.0" offsetY="-10.0" radius="63.25" width="0.0" />
+            </effect>
+         </StackPane>
+         <SVGPath content="M11.53 9.42V16.27L17.19 12.85L11.53 9.43V9.42ZM0.199997 9.42H9.26V11.7H0.199997V9.42ZM0.199997 0.279999H13.8V2.56H0.199997V0.279999ZM0.199997 4.85H13.8V7.13H0.199997V4.85Z" fill="WHITE" />
       </children>
-      <cursor>
-         <Cursor fx:constant="HAND" />
-      </cursor>
    </StackPane>
     <HBox fx:id="downHBox" fillHeight="false">
         <children>

@@ -24,6 +24,8 @@ public class SmallPlayListController {
         try {
             htmlContent = new String(Files.readAllBytes(path));
 //            webView.getEngine().loadContent(htmlContent.replace("@id", playlist. + ""));
+            webView.getEngine().loadContent(htmlContent.replace("@id", 37088+ ""));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

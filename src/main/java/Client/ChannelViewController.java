@@ -9,6 +9,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -196,7 +197,19 @@ public class ChannelViewController {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
                     List<Video> popularVideos = YouTube.client.getMostPopularVideosOfChannel(channel.getChannelId(), 10, 1);
+                    List<Video> recentVideos = YouTube.client.getRecentVideosOfChannel(channel.getChannelId(), 10, 1);
+                    if (recentVideos.isEmpty() && popularVideos.isEmpty()) {
+//                        homeVBox.setAlignment(Pos.CENTER);
+                        ((VBox) contentVBox.getParent()).getChildren().remove(contentVBox);
+                    } else {
+                        if (isSelf)
+                            ((VBox) myNoContent.getParent()).getChildren().remove(myNoContent);
+                        else
+                            ((VBox) otherNoContent.getParent()).getChildren().remove(otherNoContent);
+
+                    }
                     popularHBox.getChildren().clear();
                     for (Video recVideo : popularVideos) {
                         if (!isSelf && recVideo.getPrivate()) {
@@ -215,7 +228,6 @@ public class ChannelViewController {
                         popularHBox.getChildren().add(smallVideo);
                     }
 
-                    List<Video> recentVideos = YouTube.client.getRecentVideosOfChannel(channel.getChannelId(), 10, 1);
                     recentHBox.getChildren().clear();
                     for (Video recVideo : recentVideos) {
                         if (!isSelf && recVideo.getPrivate()) {
@@ -234,8 +246,17 @@ public class ChannelViewController {
                         recentHBox.getChildren().add(smallVideo);
                     }
                     List<Playlist> playlists = YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    if (!playlists.isEmpty())
+                        if (isSelf)
+                            ((VBox) myNoContent3.getParent()).getChildren().remove(myNoContent3);
+                        else
+                            ((VBox) otherNoContent3.getParent()).getChildren().remove(otherNoContent3);
+
                     if (playlists != null) {
-                        //TODO: Should test
                         for (Playlist playlist : playlists) {
                             FXMLLoader fxmlLoader = new FXMLLoader(ChannelViewController.class.getResource("small-playlist-view.fxml"));
                             Parent smallPlayList = null;
@@ -252,6 +273,11 @@ public class ChannelViewController {
 
                     videosFlowPane.getChildren().clear();
                     List<Video> allVideos = YouTube.client.getVideosOfChannel(channel.getChannelId(), 20, 1);
+                    if (!allVideos.isEmpty())
+                        if (isSelf)
+                            ((VBox) myNoContent2.getParent()).getChildren().remove(myNoContent2);
+                        else
+                            ((VBox) otherNoContent2.getParent()).getChildren().remove(otherNoContent2);
                     for (Video video : allVideos) {
                         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
                         try {
