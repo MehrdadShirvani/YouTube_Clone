@@ -1543,13 +1543,13 @@ public class Client {
     }
 
 
-    public boolean deleteVideoPlaylists(Long playlistId) {
+    public boolean deleteVideoPlaylists(Long videoId) {
         String endpoint = "/api/playlist/delete";
         String method = "DELETE";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setPlaylistId(playlistId);
+        requestBody.setVideoId(videoId);
 
         Request request = new Request(requestHeader , requestBody);
 
