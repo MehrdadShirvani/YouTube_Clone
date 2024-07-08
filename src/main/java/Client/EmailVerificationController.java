@@ -33,4 +33,8 @@ public class EmailVerificationController {
             //TODO Ehsan : pop up error that it's not equals
         }
     }
+
+    public void resendEmail(ActionEvent actionEvent) {
+        originalToken = YouTube.client.verifyEmail();
+    }
 }
