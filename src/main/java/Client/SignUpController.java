@@ -159,7 +159,7 @@ public class SignUpController {
         Playlist newPlaylist =  YouTube.client.addPlaylist(new Playlist("Watch Later",(short)1, true));
         YouTube.client.addChannelPlaylist(YouTube.client.getAccount().getChannelId(),newPlaylist.getPlaylistId());
 
-        YouTube.changeScene("home-view.fxml");
+        YouTube.changeScene("email-verification-view.fxml");
 
     }
 
