@@ -15,14 +15,12 @@ public class EmailVerification {
     private String senderEmail;
     private String password;
     private final String recipientsEmail;
-    private final String token;
     private final int twoFactorCode;
     private String username;
 
     public EmailVerification(String recipientsEmail , String username) {
         this.recipientsEmail = recipientsEmail;
         this.username = username;
-        this.token = verificationToken();
         this.twoFactorCode = twoFactorDigit();
         readConfigFile();
     }
@@ -78,8 +76,8 @@ public class EmailVerification {
         message.setSubject("Email Verification");
 
         String content = "<p>Dear " + this.username + ",</p>"
-                + "<p>This is your token for verifying your email:</p>"
-                + "<p><strong>Verification Token: " + token + "</strong></p>"
+                + "<p>This is your digits for verifying your email:</p>"
+                + "<p><strong>Verification Digits : " + this.twoFactorCode + "</strong></p>"
                 + "<p>Thank you,<br>Memoli</p>";
 
         message.setContent(content, "text/html");
@@ -120,11 +118,7 @@ public class EmailVerification {
     }
 
 
-    public String getToken() {
-        return token;
-    }
-
     public int getTwoFactorCode() {
-        return twoFactorDigit();
+        return twoFactorCode;
     }
 }

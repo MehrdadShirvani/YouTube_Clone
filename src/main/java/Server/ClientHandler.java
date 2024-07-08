@@ -469,10 +469,11 @@ public class ClientHandler implements Runnable {
         } else if (endpoint.equals("edit")) {
             handleEditComment(request);
 
-        } else if (endpointParsed[4].equals("reaction")) {
-            Long commentId = header.extractIds().getFirst();
-            handleGetCommentReaction(request , commentId);
-
+        } else if (endpointParsed.length >= 5) {
+            if (endpointParsed[4].equals("reaction")) {
+                Long commentId = header.extractIds().getFirst();
+                handleGetCommentReaction(request, commentId);
+            }
         } else if (header.isValidCommentLikedQuery()) {
             Long channelId = header.parseCommentLikedChannelId();
             handleIsCommentLikedRequest(request , channelId);
@@ -2342,14 +2343,14 @@ public class ClientHandler implements Runnable {
         Body requestBody = request.getBody();
         String username = requestBody.getUsername();
         String recipientsEmail = requestBody.getRecipientsEmail();
-        String token;
+        int twoFactorDigit;
 
         Body responseBody = new Body();
 
         try {
             EmailVerification emailVerification = new EmailVerification(recipientsEmail , username);
             emailVerification.sendVerificationEmail();
-            token = emailVerification.getToken();
+            twoFactorDigit = emailVerification.getTwoFactorCode();
 
         } catch (MessagingException e) {
             sendNullErrorResponse(requestHeader , "There was a error in sending email !");
@@ -2358,7 +2359,7 @@ public class ClientHandler implements Runnable {
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setToken(token);
+        responseBody.setTwoFactorDigit(twoFactorDigit);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
@@ -2398,22 +2399,21 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long channelId = requestBody.getChannelId();
         String recipientsEmail = requestBody.getRecipientsEmail();
-        HashMap<String , String> twoFactorData = null;
+        HashMap<String , String> twoFactorData = new HashMap<>();
 
         Body responseBody = new Body();
 
         try {
             TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(recipientsEmail);
             twoFactorData.put(recipientsEmail , twoFactorAuthentication.generateQrCodeData());
+            account.setSecretKey(twoFactorAuthentication.getSecretKey());
+            DatabaseManager.editAccount(account);
 
         } catch (IOException | WriterException e) {
             sendNullErrorResponse(requestHeader , "There was a error in twoFactorAuthentication!");
             throw new RuntimeException(e);
         }
-
-        //TODO : update secretKey in account table
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
@@ -2428,13 +2428,11 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long channelId = requestBody.getChannelId();
         int code = requestBody.getCode();
 
         Body responseBody = new Body();
 
-        //TOOD : Get secretKey from database
-        String secretKey = "";
+        String secretKey = account.getSecretKey();
 
         TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(secretKey , code);
         boolean isVerified = twoFactorAuthentication.verifyCode();

@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Utils.CacheUtil;
 import Shared.Utils.QrCodeGenerator;
 import com.google.zxing.WriterException;
 import javafx.application.Platform;
@@ -9,6 +10,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javafx.event.ActionEvent;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -30,7 +36,7 @@ public class AuthenticatorSetUpController{
             throw new RuntimeException(e);
         }
 
-        Image qrCodeImage = new Image(QrCodeGenerator.FILE_PATH);
+        Image qrCodeImage = new Image(new File(QrCodeGenerator.FILE_PATH).toURI().toString());
 
         QrCodeImageView.setImage(qrCodeImage);
     }
@@ -39,12 +45,20 @@ public class AuthenticatorSetUpController{
     public void setUpButton(ActionEvent actionEvent) {
         String authCode = authCodeField.getText();
 
-        int code = Integer.getInteger(authCode);
+        int code = Integer.parseInt(authCode);
 
         Boolean isVerified = YouTube.client.authenticatorVerify(code);
 
         if (isVerified) {
-            //TODO : change the scene
+            try {
+                Path path = Paths.get(QrCodeGenerator.FILE_PATH);
+                Files.deleteIfExists(path);
+                CacheUtil.cacheAccount(YouTube.client.getAccount());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            YouTube.changeScene("home-view.fxml");
 
         } else {
             //TODO Ehsan : make a pop up error

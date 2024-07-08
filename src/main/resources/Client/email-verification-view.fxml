@@ -17,5 +17,6 @@
       <Label alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="81.0" prefWidth="618.0" text="Enter the token below to verify your email address" />
       <TextField fx:id="tokenField" alignment="CENTER" prefHeight="14.0" prefWidth="600.0" promptText="enter your token here " />
       <Button mnemonicParsing="false" onAction="#verifyKey" prefHeight="25.0" prefWidth="74.0" text="Verify" />
+      <Button mnemonicParsing="false" onAction="#resendEmail" prefHeight="25.0" prefWidth="141.0" text="Resend Email" />
    </children>
 </VBox>

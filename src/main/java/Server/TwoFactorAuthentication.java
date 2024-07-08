@@ -41,4 +41,8 @@ public class TwoFactorAuthentication {
     public String generateQrCodeData() {
         return "otpauth://totp/" + this.APP_NAME + ":" + this.email + "?secret=" + this.secretKey + "&issuer=" + this.APP_NAME;
     }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
 }

@@ -3,6 +3,7 @@ package Client;
 import Shared.Api.dto.*;
 import Shared.Models.*;
 import Shared.Utils.CacheUtil;
+import Shared.Utils.Notification;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -161,6 +162,8 @@ public class Client {
 
             if (Objects.equals(response.getHeader().getEndpoint(), "/api/notifications/poll")) {
                 //TODO : update notification ui
+                Video uploadedVideo = response.getBody().getVideo();
+                Notification.sendNotification(uploadedVideo.getName() , uploadedVideo.getDescription());
                 return handleResponse();
             }
 
@@ -197,13 +200,6 @@ public class Client {
              Account responseAccount = responseBody.getAccount();
              if (!Objects.equals(responseAccount , null)) {
                  this.account = responseAccount;
-
-                 try {
-                     CacheUtil.cacheAccount(this.account);
-                 } catch (IOException e) {
-                     throw new RuntimeException(e);
-                 }
-
                  return true;
              }
          }
@@ -230,13 +226,6 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
-
-                try {
-                    CacheUtil.cacheAccount(this.account);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
                 return true;
             }
         }
@@ -265,6 +254,13 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
+
+                 try {
+                     CacheUtil.cacheAccount(this.account);
+                 } catch (IOException e) {
+                     throw new RuntimeException(e);
+                 }
+
                 return responseAccount;
             }
         }
@@ -1805,7 +1801,7 @@ public class Client {
     }
 
 
-    public String verifyEmail() {
+    public Integer verifyEmail() {
         String endpoint = "/api/account/email/verify";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -1822,7 +1818,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return responseBody.getToken();
+            return responseBody.getTwoFactorDigit();
         }
 
         System.out.println(responseBody.getMessage());
@@ -1862,7 +1858,6 @@ public class Client {
         Body requestBody = new Body();
 
         requestBody.setRecipientsEmail(this.account.getEmail());
-        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 
@@ -1887,7 +1882,6 @@ public class Client {
         Body requestBody = new Body();
 
         requestBody.setCode(code);
-        requestBody.setChannelId(this.account.getChannelId());
 
         Request request = new Request(requestHeader , requestBody);
 

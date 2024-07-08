@@ -84,7 +84,7 @@ public class LoginController {
             alert.showAndWait();
             return;
         }
-        YouTube.changeScene("home-view.fxml");
+        YouTube.changeScene("two-factor-authenticator-view.fxml");
 
     }
 
