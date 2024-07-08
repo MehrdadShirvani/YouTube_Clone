@@ -1072,19 +1072,22 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        ArrayList<String> searchHistory = requestBody.getSearchHistory();
-        Long accountId = requestBody.getAccountId();
+        Long channelId = requestBody.getChannelId();
+        int perPage = requestBody.getPerPage();
+        int pageNumber = requestBody.getPageNumber();
 
         Body responseBody = new Body();
 
-        if (accountId.equals(null) | searchHistory.equals(null)) {
-            sendNullErrorResponse(requestHeader , "The account id or searchHistory that sent is null !");
-            return;
+        List<Video> homepageVideos = new ArrayList<>();
+        Recommendation recommendation = new Recommendation(channelId , perPage , pageNumber);
+
+        try {
+            homepageVideos = recommendation.recommend();
+
+        } catch (Exception e) {
+            sendNullErrorResponse(requestHeader , "There is error in recommending system");
+            throw new RuntimeException(e);
         }
-
-        //TODO implement some random function for basic home page videos
-
-        ArrayList<Video> homepageVideos = new ArrayList<>();
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
