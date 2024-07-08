@@ -1805,7 +1805,7 @@ public class Client {
     }
 
 
-    public String verifyEmail() {
+    public Integer verifyEmail() {
         String endpoint = "/api/account/email/verify";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -1822,7 +1822,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return responseBody.getToken();
+            return responseBody.getTwoFactorDigit();
         }
 
         System.out.println(responseBody.getMessage());
