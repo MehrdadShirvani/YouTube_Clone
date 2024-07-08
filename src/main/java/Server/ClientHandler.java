@@ -2057,16 +2057,16 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long playlistId = requestBody.getPlaylistId();
+        Long videoId = requestBody.getVideoId();
 
         Body responseBody = new Body();
 
-        if (playlistId == null) {
-            sendNullErrorResponse(requestHeader , "The playlistId that sent is null");
+        if (videoId == null) {
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null");
             return;
         }
 
-        DatabaseManager.deleteVideoPlaylists(playlistId);
+        DatabaseManager.deleteVideoPlaylists(videoId);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
