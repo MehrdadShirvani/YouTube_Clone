@@ -61,6 +61,16 @@ public class Recommendation {
         return (double) totalInteractions / viewCount;
     }
 
+    private double calculateRating(Long numberOfLikes , Long numberOfDislikes , Long numberOfComments , Long viewCount) {
+        double viewWeight = 0.4;
+        double engagementRateWeight = 0.6;
+
+        double viewScore = viewCount;
+        double engagementRateScore = getEngagementRate(numberOfLikes , numberOfDislikes , numberOfComments , viewCount);
+
+        return (viewScore * viewWeight) + (engagementRateScore * engagementRateWeight);
+    }
+
 
     private HashMap<String , Double> dataConversion(HashMap<String, Long>  data, double percentage) throws Exception {
         HashMap<String , Double> result = new HashMap<>();
