@@ -12,7 +12,7 @@ public class EmailVerificationController {
 
     @FXML
     private TextField tokenField;
-    private String originalToken;
+    private Integer originalToken;
 
     public void initialize() {
         String email = YouTube.client.getAccount().getEmail();
@@ -25,13 +25,9 @@ public class EmailVerificationController {
 
     public void verifyKey(ActionEvent actionEvent) {
         String inputToken = tokenField.getText();
+        Integer token = Integer.parseInt(inputToken);
 
-        if (inputToken == null) {
-            //TODO Ehsan : make a pop up error that input token can't be null
-            return;
-        }
-
-        if (inputToken.equals(originalToken)) {
+        if (token.equals(originalToken)) {
             YouTube.changeScene("home-view.fxml");
         } else {
             //TODO Ehsan : pop up error that it's not equals
