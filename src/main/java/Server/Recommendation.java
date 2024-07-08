@@ -96,11 +96,11 @@ public class Recommendation {
     }
 
 
-    private HashMap<Category , Double> dataConversion(HashMap<Category , Long>  data, double percentage) throws Exception {
-        HashMap<Category , Double> result = new HashMap<>();
+    private <T> HashMap<T, Double> dataConversion(HashMap<T, Long> data, double percentage) throws Exception {
+        HashMap<T, Double> result = new HashMap<>();
         Long sumOfValues = data.values().stream().mapToLong(i -> i).sum();
 
-        for (Map.Entry<Category , Long> set : data.entrySet()) {
+        for (Map.Entry<T, Long> set : data.entrySet()) {
             result.put(set.getKey(), ((set.getValue() / (double) sumOfValues) * percentage));
 
         }
