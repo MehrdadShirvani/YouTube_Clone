@@ -157,6 +157,9 @@ public class Client {
         try {
             encryptedJson = this.bufferedReader.readLine();
             decryptedJson = this.clientEncryption.decryptDataAES(encryptedJson);
+            if (decryptedJson.contains("playlists")) {
+                System.out.println(decryptedJson);
+            }
             response = objectMapper.readValue(decryptedJson , Response.class);
 
             if (Objects.equals(response.getHeader().getEndpoint(), "/api/notifications/poll")) {
@@ -1605,7 +1608,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return requestBody.getPlaylists();
+            return responseBody.getPlaylists();
         }
 
         System.out.println(responseBody.getMessage());
