@@ -19,7 +19,7 @@
             <Label alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="37.0" prefWidth="606.0" text="Enter code from your authenticator app" />
          </children>
       </HBox>
-      <TextArea nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
+      <TextArea fx:id="codeField" nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
       <HBox prefHeight="89.0" prefWidth="600.0">
          <children>
             <Button mnemonicParsing="false" onAction="#useEmailButton" prefHeight="25.0" prefWidth="278.0" text="Use Email" />
