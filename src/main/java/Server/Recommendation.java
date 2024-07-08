@@ -6,6 +6,7 @@ import Shared.Models.Comment;
 import Shared.Models.Reaction;
 import Shared.Models.Video;
 
+import java.net.SecureCacheResponse;
 import java.util.*;
 
 public class Recommendation {
@@ -16,31 +17,30 @@ public class Recommendation {
     }
 
 
-    public HashMap<String, Double> interestedCategories() {
+    public HashMap<Category , Double> interestedCategories() {
         try {
             Date endDate = new Date();
 
             Date startDate24HoursAgo = calculateStartDate(endDate, Calendar.HOUR, -24);
-            HashMap<String , Long> daily = DatabaseManager.dataAnalysis(this.channelId , startDate24HoursAgo , endDate);
-            HashMap<String , Double> normalizedDailyValue = dataConversion(daily , 0.5);
+            HashMap<Category , Long> daily = DatabaseManager.dataAnalysis(this.channelId , startDate24HoursAgo , endDate);
+            HashMap<Category , Double> normalizedDailyValue = dataConversion(daily , 0.5);
 
             Date startDate7DaysAgo = calculateStartDate(endDate, Calendar.DAY_OF_MONTH, -7);
-            HashMap<String , Long> weekly = DatabaseManager.dataAnalysis(this.channelId , startDate7DaysAgo , endDate);
-            HashMap<String , Double> normalizedWeeklyValue = dataConversion(weekly , 0.2);
+            HashMap<Category , Long> weekly = DatabaseManager.dataAnalysis(this.channelId , startDate7DaysAgo , endDate);
+            HashMap<Category , Double> normalizedWeeklyValue = dataConversion(weekly , 0.2);
 
             Date startDate1MonthAgo = calculateStartDate(endDate, Calendar.MONTH, -1);
-            HashMap<String , Long> monthly = DatabaseManager.dataAnalysis(this.channelId , startDate1MonthAgo , endDate);
-            HashMap<String , Double> normalizedMonthlyValue = dataConversion(monthly , 0.2);
+            HashMap<Category , Long> monthly = DatabaseManager.dataAnalysis(this.channelId , startDate1MonthAgo , endDate);
+            HashMap<Category, Double> normalizedMonthlyValue = dataConversion(monthly , 0.2);
 
-            //TODO : put null for startData and endData param after database got updated
-            HashMap<String , Long> allTime = DatabaseManager.dataAnalysis(this.channelId , startDate1MonthAgo , endDate);
-            HashMap<String , Double> normalizedAllTimeValue = dataConversion(allTime, 0.1);
+            HashMap<Category , Long> allTime = DatabaseManager.dataAnalysis(this.channelId , null , null);
+            HashMap<Category , Double> normalizedAllTimeValue = dataConversion(allTime, 0.1);
 
-            HashMap<String , Double> result = new HashMap<>();
+            HashMap<Category , Double> result = new HashMap<>();
 
-            for (Map.Entry<String, Double> entry : normalizedAllTimeValue.entrySet()) {
-                String key = entry.getKey();
-                double sum = entry.getValue() + normalizedDailyValue.get(key) + normalizedWeeklyValue.get(key) + normalizedMonthlyValue.get(key);
+            for (Map.Entry<Category, Double> entry : normalizedAllTimeValue.entrySet()) {
+                Category category = entry.getKey();
+                double sum = entry.getValue() + normalizedDailyValue.get(category) + normalizedWeeklyValue.get(category) + normalizedMonthlyValue.get(category);
                 result.put(entry.getKey() , sum);
             }
 
@@ -96,10 +96,12 @@ public class Recommendation {
     }
 
 
-    private HashMap<String , Double> dataConversion(HashMap<String, Long>  data, double percentage) throws Exception {
-        HashMap<String , Double> result = new HashMap<>();
-        for (Map.Entry<String , Long> set : data.entrySet()) {
-            result.put(set.getKey(), ((set.getValue() / (double) data.get("sum")) * percentage));
+    private HashMap<Category , Double> dataConversion(HashMap<Category , Long>  data, double percentage) throws Exception {
+        HashMap<Category , Double> result = new HashMap<>();
+        Long sumOfValues = data.values().stream().mapToLong(i -> i).sum();
+
+        for (Map.Entry<Category , Long> set : data.entrySet()) {
+            result.put(set.getKey(), ((set.getValue() / (double) sumOfValues) * percentage));
 
         }
         return result;
