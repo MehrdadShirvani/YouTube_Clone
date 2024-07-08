@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.TwoFactorEmailController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="68.0" prefWidth="614.0" text="Two-factor Authentication">
          <font>
@@ -21,11 +21,11 @@
             <Label fx:id="emailLabel" alignment="TOP_LEFT" prefHeight="37.0" prefWidth="281.0" text="example@gmail.com" />
          </children>
       </HBox>
-      <TextArea nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
+      <TextArea fx:id="codeField" nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
       <HBox prefHeight="89.0" prefWidth="600.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="278.0" text="Use Authenticator app" />
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="322.0" text="Log In" />
+            <Button mnemonicParsing="false" onAction="#useAuthenticatorButton" prefHeight="25.0" prefWidth="278.0" text="Use Authenticator app" />
+            <Button mnemonicParsing="false" onAction="#loginButton" prefHeight="25.0" prefWidth="322.0" text="Log In" />
          </children>
       </HBox>
    </children>
