@@ -87,7 +87,7 @@ public class Body {
         //TODO
     }
 
-    public Boolean getSuccess() {
+    public Boolean isSuccess() {
         return success;
     }
 
@@ -111,7 +111,7 @@ public class Body {
         this.username = username;
     }
 
-    public Boolean getUsernameUnique() {
+    public Boolean isUsernameUnique() {
         return isUsernameUnique;
     }
 
@@ -135,7 +135,7 @@ public class Body {
         this.emailAddress = emailAddress;
     }
 
-    public Boolean getEmailUnique() {
+    public Boolean isEmailUnique() {
         return isEmailUnique;
     }
 
@@ -391,7 +391,7 @@ public class Body {
         this.playlistChannels = playlistChannels;
     }
 
-    public Boolean getSubscribedToChannel() {
+    public Boolean isSubscribedToChannel() {
         return isSubscribedToChannel;
     }
 
@@ -471,7 +471,7 @@ public class Body {
         this.pageNumber = pageNumber;
     }
 
-    public Boolean getChannelNameUnique() {
+    public Boolean isChannelNameUnique() {
         return isChannelNameUnique;
     }
 
@@ -559,7 +559,7 @@ public class Body {
         this.playlistIds = playlistIds;
     }
 
-    public Boolean getSelf() {
+    public Boolean isSelf() {
         return isSelf;
     }
 
@@ -607,7 +607,7 @@ public class Body {
         this.twoFactorDigit = twoFactorDigit;
     }
 
-    public Boolean getVerified() {
+    public Boolean isVerified() {
         return isVerified;
     }
 
