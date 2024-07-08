@@ -1,16 +1,21 @@
 package Client;
 
+import Shared.Models.Category;
+import Shared.Models.Playlist;
 import Shared.Models.Video;
+import Shared.Models.VideoView;
 import Shared.Utils.VideoProcessor;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebView;
@@ -20,6 +25,9 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +52,8 @@ public class AddEditVideoView implements Initializable {
     int videoDuration = 0;
     private Video video;
     private HomeController homeController;
-
+    private ChecklistViewControl checkBoxPlaylistsListView;
+    private ChecklistViewControl checkboxCategoriesListView;
     public void chooseFile(ActionEvent actionEvent)
     {
         FileChooser fileChooser = new FileChooser();
