@@ -1,11 +1,11 @@
 package Client;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 
-import java.awt.event.ActionEvent;
 
 public class TwoFactorAuthenticatorController {
     @FXML
@@ -18,7 +18,7 @@ public class TwoFactorAuthenticatorController {
 
     public void loginButton(ActionEvent actionEvent) {
         String codeString = codeField.getText();
-        int code = Integer.getInteger(codeString);
+        int code = Integer.parseInt(codeString);
 
         if (YouTube.client.authenticatorVerify(code)) {
             YouTube.changeScene("home-view.fxml");
