@@ -78,6 +78,7 @@ public class CommentViewController {
     //To be used when submitting new comment
     private long commentID;
     private VideoViewController videoViewController;
+    public Comment comment;
     private long videoId;
 
     public void initialize() {
@@ -148,7 +149,8 @@ public class CommentViewController {
         commentButton.setDisable(commentTextField.getText().isBlank());
     }
 
-    public void setComment(String channel,long authorChannelId, String text,String date,long likes, long videoId, long commentID, VideoViewController videoViewController) {
+    public void setComment(Comment comment, String channel,long authorChannelId, String text,String date,long likes, long videoId, long commentID, VideoViewController videoViewController) {
+        this.comment = comment;
         this.videoId = videoId;
         this.commentID = commentID;
         this.videoViewController = videoViewController;
@@ -164,28 +166,7 @@ public class CommentViewController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Task<Void> loaderView = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Platform.runLater(() -> {
-                    //TODO mohsen
-//                    currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
-                    isCommentLiked = YouTube.client.isVideoLiked(commentID);
 
-                    initialLikeCount = YouTube.client.getLikesOfComment(commentID);
-                    setVideoLikedState();
-                });
-
-
-                return null;
-            }
-
-
-        };
-
-        Thread thread = new Thread(loaderView);
-        thread.setDaemon(true);
-        thread.start();
 
     }
 
@@ -281,4 +262,27 @@ public class CommentViewController {
         changeInLike = 0;
     }
 
+    public void setCommentLiked(HashMap<Boolean, Short> commentLiked) {
+        isCommentLiked = commentLiked;
+        Task<Void> loaderView = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+//                    currentReaction = YouTube.client.sendRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+
+                    initialLikeCount = YouTube.client.getLikesOfComment(commentID);
+                    setVideoLikedState();
+                });
+
+
+                return null;
+            }
+
+
+        };
+
+        Thread thread = new Thread(loaderView);
+        thread.setDaemon(true);
+        thread.start();
+    }
 }
