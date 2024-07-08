@@ -200,12 +200,12 @@ public class AddEditVideoView implements Initializable {
             return;
         }
 
-        if(videoFile == null)
+        if(video == null && videoFile == null)
         {
             //TODO Ehsan Show error
             return;
         }
-        if(pictureFile == null)
+        if(video == null && pictureFile == null)
         {
             //TODO Ehsan Show error
             return;
@@ -216,17 +216,16 @@ public class AddEditVideoView implements Initializable {
         Long channelId = YouTube.client.getAccount().getChannelId();
         Boolean isPrivate = CBIsPrivate.isSelected();
         Boolean isAgeRestricted = CBIsAgeRestricted.isSelected();
-        String videoFileAddress = videoFile.getAbsolutePath();
 
+        Long videoId;
         if(video == null)
         {
-            Video uploadedVideo = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
-
-            Video addedVideo = YouTube.client.addVideo(uploadedVideo);
-            Long videoId = addedVideo.getVideoId();
-
+            Video addedVideo  = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
+            Video videoInDB = YouTube.client.addVideo(addedVideo);
+            videoId = videoInDB.getVideoId();
             uploadTheVideo(videoFile, videoId);
             uploadThePicture(pictureFile, videoId);
+            videoId = videoInDB.getVideoId();
         }
         else
         {
@@ -236,7 +235,26 @@ public class AddEditVideoView implements Initializable {
             video.setAgeRestricted(isAgeRestricted);
             video.setVideoTypeId(CBIsShort.isSelected()?2:1);
             YouTube.client.addVideo(video);
+            YouTube.client.deleteVideoPlaylists(video.getVideoId());
+            YouTube.client.deleteVideoCategories(video.getVideoId());
+            videoId = video.getVideoId();
         }
+
+        List<Long> playlistIds = new ArrayList<>();
+        List<SelectableModelView> selectedPlaylists =  checkBoxPlaylistsListView.getSelectedItems();
+        for(SelectableModelView playlistModelView : selectedPlaylists)
+        {
+            playlistIds.add(playlistModelView.getItemId());
+        }
+        YouTube.client.addVideoPlaylists(videoId, playlistIds);
+
+        List<Integer> categoryIds = new ArrayList<>();
+        for(SelectableModelView categoryModelView : checkboxCategoriesListView.getSelectedItems())
+        {
+            Integer id = Math.toIntExact(categoryModelView.getItemId());
+            categoryIds.add(id);
+        }
+        YouTube.client.addVideoCategories(videoId, categoryIds);
 
         YouTube.changeScene("home-view.fxml");
     }
