@@ -1563,7 +1563,7 @@ public class ClientHandler implements Runnable {
         }
 
         Video addedVideo;
-        if(video.getVideoId() > 0)
+        if(video.getVideoId() != null)
         {
             addedVideo = DatabaseManager.editVideo(video);
         }

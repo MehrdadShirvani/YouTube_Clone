@@ -1,16 +1,21 @@
 package Client;
 
+import Shared.Models.Category;
+import Shared.Models.Playlist;
 import Shared.Models.Video;
+import Shared.Models.VideoView;
 import Shared.Utils.VideoProcessor;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebView;
@@ -20,6 +25,9 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +52,8 @@ public class AddEditVideoView implements Initializable {
     int videoDuration = 0;
     private Video video;
     private HomeController homeController;
-
+    private ChecklistViewControl checkBoxPlaylistsListView;
+    private ChecklistViewControl checkboxCategoriesListView;
     public void chooseFile(ActionEvent actionEvent)
     {
         FileChooser fileChooser = new FileChooser();
@@ -57,15 +66,81 @@ public class AddEditVideoView implements Initializable {
     }
     public void setVideo(Video video, HomeController homeController) throws IOException {
         this.homeController = homeController;
-        Path path = new File("src/main/resources/Client/image-view.html").toPath();
-        String htmlContent = new String(Files.readAllBytes(path));
-        profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/T_" + video.getVideoId()));
-        TxtName.setText(video.getName());
-        TxtDesc.setText(video.getDescription());
-        TxtDuration.setText(video.getDescription() + " seconds");
-        SubmitBtn.setText("Edit Details");
-        SetDefaultThumbnailBtn.setVisible(false);
         this.video = video;
+
+        if(video != null)
+        {
+            Path path = new File("src/main/resources/Client/image-view.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/T_" + video.getVideoId()));
+            TxtName.setText(video.getName());
+            TxtDesc.setText(video.getDescription());
+            TxtDuration.setText(video.getDescription() + " seconds");
+            SubmitBtn.setText("Edit Details");
+            SetDefaultThumbnailBtn.setVisible(false);
+        }
+
+        Task<Void> loaderView = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+                    //YouTube.client.getPlayistsOfVideo(YouTube.client.getAccount().getChannelId(), true);
+                    List<Playlist> allPlaylists =  YouTube.client.getPlaylistsOfChannel(YouTube.client.getAccount().getChannelId(), true);
+                    List<Playlist> selectedPlaylists = new ArrayList<>();
+                    List<Long> selectedPlaylistIds = new ArrayList<>();
+                    if(video != null)
+                    {
+                        selectedPlaylists = YouTube.client.getPlaylistsOfVideo(video.getVideoId());
+                        for(Playlist playlist : selectedPlaylists)
+                        {
+                            if(playlist != null)
+                            {
+                                selectedPlaylistIds.add(playlist.getPlaylistId());
+                            }
+                        }
+                    }
+
+                    List<SelectableModelView> list = new ArrayList<>();
+                    for(Playlist playlist : allPlaylists)
+                    {
+                        list.add(new SelectableModelView(playlist.getPlaylistId(), playlist.getName(), selectedPlaylistIds.contains(playlist.getPlaylistId())));
+                    }
+                    ObservableList<SelectableModelView> items = FXCollections.observableArrayList(list);
+                    checkBoxPlaylistsListView.addItems(items);
+                    checkBoxPlaylistsListView.setMaxHeight(30);
+                    List<Category> allCategories =  YouTube.client.getCategories();
+                    List<Category> selectedCategories = new ArrayList<>();
+                    List<Integer> selectedCategoryIds = new ArrayList<>();
+                    if(video != null)
+                    {
+                        selectedCategories =  YouTube.client.getCategoriesOfVideo(video.getVideoId());
+                        for(Category category : selectedCategories)
+                        {
+                            if(category != null)
+                            {
+                                selectedCategoryIds.add(category.getCategoryId());
+                            }
+                        }
+                    }
+                    List<SelectableModelView> listCategories = new ArrayList<>();
+                    for(Category category : allCategories)
+                    {
+                        listCategories.add(new SelectableModelView(category.getCategoryId(), category.getName(), selectedCategoryIds.contains(category.getCategoryId())));
+                    }
+                    ObservableList<SelectableModelView> itemCategories = FXCollections.observableArrayList(listCategories);
+                    checkboxCategoriesListView.addItems(itemCategories);
+                });
+
+
+                return null;
+            }
+
+
+        };
+
+        Thread thread = new Thread(loaderView);
+        thread.setDaemon(true);
+        thread.start();
     }
     private void uploadTheVideo(File selectedFile, Long videoId) {
             try {
@@ -125,12 +200,12 @@ public class AddEditVideoView implements Initializable {
             return;
         }
 
-        if(videoFile == null)
+        if(video == null && videoFile == null)
         {
             //TODO Ehsan Show error
             return;
         }
-        if(pictureFile == null)
+        if(video == null && pictureFile == null)
         {
             //TODO Ehsan Show error
             return;
@@ -141,17 +216,16 @@ public class AddEditVideoView implements Initializable {
         Long channelId = YouTube.client.getAccount().getChannelId();
         Boolean isPrivate = CBIsPrivate.isSelected();
         Boolean isAgeRestricted = CBIsAgeRestricted.isSelected();
-        String videoFileAddress = videoFile.getAbsolutePath();
 
+        Long videoId;
         if(video == null)
         {
-            Video uploadedVideo = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
-
-            Video addedVideo = YouTube.client.addVideo(uploadedVideo);
-            Long videoId = addedVideo.getVideoId();
-
+            Video addedVideo  = new Video(videoName , videoDescription , channelId , isPrivate , isAgeRestricted, videoDuration, CBIsShort.isSelected()?2:1);
+            Video videoInDB = YouTube.client.addVideo(addedVideo);
+            videoId = videoInDB.getVideoId();
             uploadTheVideo(videoFile, videoId);
             uploadThePicture(pictureFile, videoId);
+            videoId = videoInDB.getVideoId();
         }
         else
         {
@@ -161,7 +235,26 @@ public class AddEditVideoView implements Initializable {
             video.setAgeRestricted(isAgeRestricted);
             video.setVideoTypeId(CBIsShort.isSelected()?2:1);
             YouTube.client.addVideo(video);
+            YouTube.client.deleteVideoPlaylists(video.getVideoId());
+            YouTube.client.deleteVideoCategories(video.getVideoId());
+            videoId = video.getVideoId();
         }
+
+        List<Long> playlistIds = new ArrayList<>();
+        List<SelectableModelView> selectedPlaylists =  checkBoxPlaylistsListView.getSelectedItems();
+        for(SelectableModelView playlistModelView : selectedPlaylists)
+        {
+            playlistIds.add(playlistModelView.getItemId());
+        }
+        YouTube.client.addVideoPlaylists(videoId, playlistIds);
+
+        List<Integer> categoryIds = new ArrayList<>();
+        for(SelectableModelView categoryModelView : checkboxCategoriesListView.getSelectedItems())
+        {
+            Integer id = Math.toIntExact(categoryModelView.getItemId());
+            categoryIds.add(id);
+        }
+        YouTube.client.addVideoCategories(videoId, categoryIds);
 
         YouTube.changeScene("home-view.fxml");
     }
@@ -227,12 +320,11 @@ public class AddEditVideoView implements Initializable {
         profileMaskRec.setArcWidth(50);
         profileWebView.setClip(profileMaskRec);
         // load webview
-        ChecklistViewControl checkBoxListView = new ChecklistViewControl();
-        VControls.getChildren().add(checkBoxListView);
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Item 1", "Item 2", "Item 3", "Item 4", "Item 5",
-                "Item 6", "Item 7", "Item 8", "Item 9", "Item 10"
-        );
-        checkBoxListView.addItems(items);
+        checkBoxPlaylistsListView = new ChecklistViewControl();
+        checkboxCategoriesListView = new ChecklistViewControl();
+        VControls.getChildren().add(checkBoxPlaylistsListView);
+        VControls.getChildren().add(checkboxCategoriesListView);
+
+
     }
 }

@@ -13,7 +13,7 @@
     </stylesheets>
 
     <children>
-        <WebView fx:id="headerPictureWebView" minHeight="192.0" minWidth="1080.0" prefHeight="192.0" prefWidth="1080.0" />
+        <WebView fx:id="headerPictureWebView" minHeight="192.0" minWidth="1080.0" prefHeight="192.0" prefWidth="1080.0" style="-fx-background-color: #212121" />
         <BorderPane minHeight="100.0" minWidth="200.0" prefHeight="100.0" prefWidth="200.0">
             <left>
                 <HBox BorderPane.alignment="CENTER">

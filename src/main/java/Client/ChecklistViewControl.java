@@ -8,12 +8,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class ChecklistViewControl extends VBox {
-    ObservableList<String> items = FXCollections.observableArrayList(
-            "Item 1", "Item 2", "Item 3", "Item 4", "Item 5",
-            "Item 6", "Item 7", "Item 8", "Item 9", "Item 10"
-    );
-    ListView<String> listView = new ListView<>(items);
+    ObservableList<SelectableModelView> items = FXCollections.observableArrayList();
+    ListView<SelectableModelView> listView = new ListView<>(items);
 
     public void setItems()
     {
@@ -23,17 +22,20 @@ public class ChecklistViewControl extends VBox {
                 checkBox = new CheckBox();
                 setGraphic(checkBox);
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                checkBox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                        getItem().setSelected(isNowSelected);
+                });
             }
 
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(SelectableModelView item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    checkBox.setText(item);
-                    checkBox.setSelected(false);
+                    checkBox.setText(item.getName());
+                    checkBox.setSelected(item.isSelected());
                     setGraphic(checkBox);
                 }
             }
@@ -41,10 +43,22 @@ public class ChecklistViewControl extends VBox {
 
        getChildren().add(listView);
     }
-    public void addItems(ObservableList<String> newItems) {
+    public void addItems(ObservableList<SelectableModelView> newItems) {
         items.addAll(newItems);
         setItems();
     }
+    public ObservableList<SelectableModelView> getAllSelected()
+    {
+        ObservableList<SelectableModelView> selectedItems = FXCollections.observableArrayList();
+        for (SelectableModelView item : items) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return  selectedItems;
+    }
 
-
+    public List<SelectableModelView> getSelectedItems() {
+        return getAllSelected();
+    }
 }
