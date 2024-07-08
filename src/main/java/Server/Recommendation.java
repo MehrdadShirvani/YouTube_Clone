@@ -4,6 +4,8 @@ import Server.Database.DatabaseManager;
 import Shared.Models.*;
 
 import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Recommendation {
     private final Long channelId;
@@ -28,29 +30,35 @@ public class Recommendation {
         HashMap<Video , Double> trendedVideos = getTrendedVideos();
         HashMap<Video , Long> isSubbed = new HashMap<>();
 
-        List<Channel> subscribedChannels = DatabaseManager.getSubscribedChannels(this.channelId);
-        for (Map.Entry<Video , Double> videoSet : trendedVideos.entrySet()) {
-             isSubbed.put(videoSet.getKey() , (long) (subscribedChannels.contains(videoSet.getKey().getChannel()) ? 1 : 0));
+        List<Long> subscribedChannelIds = DatabaseManager.getSubscribedChannels(this.channelId).stream()
+                .map(Channel::getChannelId).toList();
+        for (Entry<Video , Double> videoSet : trendedVideos.entrySet()) {
+             isSubbed.put(videoSet.getKey() , (subscribedChannelIds.contains(videoSet.getKey().getChannelId()) ? 1L : 0L));
         }
 
         HashMap<Video, Double> normalizedSubbedRate = dataConversion(isSubbed , 1.0);
+        HashMap<Video , Double> normalizedTrendedVideos = dataConversion(trendedVideos , 1.0);
 
-        for (Map.Entry<Video , Double> trendVideoSet : trendedVideos.entrySet()) {
+        for (Entry<Video , Double> trendVideoSet : normalizedTrendedVideos.entrySet()) {
             Video keyVideo = trendVideoSet.getKey();
             Double trendingRate = trendVideoSet.getValue();
             Double subbedRate = normalizedSubbedRate.get(keyVideo);
-            Double interestingRate = DatabaseManager.getCategoriesOfVideo(keyVideo.getVideoId()).stream()
-                    .mapToDouble(interestedCategories::get)
-                    .sum();
+            Double interestingRate = 0.0;
+
+            List<Category> categories = DatabaseManager.getCategoriesOfVideo(keyVideo.getVideoId());
+            for (Category category : categories) {
+                interestingRate += interestedCategories.getOrDefault(category , 0.0);
+
+            }
 
             Double score = trendingRate * trendingWeight + subbedRate * subbedWeight + interestingRate * interestingWeight;
 
             scoredVideos.put(keyVideo , score);
         }
 
-        List<Map.Entry<Video , Double>> scoredVideosEntry = new ArrayList<>(scoredVideos.entrySet());
-        scoredVideosEntry.sort(Map.Entry.comparingByValue());
-        List<Video> recommendedVideosSorted = scoredVideosEntry.reversed().stream().map(Map.Entry::getKey).toList();
+        List<Entry<Video , Double>> scoredVideosEntry = new ArrayList<>(scoredVideos.entrySet());
+        scoredVideosEntry.sort(Entry.comparingByValue());
+        List<Video> recommendedVideosSorted = scoredVideosEntry.reversed().stream().map(Entry::getKey).toList();
 
         List<Video> paginatedVideos = recommendedVideosSorted.stream().skip((long) (pageNumber - 1) * perPage).limit(perPage).toList();
 
@@ -79,16 +87,16 @@ public class Recommendation {
 
             HashMap<Category , Double> result = new HashMap<>();
 
-            for (Map.Entry<Category, Double> entry : normalizedAllTimeValue.entrySet()) {
+            for (Entry<Category, Double> entry : normalizedAllTimeValue.entrySet()) {
                 Category category = entry.getKey();
-                double sum = entry.getValue() + normalizedDailyValue.get(category) + normalizedWeeklyValue.get(category) + normalizedMonthlyValue.get(category);
+                double sum = entry.getValue() + normalizedDailyValue.getOrDefault(category , 0.0) + normalizedWeeklyValue.getOrDefault(category , 0.0) + normalizedMonthlyValue.getOrDefault(category , 0.0);
                 result.put(entry.getKey() , sum);
             }
 
             return result;
 
         } catch (Exception e) {
-            String errorLog = "Error : while converting data in videoSuggest !";
+            String errorLog = "Error : while converting data in getInterestedCategories !";
             System.err.println(errorLog);
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -133,15 +141,20 @@ public class Recommendation {
     }
 
 
-    private <T> HashMap<T, Double> dataConversion(HashMap<T, Long> data, double percentage) throws Exception {
-        HashMap<T, Double> result = new HashMap<>();
-        Long sumOfValues = data.values().stream().mapToLong(i -> i).sum();
+    private <T, N extends Number> HashMap<T, Double> dataConversion(HashMap<T, N> data, double percentage) throws Exception {
+        double sumOfValues = data.values().stream()
+                .mapToDouble(Number::doubleValue)
+                .sum();
 
-        for (Map.Entry<T, Long> set : data.entrySet()) {
-            result.put(set.getKey(), ((set.getValue() / (double) sumOfValues) * percentage));
+        double sum = sumOfValues == 0.0 ? 1.0 : sumOfValues;
 
-        }
-        return result;
+        return data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Entry::getKey,
+                        entry -> (entry.getValue().doubleValue() / sum) * percentage,
+                        (e1, e2) -> e1,
+                        HashMap::new
+                ));
     }
 
     private Date calculateStartDate(Date endDate, int field, int amount) {
