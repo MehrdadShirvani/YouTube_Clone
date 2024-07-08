@@ -287,7 +287,7 @@ public class HomeController {
             controller.setVideo(video, this);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
-        //Set subs
+        //TODO: Set subs
         Platform.runLater(() -> {
 
             List<Channel> channels = new ArrayList<>();
@@ -297,7 +297,6 @@ public class HomeController {
             if (!channels.isEmpty())
                 subsVBox.setVisible(true);
             for (Channel channel : channels) {
-                System.out.println("uuuuu");
                 FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("subs-view.fxml"));
                 VBox mainVBox;
                 try {

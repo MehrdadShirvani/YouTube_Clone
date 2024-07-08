@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Models.*;
 import Shared.Utils.DateFormats;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
@@ -28,9 +29,11 @@ import javafx.scene.web.WebView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.util.Duration;
 
 import java.awt.*;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -466,5 +469,18 @@ public class VideoViewController {
 
     public void editBtnAction(ActionEvent actionEvent) {
          homeController.setVideoEditingPage(video);
+    }
+
+    public void share(ActionEvent event) {
+        shareButton.setDisable(true);
+        shareButton.setText("Copied!");
+        StringSelection stringSelection = new StringSelection("http://localhost:2131/video/"+video.getVideoId());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            shareButton.setText("Share");
+            shareButton.setDisable(false);
+        });
+        pause.play();
     }
 }
