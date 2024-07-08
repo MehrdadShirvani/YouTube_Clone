@@ -9,6 +9,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -73,6 +74,10 @@ public class ChannelViewController {
     HBox popularHBox;
     @FXML
     FlowPane videosFlowPane;
+    @FXML
+    VBox playListVBox;
+    @FXML
+    FlowPane playListFlowPane;
     private Rectangle maskcommentProfileRec;
     private boolean isChannelSubscribed;
     private Channel channel;
@@ -115,17 +120,17 @@ public class ChannelViewController {
         for (int i = 0; i < 10; ++i) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             recentHBox.getChildren().add(fxmlLoader.load());
-            ((SmallVideoView)fxmlLoader.getController()).setPref(0.8,false,false);
+            ((SmallVideoView) fxmlLoader.getController()).setPref(0.8, false, false);
         }
         for (int i = 0; i < 10; ++i) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             popularHBox.getChildren().add(fxmlLoader.load());
-            ((SmallVideoView)fxmlLoader.getController()).setPref(0.8,false,false);
+            ((SmallVideoView) fxmlLoader.getController()).setPref(0.8, false, false);
         }
         for (int i = 0; i < 10; ++i) {
             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
             videosFlowPane.getChildren().add(fxmlLoader.load());
-            ((SmallVideoView)fxmlLoader.getController()).setPref(1,false,false);
+            ((SmallVideoView) fxmlLoader.getController()).setPref(1, false, false);
         }
 
         //Delete the vboxs if the content is found(my/other)
@@ -140,28 +145,20 @@ public class ChannelViewController {
         this.channel = channel;
         this.homeController = homeController;
 
-        if(Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId()))
-        {
-            otherNoContent.setVisible(false);
-            otherNoContent2.setVisible(false);
-            otherNoContent3.setVisible(false);
-            otherNoContentWebView.setVisible(false);
-            otherNoContentWebView2.setVisible(false);
-            otherNoContentWebView3.setVisible(false);
-        }
-        else
-        {
-//            myNoContent.setVisible(false);
-            myNoContent2.setVisible(false);
-            myNoContent3.setVisible(false);
-            myNoContentWebView.setVisible(false);
-            myNoContentWebView2.setVisible(false);
-            myNoContentWebView3.setVisible(false);
+        if (Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId())) {
+            ((VBox) otherNoContent.getParent()).getChildren().remove(otherNoContent);
+            ((VBox) otherNoContent2.getParent()).getChildren().remove(otherNoContent2);
+            ((VBox) otherNoContent3.getParent()).getChildren().remove(otherNoContent3);
+        } else {
+            ((VBox) myNoContent.getParent()).getChildren().remove(myNoContent);
+            ((VBox) myNoContent2.getParent()).getChildren().remove(myNoContent2);
+            ((VBox) myNoContent3.getParent()).getChildren().remove(myNoContent3);
         }
 
         authorLabel.setText(channel.getName());
         descLabel.setText(channel.getDescription());
-        locationLabel.setText(channel.getLocation());
+        String location = channel.getLocation();
+        locationLabel.setText(location.isBlank() ? "Iran" : location);
         joinLabel.setText(DateFormats.formatTimestamp(channel.getCreatedDateTime()));
 
         DecimalFormat formatter = new DecimalFormat("#,###");
@@ -182,13 +179,12 @@ public class ChannelViewController {
             throw new RuntimeException(e);
         }
         List<Channel> subscribers = YouTube.client.getChannelSubscribers(channel.getChannelId());
-        if(subscribers != null) {
-            subsLabel.setText(subscribers.size() + " subscribers ");
+        if (subscribers != null) {
+            subsLabel.setText(subscribers.size() + " subscribers");
             subsLabel2.setText(subscribers.size() + " subscribers ");
-        }
-        else {
-            subsLabel.setText("no subscribers");
-            subsLabel2.setText("no subscribers");
+        } else {
+            subsLabel.setText("No subscribers");
+            subsLabel2.setText("No subscribers");
         }
         boolean isSelf = Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId());
         Task<Void> loaderView = new Task<Void>() {
@@ -201,11 +197,22 @@ public class ChannelViewController {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    List<Video> popularVideos = YouTube.client.getMostPopularVideosOfChannel(channel.getChannelId(),10, 1);
+
+                    List<Video> popularVideos = YouTube.client.getMostPopularVideosOfChannel(channel.getChannelId(), 10, 1);
+                    List<Video> recentVideos = YouTube.client.getRecentVideosOfChannel(channel.getChannelId(), 10, 1);
+                    if (recentVideos.isEmpty() && popularVideos.isEmpty()) {
+//                        homeVBox.setAlignment(Pos.CENTER);
+                        ((VBox) contentVBox.getParent()).getChildren().remove(contentVBox);
+                    } else {
+                        if (isSelf)
+                            ((VBox) myNoContent.getParent()).getChildren().remove(myNoContent);
+                        else
+                            ((VBox) otherNoContent.getParent()).getChildren().remove(otherNoContent);
+
+                    }
                     popularHBox.getChildren().clear();
                     for (Video recVideo : popularVideos) {
-                        if(!isSelf && recVideo.getPrivate())
-                        {
+                        if (!isSelf && recVideo.getPrivate()) {
                             continue;
                         }
 
@@ -221,11 +228,9 @@ public class ChannelViewController {
                         popularHBox.getChildren().add(smallVideo);
                     }
 
-                    List<Video> recentVideos = YouTube.client.getRecentVideosOfChannel(channel.getChannelId(),10, 1);
                     recentHBox.getChildren().clear();
                     for (Video recVideo : recentVideos) {
-                        if(!isSelf && recVideo.getPrivate())
-                        {
+                        if (!isSelf && recVideo.getPrivate()) {
                             continue;
                         }
 
@@ -240,34 +245,54 @@ public class ChannelViewController {
                         smallVideoController.setVideo(recVideo, homeController);
                         recentHBox.getChildren().add(smallVideo);
                     }
-                    List<Playlist> playlists =  YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
-                    if(playlists != null)
-                    {
+                    List<Playlist> playlists = YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    playlists.add(new Playlist());
+                    if (!playlists.isEmpty())
+                        if (isSelf)
+                            ((VBox) myNoContent3.getParent()).getChildren().remove(myNoContent3);
+                        else
+                            ((VBox) otherNoContent3.getParent()).getChildren().remove(otherNoContent3);
+
+                    if (playlists != null) {
                         for (Playlist playlist : playlists) {
-                            //TODO Ehsan add playlistview
+                            FXMLLoader fxmlLoader = new FXMLLoader(ChannelViewController.class.getResource("small-playlist-view.fxml"));
+                            Parent smallPlayList = null;
+                            try {
+                                smallPlayList = fxmlLoader.load();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            SmallPlayListController smallVideoController = fxmlLoader.getController();
+                            smallVideoController.setPlayList(playlist);
+                            playListFlowPane.getChildren().add(smallPlayList);
                         }
                     }
 
                     videosFlowPane.getChildren().clear();
                     List<Video> allVideos = YouTube.client.getVideosOfChannel(channel.getChannelId(), 20, 1);
-                    for(Video video : allVideos)
-                    {
+                    if (!allVideos.isEmpty())
+                        if (isSelf)
+                            ((VBox) myNoContent2.getParent()).getChildren().remove(myNoContent2);
+                        else
+                            ((VBox) otherNoContent2.getParent()).getChildren().remove(otherNoContent2);
+                    for (Video video : allVideos) {
                         FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
                         try {
                             videosFlowPane.getChildren().add(fxmlLoader.load());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                        ((SmallVideoView)fxmlLoader.getController()).setPref(1,false,false);
-                        ((SmallVideoView)fxmlLoader.getController()).setVideo(video, homeController);
+                        ((SmallVideoView) fxmlLoader.getController()).setPref(1, false, false);
+                        ((SmallVideoView) fxmlLoader.getController()).setVideo(video, homeController);
                     }
 
 
                     if (Objects.equals(channel.getChannelId(), YouTube.client.getAccount().getChannelId())) {
                         subsButton.setVisible(false);
-                    }
-                    else
-                    {
+                    } else {
                         isChannelSubscribed = YouTube.client.isSubscribedToChannel(channel.getChannelId());
                         if (isChannelSubscribed) {
                             subsIcon.setContent("M10 20H14C14 21.1 13.1 22 12 22C10.9 22 10 21.1 10 20ZM20 17.35V19H4V17.35L6 15.47V10.32C6 7.40001 7.56 5.10001 10 4.34001V3.96001C10 2.54001 11.49 1.46001 12.99 2.20001C13.64 2.52001 14 3.23001 14 3.96001V4.35001C16.44 5.10001 18 7.41001 18 10.33V15.48L20 17.35ZM19 17.77L17 15.89V10.42C17 7.95001 15.81 6.06001 13.87 5.32001C12.61 4.79001 11.23 4.82001 10.03 5.35001C8.15 6.11001 7 7.99001 7 10.42V15.89L5 17.77V18H19V17.77Z");
@@ -313,13 +338,11 @@ public class ChannelViewController {
         });
     }
 
-    public void createVideoAction(ActionEvent actionEvent)
-    {
+    public void createVideoAction(ActionEvent actionEvent) {
         homeController.setVideoEditingPage(null);
     }
 
-    public void playlistCreateAction(ActionEvent actionEvent)
-    {
+    public void playlistCreateAction(ActionEvent actionEvent) {
         homeController.setPlaylistPage(null);
     }
 }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<VBox fx:id="mainVBox" alignment="TOP_CENTER" prefHeight="225.0" prefWidth="248.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SmallPlayListController">
+    <stylesheets>
+        <URL value="@small-video-view.css" />
+    </stylesheets>
+   <StackPane alignment="BOTTOM_CENTER">
+      <children>
+         <StackPane alignment="BOTTOM_CENTER" onMouseClicked="#playlistClicked">
+            <children>
+            
+                <WebView fx:id="webView" disable="true" onMouseClicked="#playlistClicked" prefHeight="139.49" prefWidth="248.0">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+               </WebView>
+            </children>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <effect>
+               <InnerShadow blurType="GAUSSIAN" choke="0.7" height="255.0" offsetY="-10.0" radius="63.25" width="0.0" />
+            </effect>
+         </StackPane>
+         <SVGPath content="M11.53 9.42V16.27L17.19 12.85L11.53 9.43V9.42ZM0.199997 9.42H9.26V11.7H0.199997V9.42ZM0.199997 0.279999H13.8V2.56H0.199997V0.279999ZM0.199997 4.85H13.8V7.13H0.199997V4.85Z" fill="WHITE" />
+      </children>
+   </StackPane>
+    <HBox fx:id="downHBox" fillHeight="false">
+        <children>
+         <StackPane fx:id="profileStackPane">
+            <HBox.margin>
+               <Insets right="10.0" top="10.0" />
+            </HBox.margin>
+         </StackPane>
+            <VBox fx:id="rightVBox">
+                <children>
+               <HBox alignment="CENTER_LEFT">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+                  <children>
+                          <Label fx:id="titleLabel" graphicTextGap="0.0" onMouseClicked="#playlistClicked" styleClass="title" text="trees forest woods" wrapText="true">
+                              <font>
+                                  <Font size="15.0" />
+                              </font>
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <HBox.margin>
+                           <Insets top="10.0" />
+                        </HBox.margin>
+                          </Label>
+                  </children>
+               </HBox>
+                    <VBox spacing="1.0">
+                        <children>
+                            <Label fx:id="statusLabel" styleClass="caption" text="Private•Playlist" />
+                            <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption" text="Created today" />
+                        </children>
+                        <VBox.margin>
+                            <Insets top="2.0" />
+                        </VBox.margin>
+                    </VBox>
+                </children>
+                <HBox.margin>
+                    <Insets right="5.0" top="5.0" />
+                </HBox.margin>
+            </VBox>
+        </children>
+    </HBox>
+</VBox>
