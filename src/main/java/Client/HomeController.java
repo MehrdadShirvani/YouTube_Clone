@@ -5,8 +5,9 @@ import Shared.Models.Playlist;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
+import javafx.css.StyleClass;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,10 +15,19 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.web.WebView;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 
+import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -59,10 +69,16 @@ public class HomeController {
     BorderPane mainBorderPane;
     @FXML
     ToggleGroup menuToggleGroup;
+    @FXML
+    WebView profileWebView;
+    @FXML
+    StackPane proStackPane;
     Boolean isMinimized;
     private List<Video> currentVideos;
+    private Rectangle maskProRec;
     private List<SmallVideoView> currentSmallVideos = new ArrayList<SmallVideoView>();
     private VideoViewController currentVideoViewController;
+    private VBox accountVBox;
 
     public void initialize() {
         isMinimized = false;
@@ -96,6 +112,72 @@ public class HomeController {
                 oldToggle.setSelected(true);
             }
         });
+        //Mask profile with rec
+        Platform.runLater(() -> {
+            maskProRec = new Rectangle(profileWebView.getWidth(), profileWebView.getHeight());
+            maskProRec.setArcWidth(profileWebView.getWidth());
+            maskProRec.setArcHeight(profileWebView.getHeight());
+            profileWebView.setClip(maskProRec);
+            maskProRec.widthProperty().bind(profileWebView.widthProperty());
+            maskProRec.heightProperty().bind(profileWebView.heightProperty());
+            try {
+                Path path = new File("src/main/resources/Client/profile.html").toPath();
+                String htmlContent = new String(Files.readAllBytes(path));
+                profileWebView.getEngine().loadContent(htmlContent.replace("@id", YouTube.client.getAccount().getChannelId() + ""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        //Account menu
+        Popup accountPopup = new Popup();
+        VBox accountVBox = new VBox();
+        accountVBox.setStyle("-fx-background-color: #303030;-fx-padding: 10 0 10 0; -fx-border-width: 0; -fx-background-radius: 5");
+        accountVBox.setFillWidth(true);
+
+        Button logoutButton = new Button("Logout");
+        logoutButton.getStylesheets().add(getClass().getResource("home.css").toExternalForm());
+        logoutButton.getStyleClass().add("menu-toggle-button");
+        accountVBox.getChildren().add(logoutButton);
+        SVGPath logout = new SVGPath();
+        logout.setContent("M20 3v18H8v-1h11V4H8V3h12zm-8.9 12.1.7.7 4.4-4.4L11.8 7l-.7.7 3.1 3.1H3v1h11.3l-3.2 3.3z");
+        logout.setFill(Color.WHITE);
+        logoutButton.setGraphic(logout);
+
+        Button editProfile = new Button("Edit profile");
+        editProfile.getStylesheets().add(getClass().getResource("home.css").toExternalForm());
+        editProfile.getStyleClass().add("menu-toggle-button");
+        accountVBox.getChildren().add(editProfile);
+        SVGPath editPro = new SVGPath();
+        editPro.setContent("M4 20h14v1H3V6h1v14zM6 3v15h15V3H6zm2.02 14c.36-2.13 1.93-4.1 5.48-4.1s5.12 1.97 5.48 4.1H8.02zM11 8.5a2.5 2.5 0 015 0 2.5 2.5 0 01-5 0zm3.21 3.43A3.507 3.507 0 0017 8.5C17 6.57 15.43 5 13.5 5S10 6.57 10 8.5c0 1.69 1.2 3.1 2.79 3.43-3.48.26-5.4 2.42-5.78 5.07H7V4h13v13h-.01c-.38-2.65-2.31-4.81-5.78-5.07z");
+        editPro.setFill(Color.WHITE);
+        editProfile.setGraphic(editPro);
+
+
+        accountPopup.getContent().add(accountVBox);
+        proStackPane.setOnMouseClicked(e -> {
+            if (!accountPopup.isShowing()) accountPopup.show(YouTube.primaryStage, e.getScreenX(), e.getScreenY());
+            else accountPopup.hide();
+        });
+        accountPopup.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                accountPopup.hide();
+            }
+        });
+        editProfile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                accountPopup.hide();
+                YouTube.changeScene("edit-account-view.fxml");
+            }
+        });
+        logoutButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                accountPopup.hide();
+                //TODO: logout
+            }
+        });
+
         //Menu SVG
         homeMenuButton.setSelected(true);
         homeMenuButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
@@ -130,40 +212,22 @@ public class HomeController {
         });
         //Menu shortcuts
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN),
-                    homeMenuButton::fire
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN), homeMenuButton::fire);
         });
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN),
-                    shortsMenuButton::fire
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN), shortsMenuButton::fire);
         });
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
-                    subsMenuButton::fire
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN), subsMenuButton::fire);
         });
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN),
-                    channelMenuButton::fire
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.Y, KeyCombination.CONTROL_DOWN), channelMenuButton::fire);
         });
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN),
-                    historyMenuButton::fire
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN), historyMenuButton::fire);
         });
         Platform.runLater(() -> {
-            YouTube.primaryStage.getScene().getAccelerators().put(
-                    new KeyCodeCombination(KeyCode.SLASH),
-                    searchTextField::requestFocus
-            );
+            YouTube.primaryStage.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.SLASH), searchTextField::requestFocus);
         });
 
         setHome();
@@ -372,5 +436,8 @@ public class HomeController {
         }
         AddEditPlaylistController controller = fxmlLoader.getController();
         controller.setPlaylist(playlist, this);
+    }
+
+    public void showAccount(MouseEvent mouseEvent) {
     }
 }

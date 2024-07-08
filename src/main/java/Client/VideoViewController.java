@@ -18,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Rectangle;
@@ -101,6 +102,9 @@ public class VideoViewController {
         //bindings
 //        rightVBox.prefWidthProperty().bind(mainBorderPane.widthProperty().divide(4));
         videoWebView.prefHeightProperty().bind(videoWebView.widthProperty().multiply(0.562));
+        videoWebView.setPageFill(Color.TRANSPARENT);
+        authorProfile.setPageFill(Color.TRANSPARENT);
+        commentProfile.setPageFill(Color.TRANSPARENT);
         //mask video with rec
         Platform.runLater(() -> {
             maskVideoRec = new Rectangle(videoWebView.getWidth(), videoWebView.getWidth() * 0.562);
@@ -202,9 +206,7 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-//            Path path = new File("src/main/resources/Client/video-player.html").toPath();
             String path = HomeController.class.getResource("video-player.html").toExternalForm();
-//            videoWebView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId()+""));
             engine = videoWebView.getEngine();
             engine.load(path);
         Task<Void> loaderView = new Task<Void>() {
