@@ -3,6 +3,8 @@ package Server;
 import Server.Database.DatabaseManager;
 import Shared.Models.*;
 
+import java.time.Instant;
+import java.time.Duration;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -162,5 +164,12 @@ public class Recommendation {
         calendar.setTime(endDate);
         calendar.add(field, amount);
         return calendar.getTime();
+    }
+
+    public Long getHoursPassed(Date pastDate) {
+        Instant pastInstant = pastDate.toInstant();
+        Instant nowInstant = Instant.now();
+        Duration duration = Duration.between(pastInstant, nowInstant);
+        return duration.toHours();
     }
 }
