@@ -1,23 +1,64 @@
 package Server;
 
 import Server.Database.DatabaseManager;
-import Shared.Models.Category;
-import Shared.Models.Comment;
-import Shared.Models.Reaction;
-import Shared.Models.Video;
+import Shared.Models.*;
 
-import java.net.SecureCacheResponse;
 import java.util.*;
 
 public class Recommendation {
-    private Long channelId;
+    private final Long channelId;
+    int perPage;
+    int pageNumber;
 
-    public Recommendation(Long channelId) {
+    public Recommendation(Long channelId , int perPage , int pageNumber) {
         this.channelId = channelId;
+        this.perPage = perPage;
+        this.pageNumber = pageNumber;
     }
 
 
-    public HashMap<Category , Double> interestedCategories() {
+    public List<Video> recommend() throws Exception {
+        HashMap<Video , Double> scoredVideos = new HashMap<>();
+
+        Double trendingWeight = 0.3;
+        Double subbedWeight = 0.3;
+        Double interestingWeight = 0.3;
+
+        HashMap<Category , Double> interestedCategories = getInterestedCategories();
+        HashMap<Video , Double> trendedVideos = getTrendedVideos();
+        HashMap<Video , Long> isSubbed = new HashMap<>();
+
+        List<Channel> subscribedChannels = DatabaseManager.getSubscribedChannels(this.channelId);
+        for (Map.Entry<Video , Double> videoSet : trendedVideos.entrySet()) {
+             isSubbed.put(videoSet.getKey() , (long) (subscribedChannels.contains(videoSet.getKey().getChannel()) ? 1 : 0));
+        }
+
+        HashMap<Video, Double> normalizedSubbedRate = dataConversion(isSubbed , 1.0);
+
+        for (Map.Entry<Video , Double> trendVideoSet : trendedVideos.entrySet()) {
+            Video keyVideo = trendVideoSet.getKey();
+            Double trendingRate = trendVideoSet.getValue();
+            Double subbedRate = normalizedSubbedRate.get(keyVideo);
+            Double interestingRate = DatabaseManager.getCategoriesOfVideo(keyVideo.getVideoId()).stream()
+                    .mapToDouble(interestedCategories::get)
+                    .sum();
+
+            Double score = trendingRate * trendingWeight + subbedRate * subbedWeight + interestingRate * interestingWeight;
+
+            scoredVideos.put(keyVideo , score);
+        }
+
+        List<Map.Entry<Video , Double>> scoredVideosEntry = new ArrayList<>(scoredVideos.entrySet());
+        scoredVideosEntry.sort(Map.Entry.comparingByValue());
+        List<Video> recommendedVideosSorted = scoredVideosEntry.reversed().stream().map(Map.Entry::getKey).toList();
+
+        List<Video> paginatedVideos = recommendedVideosSorted.stream().skip((long) (pageNumber - 1) * perPage).limit(perPage).toList();
+
+        return paginatedVideos;
+    }
+
+
+    private HashMap<Category , Double> getInterestedCategories() {
         try {
             Date endDate = new Date();
 
@@ -55,7 +96,7 @@ public class Recommendation {
     }
 
 
-    private HashMap<Video , Double> trendedVideos() {
+    private HashMap<Video , Double> getTrendedVideos() {
         List<Video> videos = DatabaseManager.searchVideo(this.channelId , null , "" , 40 , 1);
         HashMap<Video , Double> trendingRate = new HashMap<>();
 
