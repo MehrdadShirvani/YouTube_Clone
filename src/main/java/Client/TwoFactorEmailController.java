@@ -1,18 +1,22 @@
 package Client;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
-import java.awt.event.ActionEvent;
 
 public class TwoFactorEmailController {
     @FXML
     private TextArea codeField;
+    @FXML
+    private Label emailLabel;
     private int codeDigit;
 
 
     public void initialize() {
+        emailLabel.setText(YouTube.client.getAccount().getEmail());
         this.codeDigit = YouTube.client.twoFactorEmailSend();
 
     }
@@ -23,7 +27,7 @@ public class TwoFactorEmailController {
 
     public void loginButton(ActionEvent actionEvent) {
         String codeString = codeField.getText();
-        int code = Integer.getInteger(codeString);
+        int code = Integer.parseInt(codeString);
 
         if (code == codeDigit) {
             YouTube.changeScene("home-view.fxml");
