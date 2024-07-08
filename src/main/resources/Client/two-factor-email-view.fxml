@@ -28,6 +28,6 @@
             <Button mnemonicParsing="false" onAction="#loginButton" prefHeight="25.0" prefWidth="322.0" text="Log In" />
          </children>
       </HBox>
-      <Button mnemonicParsing="false" onAction="#resendEmail" prefHeight="29.0" prefWidth="199.0" text="Button" />
+      <Button mnemonicParsing="false" onAction="#resendEmail" prefHeight="29.0" prefWidth="199.0" text="Resend Email" />
    </children>
 </VBox>
