@@ -12,7 +12,7 @@
     <stylesheets>
         <URL value="@small-video-view.css" />
     </stylesheets>
-   <StackPane onMouseClicked="#videoClicked">
+   <StackPane onMouseClicked="#videoClicked" onMouseEntered="#preview" onMouseExited="#exitPreview">
       <children>
       
           <WebView fx:id="webView" disable="true" onMouseClicked="#videoClicked" prefHeight="139.49" prefWidth="248.0">
