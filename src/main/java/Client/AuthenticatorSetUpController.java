@@ -10,6 +10,9 @@ import javafx.scene.image.ImageView;
 
 import javafx.event.ActionEvent;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,6 +49,13 @@ public class AuthenticatorSetUpController{
         Boolean isVerified = YouTube.client.authenticatorVerify(code);
 
         if (isVerified) {
+            try {
+                Path path = Paths.get(QrCodeGenerator.FILE_PATH);
+                Files.deleteIfExists(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             YouTube.changeScene("home-view.fxml");
 
         } else {
