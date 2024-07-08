@@ -197,13 +197,6 @@ public class Client {
              Account responseAccount = responseBody.getAccount();
              if (!Objects.equals(responseAccount , null)) {
                  this.account = responseAccount;
-
-                 try {
-                     CacheUtil.cacheAccount(this.account);
-                 } catch (IOException e) {
-                     throw new RuntimeException(e);
-                 }
-
                  return true;
              }
          }
@@ -230,13 +223,6 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
-
-                try {
-                    CacheUtil.cacheAccount(this.account);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
                 return true;
             }
         }
@@ -265,6 +251,13 @@ public class Client {
             Account responseAccount = responseBody.getAccount();
             if (!Objects.equals(responseAccount , null)) {
                 this.account = responseAccount;
+
+                 try {
+                     CacheUtil.cacheAccount(this.account);
+                 } catch (IOException e) {
+                     throw new RuntimeException(e);
+                 }
+
                 return responseAccount;
             }
         }
