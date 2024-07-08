@@ -1142,7 +1142,12 @@ public static Long getAllViewsOfChannel(long channelId)
                     .append("FROM Video v ")
                     .append("INNER JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("INNER JOIN VideoView vv ON v.videoId = vv.videoId ")
-                    .append("WHERE vv.channelId = :channelId AND vv.viewDateTime >= :startDate AND vv.viewDateTime <= :endDate ");
+                    .append("WHERE vv.channelId = :channelId ");
+
+            if(startDate != null && endDate != null)
+            {
+                jpql.append("AND vv.viewDateTime >= :startDate AND vv.viewDateTime <= :endDate ");
+            }
 
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId = :categoryId ");
@@ -1152,8 +1157,13 @@ public static Long getAllViewsOfChannel(long channelId)
             {
                 TypedQuery<VideoView> query = entityManager.createQuery(jpql.toString(), VideoView.class);
                 query.setParameter("channelId", channelId);
-                query.setParameter("startDate", startDate);
-                query.setParameter("endDate", endDate);
+
+                if(startDate != null && endDate != null)
+                {
+                    query.setParameter("startDate", startDate);
+                    query.setParameter("endDate", endDate);
+                }
+
                 query.setParameter("categoryId", category.getCategoryId());
                 List<VideoView> results = query.getResultList();
                 resultMap.put(category, (long) results.size());
