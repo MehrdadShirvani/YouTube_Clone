@@ -1183,7 +1183,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return getCategories();
+            return responseBody.getCategories();
         }
 
         System.out.println(responseBody.getMessage());
@@ -1543,13 +1543,13 @@ public class Client {
     }
 
 
-    public boolean deleteVideoPlaylists(Long playlistId) {
+    public boolean deleteVideoPlaylists(Long videoId) {
         String endpoint = "/api/playlist/delete";
         String method = "DELETE";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setPlaylistId(playlistId);
+        requestBody.setVideoId(videoId);
 
         Request request = new Request(requestHeader , requestBody);
 
@@ -1898,6 +1898,28 @@ public class Client {
 
         if (responseBody.isSuccess()) {
             return responseBody.isVerified();
+        }
+
+        System.out.println(responseBody.getMessage());
+        return null;
+    }
+
+
+    public List<Playlist> getPlaylistsOfVideo(Long videoId) {
+        String endpoint = "/api/video/" + videoId + "/playlists";
+        String method = "GET";
+        Header requestHeader = new Header(method , endpoint);
+        Body requestBody = new Body();
+
+        Request request = new Request(requestHeader , requestBody);
+
+        sendRequest(request);
+        Response response = handleResponse();
+
+        Body responseBody = response.getBody();
+
+        if (responseBody.isSuccess()) {
+            return responseBody.getPlaylists();
         }
 
         System.out.println(responseBody.getMessage());

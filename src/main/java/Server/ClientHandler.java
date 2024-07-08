@@ -433,6 +433,10 @@ public class ClientHandler implements Runnable {
                 Long videoId = header.extractIds().getFirst();
                 handleDeleteVideo(request , videoId);
 
+            } else if (header.endpointParser()[4].equals("playlists")) {
+                Long videoId = header.extractIds().getFirst();
+                handleGetPlaylistsOfVideo(request , videoId);
+
             }
         } else {
             handleBadRequest(header);
@@ -1559,7 +1563,7 @@ public class ClientHandler implements Runnable {
         }
 
         Video addedVideo;
-        if(video.getVideoId() > 0)
+        if(video.getVideoId() != null)
         {
             addedVideo = DatabaseManager.editVideo(video);
         }
@@ -2053,16 +2057,16 @@ public class ClientHandler implements Runnable {
         Response response;
         Header requestHeader = request.getHeader();
         Body requestBody = request.getBody();
-        Long playlistId = requestBody.getPlaylistId();
+        Long videoId = requestBody.getVideoId();
 
         Body responseBody = new Body();
 
-        if (playlistId == null) {
-            sendNullErrorResponse(requestHeader , "The playlistId that sent is null");
+        if (videoId == null) {
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null");
             return;
         }
 
-        DatabaseManager.deleteVideoPlaylists(playlistId);
+        DatabaseManager.deleteVideoPlaylists(videoId);
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
@@ -2304,6 +2308,28 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setNumberOfVideos(numberOfVideos);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
+    public void handleGetPlaylistsOfVideo(Request request , Long videoId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null");
+            return;
+        }
+
+        List<Playlist> playlists = DatabaseManager.getPlaylistsOfVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setPlaylists(playlists);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
