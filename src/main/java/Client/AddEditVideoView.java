@@ -320,12 +320,11 @@ public class AddEditVideoView implements Initializable {
         profileMaskRec.setArcWidth(50);
         profileWebView.setClip(profileMaskRec);
         // load webview
-        ChecklistViewControl checkBoxListView = new ChecklistViewControl();
-        VControls.getChildren().add(checkBoxListView);
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Item 1", "Item 2", "Item 3", "Item 4", "Item 5",
-                "Item 6", "Item 7", "Item 8", "Item 9", "Item 10"
-        );
-        checkBoxListView.addItems(items);
+        checkBoxPlaylistsListView = new ChecklistViewControl();
+        checkboxCategoriesListView = new ChecklistViewControl();
+        VControls.getChildren().add(checkBoxPlaylistsListView);
+        VControls.getChildren().add(checkboxCategoriesListView);
+
+
     }
 }
