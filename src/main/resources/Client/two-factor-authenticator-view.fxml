@@ -15,11 +15,9 @@
             <Font name="System Bold" size="37.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="10.0" prefWidth="600.0" text="Please enter the authentication code." />
       <HBox prefHeight="51.0" prefWidth="600.0">
          <children>
-            <Label alignment="TOP_RIGHT" contentDisplay="TOP" prefHeight="37.0" prefWidth="405.0" text="The authentication code has been sent to email :  " />
-            <Label fx:id="emailLabel" alignment="TOP_LEFT" prefHeight="37.0" prefWidth="281.0" text="example@gmail.com" />
+            <Label alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="37.0" prefWidth="606.0" text="Enter code from your authenticator app" />
          </children>
       </HBox>
       <TextArea nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
