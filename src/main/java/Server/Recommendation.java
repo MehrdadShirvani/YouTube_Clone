@@ -55,7 +55,7 @@ public class Recommendation {
     }
 
 
-    private List<Video> trendedVideos() {
+    private HashMap<Video , Double> trendedVideos() {
         List<Video> videos = DatabaseManager.searchVideo(this.channelId , null , "" , 40 , 1);
         HashMap<Video , Double> trendingRate = new HashMap<>();
 
@@ -72,11 +72,7 @@ public class Recommendation {
             trendingRate.put(video , rating);
         }
 
-        List<Map.Entry<Video , Double>> trendingRateSet = new ArrayList<>(trendingRate.entrySet());
-        Collections.sort(trendingRateSet , Map.Entry.comparingByValue());
-        List<Video> result = trendingRateSet.reversed().stream().map(Map.Entry::getKey).toList();
-
-        return result;
+        return trendingRate;
     }
 
 
