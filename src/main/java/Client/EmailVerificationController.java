@@ -28,7 +28,7 @@ public class EmailVerificationController {
         Integer token = Integer.parseInt(inputToken);
 
         if (token.equals(originalToken)) {
-            YouTube.changeScene("home-view.fxml");
+            YouTube.changeScene("authenticator-add-view.fxml");
         } else {
             //TODO Ehsan : pop up error that it's not equals
         }
