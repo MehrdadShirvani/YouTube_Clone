@@ -3,6 +3,7 @@ package Server;
 import Server.Database.DatabaseManager;
 import Shared.Models.*;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.*;
@@ -25,37 +26,44 @@ public class Recommendation {
         HashMap<Video , Double> scoredVideos = new HashMap<>();
 
         Double trendingWeight = 0.3;
-        Double subbedWeight = 0.3;
-        Double interestingWeight = 0.3;
+        Double subbedWeight = 0.2;
+        Double interestingWeight = 0.4;
+        Double dateOfPublishWeight = -0.1;
 
         HashMap<Category , Double> interestedCategories = getInterestedCategories();
         HashMap<Video , Double> trendedVideos = getTrendedVideos();
         HashMap<Video , Long> isSubbed = new HashMap<>();
+        HashMap<Video , Long> elapsedHoursFromPublish = new HashMap<>();
 
         List<Long> subscribedChannelIds = DatabaseManager.getSubscribedChannels(this.channelId).stream()
                 .map(Channel::getChannelId).toList();
         for (Entry<Video , Double> videoSet : trendedVideos.entrySet()) {
              isSubbed.put(videoSet.getKey() , (subscribedChannelIds.contains(videoSet.getKey().getChannelId()) ? 1L : 0L));
+             elapsedHoursFromPublish.put(videoSet.getKey() , getHoursPassed(videoSet.getKey().getCreatedDateTime()));
         }
 
         HashMap<Video, Double> normalizedSubbedRate = dataConversion(isSubbed , 1.0);
         HashMap<Video , Double> normalizedTrendedVideos = dataConversion(trendedVideos , 1.0);
+        HashMap<Video , Double> normalizedElapsedHours = dataConversion(elapsedHoursFromPublish , 1.0);
 
         for (Entry<Video , Double> trendVideoSet : normalizedTrendedVideos.entrySet()) {
             Video keyVideo = trendVideoSet.getKey();
             Double trendingRate = trendVideoSet.getValue();
-            Double subbedRate = normalizedSubbedRate.get(keyVideo);
+            Double subbedRate = normalizedSubbedRate.getOrDefault(keyVideo , 0.0);
+            Double elapsedHoursRate = normalizedElapsedHours.getOrDefault(keyVideo , 0.0);
             Double interestingRate = 0.0;
 
-            List<Category> categories = DatabaseManager.getCategoriesOfVideo(keyVideo.getVideoId());
-            for (Category category : categories) {
-                interestingRate += interestedCategories.getOrDefault(category , 0.0);
+            if (keyVideo.getPrivate() == false) {
+                List<Category> categories = DatabaseManager.getCategoriesOfVideo(keyVideo.getVideoId());
+                for (Category category : categories) {
+                    interestingRate += interestedCategories.getOrDefault(category , 0.0);
 
+                }
+
+                Double score = trendingRate * trendingWeight + subbedRate * subbedWeight + interestingRate * interestingWeight + elapsedHoursRate * dateOfPublishWeight;
+
+                scoredVideos.put(keyVideo , score);
             }
-
-            Double score = trendingRate * trendingWeight + subbedRate * subbedWeight + interestingRate * interestingWeight;
-
-            scoredVideos.put(keyVideo , score);
         }
 
         List<Entry<Video , Double>> scoredVideosEntry = new ArrayList<>(scoredVideos.entrySet());
@@ -166,8 +174,8 @@ public class Recommendation {
         return calendar.getTime();
     }
 
-    public Long getHoursPassed(Date pastDate) {
-        Instant pastInstant = pastDate.toInstant();
+    public Long getHoursPassed(Timestamp pastTimestamp) {
+        Instant pastInstant = pastTimestamp.toInstant();
         Instant nowInstant = Instant.now();
         Duration duration = Duration.between(pastInstant, nowInstant);
         return duration.toHours();
