@@ -2342,14 +2342,14 @@ public class ClientHandler implements Runnable {
         Body requestBody = request.getBody();
         String username = requestBody.getUsername();
         String recipientsEmail = requestBody.getRecipientsEmail();
-        String token;
+        int twoFactorDigit;
 
         Body responseBody = new Body();
 
         try {
             EmailVerification emailVerification = new EmailVerification(recipientsEmail , username);
             emailVerification.sendVerificationEmail();
-            token = emailVerification.getToken();
+            twoFactorDigit = emailVerification.getTwoFactorCode();
 
         } catch (MessagingException e) {
             sendNullErrorResponse(requestHeader , "There was a error in sending email !");
@@ -2358,7 +2358,7 @@ public class ClientHandler implements Runnable {
 
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
-        responseBody.setToken(token);
+        responseBody.setTwoFactorDigit(twoFactorDigit);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);
