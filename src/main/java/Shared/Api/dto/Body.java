@@ -12,14 +12,14 @@ import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class Body {
-    private boolean success;
+    private Boolean success;
     private String message;
 
     private String username;
-    private boolean isUsernameUnique;
+    private Boolean isUsernameUnique;
     private String password;
     private String emailAddress;
-    private boolean isEmailUnique;
+    private Boolean isEmailUnique;
     private Long accountId;
     private Long channelId;
     private Long reactionId;
@@ -51,7 +51,7 @@ public class Body {
     private List<Date> watchHistoryDates;
     private List<Video> playlistVideos;
     private List<Channel> playlistChannels;
-    private boolean isSubscribedToChannel;
+    private Boolean isSubscribedToChannel;
     private HashMap<Boolean , Short> isVideoLiked;
     private HashMap<Boolean , Short> isCommentLiked;
     private Long numberOfViews;
@@ -59,9 +59,9 @@ public class Body {
     private Long numberOfCommentLikes;
     private Long numberOfDislikes;
     private Long numberOfCommentDislikes;
-    private int perPage;
-    private int pageNumber;
-    private boolean isChannelNameUnique;
+    private Integer perPage;
+    private Integer pageNumber;
+    private Boolean isChannelNameUnique;
     private VideoPlaylist videoPlaylist;
     private ChannelPlaylist channelPlaylist;
     private Integer categoryId;
@@ -72,26 +72,26 @@ public class Body {
     private List<VideoPlaylist> videoPlaylists;
     private List<Playlist> playlists;
     private List<Long> playlistIds;
-    private boolean isSelf;
+    private Boolean isSelf;
     private List<Video> videosOfChannel;
     private Long numberOfVideos;
     private String recipientsEmail;
     private String token;
-    private int twoFactorDigit;
-    private boolean isVerified;
+    private Integer twoFactorDigit;
+    private Boolean isVerified;
     private HashMap<String , String> twoFactorData;
-    private int code;
+    private Integer code;
 
 
     public Body() {
         //TODO
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
     }
 
@@ -101,6 +101,118 @@ public class Body {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getUsernameUnique() {
+        return isUsernameUnique;
+    }
+
+    public void setUsernameUnique(Boolean usernameUnique) {
+        isUsernameUnique = usernameUnique;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public Boolean getEmailUnique() {
+        return isEmailUnique;
+    }
+
+    public void setEmailUnique(Boolean emailUnique) {
+        isEmailUnique = emailUnique;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(Long channelId) {
+        this.channelId = channelId;
+    }
+
+    public Long getReactionId() {
+        return reactionId;
+    }
+
+    public void setReactionId(Long reactionId) {
+        this.reactionId = reactionId;
+    }
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
+    }
+
+    public Long getCommentReactionId() {
+        return commentReactionId;
+    }
+
+    public void setCommentReactionId(Long commentReactionId) {
+        this.commentReactionId = commentReactionId;
+    }
+
+    public Long getSubscriberChannelId() {
+        return subscriberChannelId;
+    }
+
+    public void setSubscriberChannelId(Long subscriberChannelId) {
+        this.subscriberChannelId = subscriberChannelId;
+    }
+
+    public Long getSubscribedChannelId() {
+        return subscribedChannelId;
+    }
+
+    public void setSubscribedChannelId(Long subscribedChannelId) {
+        this.subscribedChannelId = subscribedChannelId;
+    }
+
+    public Long getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(Long videoId) {
+        this.videoId = videoId;
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
     }
 
     public Account getAccount() {
@@ -167,6 +279,14 @@ public class Body {
         this.video = video;
     }
 
+    public List<Video> getHomepageVideos() {
+        return homepageVideos;
+    }
+
+    public void setHomepageVideos(List<Video> homepageVideos) {
+        this.homepageVideos = homepageVideos;
+    }
+
     public VideoCategory getVideoCategory() {
         return videoCategory;
     }
@@ -183,84 +303,12 @@ public class Body {
         this.videoView = videoView;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(Long channelId) {
-        this.channelId = channelId;
-    }
-
     public List<Channel> getSubscriberChannels() {
         return subscriberChannels;
     }
 
     public void setSubscriberChannels(List<Channel> subscriberChannels) {
         this.subscriberChannels = subscriberChannels;
-    }
-
-    public Long getReactionId() {
-        return reactionId;
-    }
-
-    public void setReactionId(Long reactionId) {
-        this.reactionId = reactionId;
-    }
-
-    public Long getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(Long commentId) {
-        this.commentId = commentId;
-    }
-
-    public Long getCommentReactionId() {
-        return commentReactionId;
-    }
-
-    public void setCommentReactionId(Long commentReactionId) {
-        this.commentReactionId = commentReactionId;
-    }
-
-    public Long getSubscriberChannelId() {
-        return subscriberChannelId;
-    }
-
-    public void setSubscriberChannelId(Long subscriberChannelId) {
-        this.subscriberChannelId = subscriberChannelId;
-    }
-
-    public Long getSubscribedChannelId() {
-        return subscribedChannelId;
-    }
-
-    public void setSubscribedChannelId(Long subscribedChannelId) {
-        this.subscribedChannelId = subscribedChannelId;
     }
 
     public Subscription getSubscription() {
@@ -271,52 +319,12 @@ public class Body {
         this.subscription = subscription;
     }
 
-    public Long getVideoId() {
-        return videoId;
-    }
-
-    public void setVideoId(Long videoId) {
-        this.videoId = videoId;
-    }
-
     public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> repliedComments) {
-        this.comments = repliedComments;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public boolean isUsernameUnique() {
-        return isUsernameUnique;
-    }
-
-    public void setUsernameUnique(boolean usernameUnique) {
-        isUsernameUnique = usernameUnique;
-    }
-
-    public boolean isEmailUnique() {
-        return isEmailUnique;
-    }
-
-    public void setEmailUnique(boolean emailUnique) {
-        isEmailUnique = emailUnique;
-    }
-
-    public List<Video> getHomepageVideos() {
-        return homepageVideos;
-    }
-
-    public void setHomepageVideos(List<Video> homepageVideos) {
-        this.homepageVideos = homepageVideos;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public ArrayList<String> getSearchHistory() {
@@ -351,11 +359,43 @@ public class Body {
         this.searchVideos = searchVideos;
     }
 
-    public boolean isSubscribedToChannel() {
+    public List<Video> getWatchHistoryVideos() {
+        return watchHistoryVideos;
+    }
+
+    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
+        this.watchHistoryVideos = watchHistoryVideos;
+    }
+
+    public List<Date> getWatchHistoryDates() {
+        return watchHistoryDates;
+    }
+
+    public void setWatchHistoryDates(List<Date> watchHistoryDates) {
+        this.watchHistoryDates = watchHistoryDates;
+    }
+
+    public List<Video> getPlaylistVideos() {
+        return playlistVideos;
+    }
+
+    public void setPlaylistVideos(List<Video> playlistVideos) {
+        this.playlistVideos = playlistVideos;
+    }
+
+    public List<Channel> getPlaylistChannels() {
+        return playlistChannels;
+    }
+
+    public void setPlaylistChannels(List<Channel> playlistChannels) {
+        this.playlistChannels = playlistChannels;
+    }
+
+    public Boolean getSubscribedToChannel() {
         return isSubscribedToChannel;
     }
 
-    public void setSubscribedToChannel(boolean subscribedToChannel) {
+    public void setSubscribedToChannel(Boolean subscribedToChannel) {
         isSubscribedToChannel = subscribedToChannel;
     }
 
@@ -415,60 +455,28 @@ public class Body {
         this.numberOfCommentDislikes = numberOfCommentDislikes;
     }
 
-    public int getPerPage() {
+    public Integer getPerPage() {
         return perPage;
     }
 
-    public void setPerPage(int perPage) {
+    public void setPerPage(Integer perPage) {
         this.perPage = perPage;
     }
 
-    public int getPageNumber() {
+    public Integer getPageNumber() {
         return pageNumber;
     }
 
-    public void setPageNumber(int pageNumber) {
+    public void setPageNumber(Integer pageNumber) {
         this.pageNumber = pageNumber;
     }
 
-    public List<Video> getWatchHistoryVideos() {
-        return watchHistoryVideos;
-    }
-
-    public void setWatchHistoryVideos(List<Video> watchHistoryVideos) {
-        this.watchHistoryVideos = watchHistoryVideos;
-    }
-
-    public List<Date> getWatchHistoryDates() {
-        return watchHistoryDates;
-    }
-
-    public void setWatchHistoryDates(List<Date> watchHistoryDates) {
-        this.watchHistoryDates = watchHistoryDates;
-    }
-
-    public boolean isChannelNameUnique() {
+    public Boolean getChannelNameUnique() {
         return isChannelNameUnique;
     }
 
-    public void setChannelNameUnique(boolean channelNameUnique) {
+    public void setChannelNameUnique(Boolean channelNameUnique) {
         isChannelNameUnique = channelNameUnique;
-    }
-
-    public List<Video> getPlaylistVideos() {
-        return playlistVideos;
-    }
-
-    public void setPlaylistVideos(List<Video> playlistVideos) {
-        this.playlistVideos = playlistVideos;
-    }
-
-    public List<Channel> getPlaylistChannels() {
-        return playlistChannels;
-    }
-
-    public void setPlaylistChannels(List<Channel> playlistChannels) {
-        this.playlistChannels = playlistChannels;
     }
 
     public VideoPlaylist getVideoPlaylist() {
@@ -477,14 +485,6 @@ public class Body {
 
     public void setVideoPlaylist(VideoPlaylist videoPlaylist) {
         this.videoPlaylist = videoPlaylist;
-    }
-
-    public Long getPlaylistId() {
-        return playlistId;
-    }
-
-    public void setPlaylistId(Long playlistId) {
-        this.playlistId = playlistId;
     }
 
     public ChannelPlaylist getChannelPlaylist() {
@@ -559,11 +559,11 @@ public class Body {
         this.playlistIds = playlistIds;
     }
 
-    public boolean isSelf() {
+    public Boolean getSelf() {
         return isSelf;
     }
 
-    public void setSelf(boolean self) {
+    public void setSelf(Boolean self) {
         isSelf = self;
     }
 
@@ -599,19 +599,19 @@ public class Body {
         this.token = token;
     }
 
-    public int getTwoFactorDigit() {
+    public Integer getTwoFactorDigit() {
         return twoFactorDigit;
     }
 
-    public void setTwoFactorDigit(int twoFactorDigit) {
+    public void setTwoFactorDigit(Integer twoFactorDigit) {
         this.twoFactorDigit = twoFactorDigit;
     }
 
-    public boolean isVerified() {
+    public Boolean getVerified() {
         return isVerified;
     }
 
-    public void setVerified(boolean verified) {
+    public void setVerified(Boolean verified) {
         isVerified = verified;
     }
 
@@ -623,11 +623,11 @@ public class Body {
         this.twoFactorData = twoFactorData;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 }
