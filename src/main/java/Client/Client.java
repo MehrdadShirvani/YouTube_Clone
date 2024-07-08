@@ -1183,7 +1183,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return getCategories();
+            return responseBody.getCategories();
         }
 
         System.out.println(responseBody.getMessage());
