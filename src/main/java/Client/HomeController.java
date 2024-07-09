@@ -173,7 +173,8 @@ public class HomeController {
             @Override
             public void handle(ActionEvent event) {
                 accountPopup.hide();
-                //TODO: logout
+                YouTube.client.setAccount(null);
+                YouTube.changeScene("login-view.fxml");
             }
         });
 
