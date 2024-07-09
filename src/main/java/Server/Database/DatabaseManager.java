@@ -665,7 +665,8 @@ public static Long getAllViewsOfChannel(long channelId)
 
             TypedQuery<Playlist> query = entityManager.createQuery(jpql.toString(), Playlist.class);
             query.setParameter("channelId", channelId);
-            return query.getResultList();
+            List<Playlist> result = query.getResultList();
+            return result;
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
