@@ -20,6 +20,7 @@ public class MediaServer {
             server.createContext("/image", new PhotoHandler());
             server.createContext("/download", new DownloadHandler());
             server.createContext("/upload", new UploadHandler());
+            server.createContext("/subtitle", new SubtitleHandler());
             server.setExecutor(Executors.newCachedThreadPool());
             server.start();
             System.out.println("Server started on port " + PORT);
@@ -155,6 +156,12 @@ public class MediaServer {
                     String uploadPath = "src/main/resources/Server/Images/" + photoId + ".jpg";
                     file = new File(uploadPath);
                 }
+                else if(contentType.split("[|]")[0].equalsIgnoreCase("text/vtt"))
+                {
+                    String vttId = (contentType.split("[|]")[1]);
+                    String uploadPath = "src/main/resources/Server/Images/" + vttId + ".vtt";
+                    file = new File(uploadPath);
+                }
                 else {
                     long videoId = Long.parseLong(contentType.split("[|]")[1]);
                     String uploadPath = "src/main/resources/Server/Videos/" + videoId + ".mp4";
@@ -172,6 +179,75 @@ public class MediaServer {
                     exchange.sendResponseHeaders(200, 0);
                     exchange.close();
 
+            }
+        }
+    }
+    static class SubtitleHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String requestPath = exchange.getRequestURI().getPath();
+            String[] parts = requestPath.split("/");
+
+            if (parts.length != 3) {
+                exchange.sendResponseHeaders(400, -1);
+                exchange.close();
+                return;
+            }
+
+            String fileId = parts[2];
+
+            if ("HEAD".equalsIgnoreCase(exchange.getRequestMethod())) {
+                handleHeadRequest(exchange, fileId);
+            } else if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                handleGetRequest(exchange, fileId);
+            } else {
+                exchange.sendResponseHeaders(405, -1);
+                exchange.close();
+            }
+        }
+
+        private byte[] getFileBytes(String fileId) {
+            File file = new File("src/main/resources/Server/Videos/" + fileId + ".vtt");
+            try {
+                return Files.readAllBytes(file.toPath());
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        private void handleHeadRequest(HttpExchange exchange, String fileId) throws IOException {
+            byte[] fileBytes = getFileBytes(fileId);
+            if (fileBytes == null) {
+                exchange.sendResponseHeaders(404, -1);
+                exchange.close();
+                return;
+            }
+
+            exchange.getResponseHeaders().set("Content-Type", "text/vtt");
+            exchange.sendResponseHeaders(200, -1);
+            exchange.close();
+        }
+
+        private void handleGetRequest(HttpExchange exchange, String fileId) throws IOException {
+            byte[] fileBytes = getFileBytes(fileId);
+            if (fileBytes == null) {
+                exchange.sendResponseHeaders(404, -1);
+                exchange.close();
+                return;
+            }
+
+            sendFullResponse(exchange, fileBytes);
+        }
+
+        private void sendFullResponse(HttpExchange exchange, byte[] fileBytes) throws IOException {
+            exchange.getResponseHeaders().set("Content-Type", "text/vtt");
+            exchange.getResponseHeaders().set("Content-Length", String.valueOf(fileBytes.length));
+            exchange.sendResponseHeaders(200, fileBytes.length);
+
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(fileBytes);
+            } finally {
+                exchange.close();
             }
         }
     }
