@@ -506,28 +506,31 @@ public class DatabaseManager {
             return  query.getResultList();
         }
     }
-    public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
-    {
+    public static List<CommentReaction> getCommentReactionsOfComment(Long commentId) {
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<CommentReaction>> future = CompletableFuture.supplyAsync(() -> {
-                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-                {
-                    EntityTransaction transaction = entityManager.getTransaction();
-                    transaction.begin();
+            entityManager = entityManagerFactory.createEntityManager();
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
 
-                    TypedQuery<CommentReaction> query = entityManager.createQuery(
-                            "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
-                    query.setParameter("commentId", commentId);
-                    return  query.getResultList();
-                }
-            });
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
+            TypedQuery<CommentReaction> query = entityManager.createQuery(
+                    "SELECT cr FROM CommentReaction cr WHERE cr.commentId = :commentId", CommentReaction.class);
+            query.setParameter("commentId", commentId);
+            List<CommentReaction> resultList = query.getResultList();
+
+            transaction.commit();
+            return resultList;
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
             e.printStackTrace();
             return null;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
-
-
     }
     public static CommentReaction getCommentReaction(Long channelId, Long commentId)
     {
