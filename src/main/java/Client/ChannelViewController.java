@@ -226,7 +226,7 @@ public class ChannelViewController {
                         }
                         SmallVideoView smallVideoController = fxmlLoader.getController();
                         smallVideoController.setPref(1, false, false);
-                        smallVideoController.setVideo(recVideo, homeController);
+                        smallVideoController.setVideo(recVideo, homeController, null, null);
                         popularHBox.getChildren().add(smallVideo);
                     }
                     //Recent
@@ -245,7 +245,7 @@ public class ChannelViewController {
                         }
                         SmallVideoView smallVideoController = fxmlLoader.getController();
                         smallVideoController.setPref(1, false, false);
-                        smallVideoController.setVideo(recVideo, homeController);
+                        smallVideoController.setVideo(recVideo, homeController, null, null);
                         recentHBox.getChildren().add(smallVideo);
                     }
                     //Playlists
@@ -265,7 +265,7 @@ public class ChannelViewController {
                                 throw new RuntimeException(e);
                             }
                             SmallPlayListController smallVideoController = fxmlLoader.getController();
-                            smallVideoController.setPlayList(playlist);
+                            smallVideoController.setPlayList(playlist, homeController);
                             playListFlowPane.getChildren().add(smallPlayList);
                         }
                     }
@@ -286,7 +286,7 @@ public class ChannelViewController {
                             throw new RuntimeException(e);
                         }
                         ((SmallVideoView) fxmlLoader.getController()).setPref(1, false, false);
-                        ((SmallVideoView) fxmlLoader.getController()).setVideo(video, homeController);
+                        ((SmallVideoView) fxmlLoader.getController()).setVideo(video, homeController, null, null );
                     }
 
 

@@ -40,6 +40,7 @@ public class AddEditVideoView implements Initializable {
     public Button ChooseVideoBtn;
     public Button SetDefaultThumbnailBtn;
     public Button SubmitBtn;
+    public Button ChooseSubtitle;
     ExecutorService executorService = Executors.newCachedThreadPool();
     public TextField TxtName;
     public TextField TxtDesc;
@@ -49,6 +50,7 @@ public class AddEditVideoView implements Initializable {
 //    public ImageView ImgThumbnail;
     File videoFile;
     File pictureFile;
+    File subtitleFile;
     int videoDuration = 0;
     private Video video;
     private HomeController homeController;
@@ -57,7 +59,7 @@ public class AddEditVideoView implements Initializable {
     public void chooseFile(ActionEvent actionEvent)
     {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Video File");
+        fileChooser.setTitle("Choose Video File");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("MP4 files (*.mp4)", "*.mp4");
         fileChooser.getExtensionFilters().add(filter);
         Stage dialogStage = new Stage();
@@ -78,6 +80,7 @@ public class AddEditVideoView implements Initializable {
             TxtDuration.setText(video.getDescription() + " seconds");
             SubmitBtn.setText("Edit Details");
             SetDefaultThumbnailBtn.setVisible(false);
+            ChooseVideoBtn.setVisible(false);
         }
 
         Task<Void> loaderView = new Task<Void>() {
@@ -129,6 +132,9 @@ public class AddEditVideoView implements Initializable {
                     }
                     ObservableList<SelectableModelView> itemCategories = FXCollections.observableArrayList(listCategories);
                     checkboxCategoriesListView.addItems(itemCategories);
+
+
+//                    subtitleFile =
                 });
 
 
@@ -174,13 +180,13 @@ public class AddEditVideoView implements Initializable {
             }
     }
     public void choosePictureFile(ActionEvent actionEvent) throws IOException {
-        if(videoFile == null)
+        if(video == null && videoFile == null)
         {
             //TODO show alert that can only select picture after selecting video
             return;
         }
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Video File");
+        fileChooser.setTitle("Choose Picture");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
         fileChooser.getExtensionFilters().add(filter);
         Stage dialogStage = new Stage();
@@ -225,7 +231,12 @@ public class AddEditVideoView implements Initializable {
             videoId = videoInDB.getVideoId();
             uploadTheVideo(videoFile, videoId);
             uploadThePicture(pictureFile, videoId);
+            if(subtitleFile != null)
+            {
+                uploadTheSubtitle(subtitleFile, videoId);
+            }
             videoId = videoInDB.getVideoId();
+
         }
         else
         {
@@ -237,7 +248,16 @@ public class AddEditVideoView implements Initializable {
             YouTube.client.addVideo(video);
             YouTube.client.deleteVideoPlaylists(video.getVideoId());
             YouTube.client.deleteVideoCategories(video.getVideoId());
+
             videoId = video.getVideoId();
+            if(pictureFile != null)
+            {
+                uploadThePicture(pictureFile, videoId);
+            }
+            if(subtitleFile != null)
+            {
+                uploadTheSubtitle(subtitleFile, videoId);
+            }
         }
 
         List<Long> playlistIds = new ArrayList<>();
@@ -290,6 +310,38 @@ public class AddEditVideoView implements Initializable {
 
         }
     }
+    private void uploadTheSubtitle(File subtitleFile, Long videoId)
+    {
+        try {
+            URL url = new URL("http://localhost:2131/upload");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "text/vtt|" + videoId);
+
+            try (OutputStream outputStream = connection.getOutputStream();
+                 FileInputStream fileInputStream = new FileInputStream(subtitleFile)) {
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+
+                int responseCode = connection.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+
+            } finally {
+                connection.disconnect();
+            }
+        }catch (Exception ex)
+        {
+
+        }
+    }
+
 
     public void setDefaultThumbnail(ActionEvent actionEvent)
     {
@@ -327,4 +379,16 @@ public class AddEditVideoView implements Initializable {
 
 
     }
+
+    public void chooseSubtitle(ActionEvent actionEvent)
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Subtitle");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Subtitle files (*.vtt)", "*.vtt");
+        fileChooser.getExtensionFilters().add(filter);
+        Stage dialogStage = new Stage();
+        subtitleFile = fileChooser.showOpenDialog(dialogStage);
+        setDefaultThumbnail(new ActionEvent());
+    }
+
 }

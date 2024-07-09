@@ -173,7 +173,8 @@ public class HomeController {
             @Override
             public void handle(ActionEvent event) {
                 accountPopup.hide();
-                //TODO: logout
+                YouTube.client.setAccount(null);
+                YouTube.changeScene("login-view.fxml");
             }
         });
 
@@ -244,6 +245,7 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
 
+
     public void setVideoPage(Video video) {
         if (currentVideoViewController != null) {
             currentVideoViewController.videoWebView.getEngine().load(null);
@@ -256,13 +258,32 @@ public class HomeController {
         try {
             videoPage = fxmlLoader.load();
             currentVideoViewController = fxmlLoader.getController();
-            currentVideoViewController.setVideo(video, this);
+            currentVideoViewController.setVideo(video, this, null, null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         mainBorderPane.setCenter(videoPage);
     }
+    public void setVideoPage(Video video, Playlist playlist, List<Video> videos)
+    {
+        if (currentVideoViewController != null) {
+            currentVideoViewController.videoWebView.getEngine().load(null);
+            currentVideoViewController.commentProfile.getEngine().load(null);
+            currentVideoViewController.authorProfile.getEngine().load(null);
+        }
 
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+            currentVideoViewController = fxmlLoader.getController();
+            currentVideoViewController.setVideo(video, this, playlist, videos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
     private void setHome() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
@@ -284,45 +305,38 @@ public class HomeController {
             SmallVideoView controller = fxmlLoader.getController();
             currentSmallVideos.add(controller);
 
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
-        //TODO: Set subs
         Platform.runLater(() -> {
+            updateSubsList();
+        });
 
-            List<Channel> channels = new ArrayList<>();
+    }
+
+    public void updateSubsList()
+    {
+        Platform.runLater(() ->
+        {
+            subsVBox.getChildren().clear();
+            List<Channel> channels;
             channels = YouTube.client.getSubscriptions();
-            channels.add(new Channel());
-            channels.add(new Channel());
-            if (!channels.isEmpty())
+            if (!channels.isEmpty()) {
                 subsVBox.setVisible(true);
+            }
             for (Channel channel : channels) {
                 FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("subs-view.fxml"));
                 VBox mainVBox;
                 try {
                     mainVBox = fxmlLoader.load();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                Button subs = (Button) mainVBox.lookup("#subsButton");
-                subsVBox.getChildren().add(subs);
-                WebView myWebView = (WebView) subs.getGraphic();
-                Rectangle rec = new Rectangle(24, 24);
-                rec.setArcWidth(24);
-                rec.setArcHeight(24);
-                myWebView.setClip(rec);
-                rec.widthProperty().bind(myWebView.widthProperty());
-                rec.heightProperty().bind(myWebView.heightProperty());
-                try {
-                    Path path = new File("src/main/resources/Client/profile.html").toPath();
-                    String htmlContent = new String(Files.readAllBytes(path));
-                    myWebView.getEngine().loadContent(htmlContent.replace("@id", YouTube.client.getAccount().getChannelId() + ""));
+                    ((SubsViewController)fxmlLoader.getController()).setChannel(channel);
+                    subsVBox.getChildren().add(mainVBox);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-        });
 
+        });
     }
 
     public void menuSwipe(MouseEvent mouseEvent) {
@@ -399,7 +413,7 @@ public class HomeController {
                 throw new RuntimeException(e);
             }
             SmallVideoView controller = fxmlLoader.getController();
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }

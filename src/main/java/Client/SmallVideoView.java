@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Models.Playlist;
 import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.animation.KeyFrame;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class SmallVideoView {
     @FXML
@@ -47,6 +49,8 @@ public class SmallVideoView {
     VBox rightVBox;
     Video video;
     HomeController homeController;
+    private Playlist playlist;
+    private List<Video> playlistVideos;
     private Boolean isOnPreview;
     private Timeline shimmerTimelineTitle;
     private Timeline shimmerTimelineViews;
@@ -57,9 +61,11 @@ public class SmallVideoView {
 
     }
 
-    public void setVideo(Video video, HomeController homeController) {
+    public void setVideo(Video video, HomeController homeController, Playlist playlist, List<Video> playlistVideos) {
         this.video = video;
         this.homeController = homeController;
+        this.playlist = playlist;
+        this.playlistVideos = playlistVideos;
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
