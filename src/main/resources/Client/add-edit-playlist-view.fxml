@@ -15,7 +15,11 @@
          <font>
             <Font name="Product Sans Bold" size="30.0" />
          </font></Label>
-        <TextField fx:id="TxtName" promptText="Name" />
+      <VBox fx:id="txtVBox" spacing="2.0">
+         <children>
+              <TextField fx:id="TxtName" onKeyReleased="#checkValidation" promptText="Name" />
+         </children>
+      </VBox>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <ToggleButton fx:id="CBIsCollaborative" mnemonicParsing="false" text="Collaborative">
@@ -23,12 +27,12 @@
                     <ToggleGroup fx:id="toggleGroup" />
                 </toggleGroup>
             </ToggleButton>
-            <ToggleButton fx:id="CBIsPrivate" toggleGroup="$toggleGroup" mnemonicParsing="false" styleClass="private-toggle" text="Private" />
+            <ToggleButton fx:id="CBIsPrivate" mnemonicParsing="false" styleClass="private-toggle" text="Private" toggleGroup="$toggleGroup" />
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT">
          <children>
-              <Button fx:id="SubmitBtn" onAction="#submitAction" styleClass="conformation-button" text="Create" />
+              <Button fx:id="SubmitBtn" disable="true" onAction="#submitAction" styleClass="conformation-button" text="Create" />
          </children>
       </HBox>
       <padding>

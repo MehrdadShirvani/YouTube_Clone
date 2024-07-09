@@ -170,3 +170,8 @@ DatePicker .month-year-pane .spinner {
     -fx-background-color: #2ba640;
     -fx-text-fill: #f1f1f1;
 }
+.err-label{
+    -fx-font-family: Roboto;
+    -fx-font-size: 10;
+    -fx-text-fill: #dd2c00;
+}
