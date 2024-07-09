@@ -147,7 +147,7 @@ public class SignUpController {
             return;
         }
 
-        Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
+        Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), TextEncryptor.encrypt(passwordField.getText()), null);
         if(!YouTube.client.sendSignupRequest(account))
         {
             //TODO Stylize
