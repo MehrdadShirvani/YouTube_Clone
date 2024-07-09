@@ -1652,7 +1652,7 @@ public static Long getAllViewsOfChannel(long channelId)
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND (c.repliedCommentId = NULL)", Comment.class);
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId Order By c.createdDateTime Desc", Comment.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
