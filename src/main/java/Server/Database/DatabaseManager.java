@@ -38,16 +38,42 @@ public class DatabaseManager {
             }
         }
     }
-    public static List<Channel> getChannels() {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            return entityManager.createQuery(
-                            "SELECT c FROM Channel c", Channel.class).getResultList();
-        }
-        catch (Exception e)
-        {
+    public static Channel editChannel(Channel updatedChannel) {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Channel mergedChannel = entityManager.merge(updatedChannel);
+
+            transaction.commit();
+
+            return mergedChannel;
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
             e.printStackTrace();
             return null;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
+    public static Channel getChannel(Long channelId) {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            return entityManager.find(Channel.class, channelId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
 
