@@ -57,3 +57,8 @@ src/main/resources/Client/tempImages
 
 ### DatabaseProperites ###
 src/main/java/Server/Database/DatabaseProperties.java
+
+
+### Media Files ###
+src/main/resources/Server/Videos
+src/main/resources/Server/Images
