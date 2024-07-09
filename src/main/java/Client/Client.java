@@ -755,7 +755,7 @@ public class Client {
     }
 
 
-    public void saveSearchHistory(ArrayList<String> searchHistory) {
+    public void saveSearchHistory(String[] searchHistory) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -771,13 +771,13 @@ public class Client {
 
             objectMapper.writeValue(file , searchHistory);
         } catch (IOException e) {
-            System.err.println("Error : while save search history!");
+            System.err.println("Error: while saving search history!");
             e.printStackTrace();
         }
     }
 
 
-    public ArrayList<String> readSearchHistory() {
+    public String[] readSearchHistory() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -789,14 +789,14 @@ public class Client {
 
             if (!file.exists()) {
                 file.createNewFile();
-                return new ArrayList<>();
+                return new String[0];
             }
-            return objectMapper.readValue(file , new TypeReference<ArrayList<String>>() {});
 
+            return objectMapper.readValue(file, new TypeReference<String[]>() {});
         } catch (IOException e) {
-            System.err.println("Error : while read search history!");
+            System.err.println("Error: while reading search history!");
             e.printStackTrace();
-            return new ArrayList<>();
+            return new String[0];
         }
     }
 
