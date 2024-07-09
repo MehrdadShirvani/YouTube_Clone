@@ -272,23 +272,26 @@ public class DatabaseManager {
     }
     public static Reaction getReaction(Long channelId, Long videoId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
 
             TypedQuery<Reaction> query = entityManager.createQuery(
                     "SELECT r FROM Reaction r WHERE r.channelId = :channelId AND r.videoId = :videoId", Reaction.class);
-            query.setParameter("videoId", videoId);
             query.setParameter("channelId", channelId);
+            query.setParameter("videoId", videoId);
 
-            try
-            {
+            try {
                 return query.getSingleResult();
-            }
-            catch (NoResultException e)
-            {
+            } catch (NoResultException e) {
                 return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
