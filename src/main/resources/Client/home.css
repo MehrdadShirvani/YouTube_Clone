@@ -41,7 +41,7 @@
     -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-family: Roboto;
-    -fx-font-weight: bold;
+    /*-fx-font-weight: bold;*/
     -fx-font-size: 16;
     -fx-border-width: 0;
     -fx-border-radius: 10;
@@ -58,4 +58,10 @@
 #homeScrollPane .viewport
 {
     -fx-background-color:-fx-gray-color;
+}
+.menu-label{
+    -fx-text-fill: white;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
 }

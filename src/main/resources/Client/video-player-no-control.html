@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stylized Video Player</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            visibility: hidden;
+        }
+        #videoContainer {
+            position: relative;
+            width: 800px;
+            max-width: 100%;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+        #progressContainer {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            height: 5px;
+            background-color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #progress {
+            height: 100%;
+            background-color: #007BFF;
+            border-radius: 5px;
+            width: 0;
+        }
+        #buffered {
+            position: absolute;
+            height: 100%;
+            background-color: red;
+            border-radius: 5px;
+            width: 0;
+            z-index: -1;
+        }
+        #loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #007BFF;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        :root {
+            --plyr-color-main: #FF0000;
+            --plyr-video-control-color:#f1f1f1;
+            --plyr-menu-background: rgba(0,0,0,0.9);
+            --plyr-menu-color:#f1f1f1;
+            --plyr-video-progress-buffered-background:rgba(241,241,241,0.1);
+        }
+    </style>
+<!--     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />-->
+     <link rel="stylesheet" href="plyr.css" />
+</head>
+<body>
+    <div id="videoContainer">
+        <video id="videoPlayer" playsinline controls>
+            <source src="http://localhost:2131/video/37088" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+<!--        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>-->
+        <script src="plyr.js"></script>
+        <div id="progressContainer" onclick="seek(event)">
+            <div id="buffered"></div>
+            <div id="progress"></div>
+        </div>
+        <div id="loader"></div>
+    </div>
+    <script>
+        const player = new Plyr('#videoPlayer',{
+            controls: []
+        });
+        player.volume = 0;
+        // player.fullscreen.toggle();
+        player.fullscreen.enter();
+        // player.play();
+        player.on('pause', event => {
+            player.play();
+        });
+        player.on('ready', function() {
+            player.play();
+            document.body.style.visibility = 'visible';
+        });
+    </script>
+</body>
+</html>
