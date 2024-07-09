@@ -10,6 +10,8 @@ import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class WatchHistoryController {
@@ -37,7 +39,9 @@ public class WatchHistoryController {
         pageNumber++;
 
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.ENGLISH);
+        SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMM d", Locale.ENGLISH);
+        SimpleDateFormat dayOfWeekFormat = new SimpleDateFormat("EEEE", Locale.ENGLISH);
+
 
         for (int i = 0 ; i < watchHistoryVideos.size() ; i++) {
             try {
@@ -54,7 +58,14 @@ public class WatchHistoryController {
                 }
 
                 if (currentDate == null || !compareByDay(currentDate , watchedDate)) {
-                    String dateString = dateFormat.format(watchedDate);
+                    String dateString;
+
+                    if (isWithinLastWeek(watchedDate)) {
+                        dateString = dayOfWeekFormat.format(watchedDate);
+                    } else {
+                        dateString = monthDayFormat.format(watchedDate);
+                    }
+
                     Label dateLabel = new Label(dateString);
                     centerFlow.getChildren().add(dateLabel);
 
@@ -84,6 +95,13 @@ public class WatchHistoryController {
         int day1 = calendar.get(Calendar.DAY_OF_MONTH);
 
         return (year0 == year1) & (month0 == month1) & (day0 == day1);
+    }
+
+    public boolean isWithinLastWeek(Date date) {
+        LocalDate today = LocalDate.now();
+        LocalDate oneWeekAgo = today.minusDays(7);
+        LocalDate watchedLocalDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return !watchedLocalDate.isBefore(oneWeekAgo);
     }
 
     public void setHomeController(HomeController homeController) {
