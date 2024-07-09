@@ -1648,25 +1648,20 @@ public static Long getAllViewsOfChannel(long channelId)
         }
     }
     public static List<Reaction> getVideoReactions(Long videoId) {
+        EntityManager entityManager = null;
         try {
-            CompletableFuture<List<Reaction>> future = CompletableFuture.supplyAsync(() -> {
-                List<Reaction> resultList;
-                try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-                    entityManager.getTransaction().begin();
-                    TypedQuery<Reaction> query = entityManager.createQuery("SELECT r FROM Reaction r WHERE r.videoId = :videoId", Reaction.class);
-                    query.setParameter("videoId", videoId);
-                    resultList = query.getResultList();
-                    entityManager.getTransaction().commit();
-                } catch (Exception e) {
-                    throw new RuntimeException("Error querying database", e);
-                }
-                return resultList;
-            });
-
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
+            entityManager = entityManagerFactory.createEntityManager();
+            TypedQuery<Reaction> query = entityManager.createQuery(
+                    "SELECT r FROM Reaction r WHERE r.videoId = :videoId", Reaction.class);
+            query.setParameter("videoId", videoId);
+            return query.getResultList();
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
     public static List<Comment> getVideoComments(Long videoId)
