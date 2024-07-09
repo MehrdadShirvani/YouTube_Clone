@@ -758,12 +758,23 @@ public static Long getAllViewsOfChannel(long channelId)
             transaction.commit();
         }
     }
-    public static void deleteVideoPlaylists(Long playlistId)
+    public static void deleteVideoPlaylists(Long videoId)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
-            entityManager.createQuery("DELETE FROM PlaylistVideo p WHERE p.playlistId = :playlistId")
-                    .setParameter("playlistId", playlistId)
-                    .executeUpdate();
+            EntityTransaction transaction = entityManager.getTransaction();
+            try {
+                transaction.begin();
+                String query = "DELETE FROM VideoPlaylist vp WHERE vp.videoId = :videoId";
+                int deletedCount = entityManager.createQuery(query)
+                        .setParameter("videoId", videoId)
+                        .executeUpdate();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw e;
+            }
         }
     }
 
