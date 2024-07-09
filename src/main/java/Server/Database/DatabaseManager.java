@@ -18,7 +18,7 @@ public class DatabaseManager {
     static {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/YoutubeDB");
-        config.setUsername("root");
+        config.setUsername(DatabaseProperties.getUsername());
         config.setPassword(DatabaseProperties.getPassword());
         config.setMaximumPoolSize(20);
         config.setMinimumIdle(5);
