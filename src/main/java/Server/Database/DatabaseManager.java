@@ -295,22 +295,32 @@ public class DatabaseManager {
             }
         }
     }
-    public static void deleteReaction(Long reactionId)
-    {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
+    public static void deleteReaction(Long reactionId) {
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
             transaction.begin();
 
             Reaction reaction = entityManager.find(Reaction.class, reactionId);
-
             if (reaction != null) {
                 entityManager.remove(reaction);
             }
 
             transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
+
     //endregion
 
     //region Comments
