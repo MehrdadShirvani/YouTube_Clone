@@ -1140,7 +1140,13 @@ public static Long getAllViewsOfChannel(long channelId)
                     .append("LEFT JOIN VideoCategory vc ON v.videoId = vc.videoId ")
                     .append("LEFT JOIN VideoView vv ON v.videoId = vv.videoId ")
                     .append("WHERE v.channelId != :channelId AND v.videoTypeId = 1 AND v.isPrivate = 0 ");
-
+            if(categories != null)
+                for (Category category : categories) {
+                    if (category == null) {
+                        categories = null;
+                        break;
+                    }
+                }
             if (categories != null && !categories.isEmpty()) {
                 jpql.append("AND vc.categoryId IN :categoryIds ");
             }
@@ -1160,7 +1166,7 @@ public static Long getAllViewsOfChannel(long channelId)
             TypedQuery<Object[]> query = entityManager.createQuery(jpql.toString(), Object[].class);
             query.setParameter("channelId", channelId);
 
-            if (categories != null && !categories.isEmpty()) {
+            if (categories != null && !categories.isEmpty() && categories.getFirst() != null) {
                 List<Integer> categoryIds = categories.stream()
                         .map(Category::getCategoryId)
                         .collect(Collectors.toList());
