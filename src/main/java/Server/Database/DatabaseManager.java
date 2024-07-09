@@ -1690,14 +1690,14 @@ public static Long getAllViewsOfChannel(long channelId)
     //region Categories
     public static List<Category> getCategories()
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            entityManager.getTransaction().begin();
-            List<Category> categories = entityManager.createQuery(
-                            "SELECT c FROM Category c", Category.class)
-                    .getResultList();
-            entityManager.getTransaction().commit();
-            return categories;
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static Category getCategory(Integer categoryId)
