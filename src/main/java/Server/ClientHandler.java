@@ -441,7 +441,7 @@ public class ClientHandler implements Runnable {
 
             } else if (header.endpointParser()[4].equals("comment-reactions")) {
                 Long videoId = header.extractIds().getFirst();
-                handleGetCommentReaction(request , videoId);
+                handleGetCommentReactionsOfVideo(request , videoId);
 
             } else {
                 handleBadRequest(header);
