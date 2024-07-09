@@ -137,7 +137,7 @@ public class CommentViewController {
         CommentViewController newCommentController = commentLoader.getController();
         Comment newComment = YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), comment.getVideoId(), YouTube.client.getAccount().getChannelId(), comment.getCommentId()));
         newCommentController.setComment(newComment,videoViewController, this);
-        newCommentController.setCommentLiked(new HashMap<>(), 0L);
+        newCommentController.setCommentLiked(new HashMap<>(), 0L, null);
         cancelCommentAction(new ActionEvent());
         videoViewController.notifyOneCommentUp();
     }
@@ -192,33 +192,19 @@ public class CommentViewController {
             if (isCommentLiked.get(true) == 1) {
                 changeInLike = -1;
                 isCommentLiked.remove(true);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendCommentLikeDeleteRequest(currentReaction.getCommentReactionId());
-                }, executorService).thenRun(() -> currentReaction = null).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendCommentLikeDeleteRequest(currentReaction.getCommentReactionId());
+                currentReaction = null;
             } else {
                 changeInLike = +1;
                 isCommentLiked.replace(true, (short) 1);
                 currentReaction.setCommentReactionTypeId((short) 1);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendCommentLikeAddRequest(currentReaction);
-                }, executorService).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendCommentLikeAddRequest(currentReaction);
             }
         } catch (Exception exception) {
             changeInLike = +1;
             isCommentLiked.put(true, (short) 1);
             currentReaction = new CommentReaction(comment.getCommentId(), YouTube.client.getAccount().getChannelId(), (short) 1);
-            CompletableFuture.runAsync(() -> {
-                currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
-            }, executorService).exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
         }
         setVideoLikedState();
     }
@@ -229,30 +215,16 @@ public class CommentViewController {
                 changeInLike = -1;
                 isCommentLiked.replace(true, (short) -1);
                 currentReaction.setCommentReactionTypeId((short) -1);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendCommentLikeAddRequest(currentReaction);
-                }, executorService).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendCommentLikeAddRequest(currentReaction);
             } else {
                 isCommentLiked.remove(true);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendCommentDeleteRequest(currentReaction.getCommentReactionId());
-                }, executorService).thenRun(() -> currentReaction = null).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendCommentDeleteRequest(currentReaction.getCommentReactionId());
+                currentReaction = null;
             }
         } catch (Exception exception) {
             isCommentLiked.put(true, (short) -1);
             currentReaction = new CommentReaction(comment.getCommentId(), YouTube.client.getAccount().getChannelId(), (short) -1);
-            CompletableFuture.runAsync(() -> {
-                currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
-            }, executorService).exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
         }
         setVideoLikedState();
     }
@@ -275,8 +247,9 @@ public class CommentViewController {
         changeInLike = 0;
     }
 
-    public void setCommentLiked(HashMap<Boolean, Short> commentLiked, Long initialLikeCount) {
-        isCommentLiked = commentLiked;
+    public void setCommentLiked(HashMap<Boolean, Short> commentLiked, Long initialLikeCount, CommentReaction commentReaction) {
+        this.isCommentLiked = commentLiked;
+        this.currentReaction = commentReaction;
         this.initialLikeCount = initialLikeCount;
         setVideoLikedState();
     }
