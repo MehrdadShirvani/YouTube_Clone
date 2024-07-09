@@ -83,6 +83,8 @@ public class EditAccountView implements Initializable {
 
         emailLabel.setText(account.getEmail());
 
+        cbPremium.setSelected(!(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date())));
+
         if(currnetAccount.getBirthDate() != null)
         {
             DPBirthDate.setValue(currnetAccount.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
@@ -93,7 +95,6 @@ public class EditAccountView implements Initializable {
         profileMaskRec.setArcHeight(50);
         profileMaskRec.setArcWidth(50);
         profileWebView.setClip(profileMaskRec);
-        // load webview
         Path path = new File("src/main/resources/Client/image-view.html").toPath();
         String htmlContent = new String(Files.readAllBytes(path));
         profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/P_" + account.getChannelId().toString()));
@@ -213,11 +214,14 @@ public class EditAccountView implements Initializable {
             currnetAccount.setPassword(passwordField.getText());
         }
 
+        Date oneYearLater = Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        currnetAccount.setPremiumExpirationDate((cbPremium.isSelected())? new Timestamp(oneYearLater.getTime()):null);
+
         if(YouTube.client.sendAccountEditRequest(currnetAccount) == null)
         {
             //TODO Stylize
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Sign Up Failed. Please contact our support team");
+            alert.setContentText("Edit Failed. Please contact our support team");
             alert.showAndWait();
             return;
         }
