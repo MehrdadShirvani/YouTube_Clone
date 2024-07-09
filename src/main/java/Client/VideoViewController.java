@@ -37,6 +37,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -47,6 +49,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class VideoViewController {
     public Label titleLabel;
@@ -230,6 +235,11 @@ public class VideoViewController {
             //TODO this is adult content and the user should now watch it
         }
 
+        if(subtitleExists())
+        {
+            //TODO get the subtitle from ->  http://localhost:2131/subtitle/videoId
+        }
+
         String path = HomeController.class.getResource("video-player.html").toExternalForm();
         engine = videoWebView.getEngine();
         engine.load(path);
@@ -296,6 +306,28 @@ public class VideoViewController {
         Thread thread = new Thread(loaderView);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private boolean subtitleExists()
+    {
+        String serverUrl = "http://localhost:2131/subtitle/" + video.getVideoId();
+        URL url = null;
+        try {
+            url = new URL(serverUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                return true;
+            }
+            return  false;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setUpComments() {
