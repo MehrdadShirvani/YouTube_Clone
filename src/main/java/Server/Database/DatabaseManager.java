@@ -406,19 +406,24 @@ public class DatabaseManager {
 
     //region CommentReactions
     public static CommentReaction addCommentReaction(CommentReaction commentReaction) {
+        if(commentReaction == null)
+        {
+            return  null;
+        }
+        if(getCommentReaction(commentReaction.getChannelId(), commentReaction.getCommentId()) != null)
+        {
+            return editCommentReaction(commentReaction);
+        }
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
-
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-
-        entityManager.persist(commentReaction);
-        transaction.commit();
-
-        CommentReaction savedCommentReaction = entityManager.find(CommentReaction.class, commentReaction.getCommentId());
-
-        entityManager.close();
-        return savedCommentReaction;
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(commentReaction);
+            transaction.commit();
+            return commentReaction;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
     public static CommentReaction editCommentReaction(CommentReaction commentReaction) {
