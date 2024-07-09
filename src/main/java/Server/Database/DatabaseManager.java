@@ -580,8 +580,8 @@ public class DatabaseManager {
 
             StringBuilder jpql = new StringBuilder("SELECT DISTINCT p ")
                     .append("FROM Playlist p ")
-                    .append("Inner JOIN VideoPlaylist vp ON v.videoId = vp.videoId ")
-                    .append("Where v.videoId = :videoId");
+                    .append("Inner JOIN VideoPlaylist vp ON p.playlistId = vp.playlistId ")
+                    .append("Where vp.videoId = :videoId");
 
             TypedQuery<Playlist> query = entityManager.createQuery(jpql.toString(), Playlist.class);
             query.setParameter("videoId", videoId);
