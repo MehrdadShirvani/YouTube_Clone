@@ -12,8 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -482,5 +485,33 @@ public class VideoViewController {
             shareButton.setDisable(false);
         });
         pause.play();
+    }
+
+    public void saveAction(ActionEvent actionEvent)
+    {
+
+        javafx.scene.control.Dialog<ButtonType> dialog = new javafx.scene.control.Dialog<>();
+        dialog.setTitle("Example Dialog");
+        dialog.setHeaderText("This is a header text");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("save-to-playlist-view.fxml"));
+        try {
+            VBox content = loader.load();
+            SaveToPlaylistViewController controller = loader.getController();
+            controller.setVideo(video);
+            dialog.getDialogPane().setContent(content);
+
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response.equals(ButtonType.OK)) {
+                controller.save();
+            } else {
+
+            }
+        });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
