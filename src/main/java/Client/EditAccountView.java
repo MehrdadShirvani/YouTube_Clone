@@ -4,6 +4,7 @@ import Shared.Models.Account;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,16 +24,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EditAccountView {
+public class EditAccountView implements Initializable {
 
     public WebView profileWebView;
     public DatePicker DPBirthDate;
+    public WebView channelWebView;
+    public CheckBox cbPremium;
     @FXML
     BorderPane backgroundBorderPane;
     @FXML
@@ -63,6 +70,9 @@ public class EditAccountView {
     @FXML
     Label emailLabel;
     private Account currnetAccount;
+    File pictureFile;
+    File channelHeaderFile;
+
     ExecutorService executorService = Executors.newCachedThreadPool();
 
     public void setAccount(Account account) throws IOException {
@@ -72,6 +82,8 @@ public class EditAccountView {
         usernameTextField.setText(account.getUsername());
 
         emailLabel.setText(account.getEmail());
+
+        cbPremium.setSelected(!(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date())));
 
         if(currnetAccount.getBirthDate() != null)
         {
@@ -83,12 +95,16 @@ public class EditAccountView {
         profileMaskRec.setArcHeight(50);
         profileMaskRec.setArcWidth(50);
         profileWebView.setClip(profileMaskRec);
-        // load webview
         Path path = new File("src/main/resources/Client/image-view.html").toPath();
         String htmlContent = new String(Files.readAllBytes(path));
         profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/P_" + account.getChannelId().toString()));
-
-        //TODO  -> Mehrdad -> handle media server to handle lost video and pictures
+        Rectangle HeaderMaskRec = new Rectangle(50, 50);
+        HeaderMaskRec.setArcHeight(50);
+        HeaderMaskRec.setArcWidth(50);
+        channelWebView.setClip(HeaderMaskRec);
+        Path path2 = new File("src/main/resources/Client/image-view.html").toPath();
+        String htmlContent2 = new String(Files.readAllBytes(path2));
+        channelWebView.getEngine().loadContent(htmlContent2.replace("@url", "http://localhost:2131/image/H_" + account.getChannelId().toString()));
     }
     public void firstNameChanged(KeyEvent keyEvent) {
         if (firstNameTextField.getText().isBlank()) {
@@ -121,14 +137,25 @@ public class EditAccountView {
     }
 
     public void passwordChanged(KeyEvent keyEvent) {
+
         String error = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
-        if (!passwordField.getText().isBlank() || !error.isBlank()) {
+        if(passwordField.getText().isBlank())
+        {
+            error = "";
+        }
+        if (!error.isBlank()) {
             if (signupVbox.getChildren().contains(passwordLabel)) {
+                passwordLabel.setText(error);
+                Text text = new Text(passwordLabel.getText());
+                text.setWrappingWidth(300);
+                passwordLabel.setMinHeight(text.getLayoutBounds().getHeight());
                 return;
             }
 
             passwordLabel = new Label();
-            passwordLabel.setText(error);//TODO Fix it to show all the text
+            passwordLabel.setMaxWidth(300);
+            passwordLabel.setWrapText(false);
+
             passwordLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(passwordField) + 1, passwordLabel);
         } else {
@@ -166,10 +193,20 @@ public class EditAccountView {
 
         if(pictureFile != null)
         {
-            uploadProfilePhoto(pictureFile, currnetAccount.getChannelId());
+            uploadProfilePhoto(pictureFile, currnetAccount.getChannelId(), false);
         }
-        
-        currnetAccount.setBirthDate(Date.from(DPBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        if(channelHeaderFile != null)
+        {
+            uploadProfilePhoto(channelHeaderFile, currnetAccount.getChannelId(), true);
+        }
+        if(DPBirthDate.getValue() != null)
+        {
+            currnetAccount.setBirthDate(Date.from(DPBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+        else
+        {
+            currnetAccount.setBirthDate(null);
+        }
         currnetAccount.setUsername(usernameTextField.getText());
         if(!passwordField.getText().isBlank())
         {
@@ -177,11 +214,14 @@ public class EditAccountView {
             currnetAccount.setPassword(passwordField.getText());
         }
 
+        Date oneYearLater = Date.from(LocalDate.now().plusYears(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        currnetAccount.setPremiumExpirationDate((cbPremium.isSelected())? new Timestamp(oneYearLater.getTime()):null);
+
         if(YouTube.client.sendAccountEditRequest(currnetAccount) == null)
         {
             //TODO Stylize
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Sign Up Failed. Please contact our support team");
+            alert.setContentText("Edit Failed. Please contact our support team");
             alert.showAndWait();
             return;
         }
@@ -190,7 +230,7 @@ public class EditAccountView {
 
     }
 
-    private void uploadProfilePhoto(File pictureFile, Long channelId)
+    private void uploadProfilePhoto(File pictureFile, Long channelId, boolean isHeader)
     {
             try {
                 URL url = new URL("http://localhost:2131/upload");
@@ -198,7 +238,7 @@ public class EditAccountView {
 
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "image/jpg|P_" + channelId);
+                connection.setRequestProperty("Content-Type", "image/jpg|"+(isHeader?"H":"P")+"_" + channelId);
 
                 try (OutputStream outputStream = connection.getOutputStream();
                      FileInputStream fileInputStream = new FileInputStream(pictureFile)) {
@@ -222,10 +262,9 @@ public class EditAccountView {
             }
     }
 
-    File pictureFile;
     public void browsePicture(ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Video File");
+        fileChooser.setTitle("Choose Profile Picture");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
         fileChooser.getExtensionFilters().add(filter);
         Stage dialogStage = new Stage();
@@ -235,6 +274,30 @@ public class EditAccountView {
             Path path = new File("src/main/resources/Client/image-view.html").toPath();
             String htmlContent = new String(Files.readAllBytes(path));
             profileWebView.getEngine().loadContent(htmlContent.replace("@url","file:///" +  pictureFile.getAbsolutePath()));
+        }
+    }
+
+    public void browseChannelHeader(ActionEvent actionEvent) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Header File");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
+        fileChooser.getExtensionFilters().add(filter);
+        Stage dialogStage = new Stage();
+        channelHeaderFile = fileChooser.showOpenDialog(dialogStage);
+        if(channelHeaderFile != null)
+        {
+            Path path = new File("src/main/resources/Client/image-view.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            channelWebView.getEngine().loadContent(htmlContent.replace("@url","file:///" +  channelHeaderFile.getAbsolutePath()));
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            setAccount(YouTube.client.getAccount());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

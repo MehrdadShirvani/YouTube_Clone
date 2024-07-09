@@ -24,9 +24,16 @@
                 <TextField fx:id="firstNameTextField" onKeyReleased="#firstNameChanged" prefHeight="50.0" prefWidth="451.0" promptText="First name" />
                 <TextField fx:id="lastNameTextField"  layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
                 <TextField fx:id="usernameTextField"  onKeyReleased="#usernameChanged" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
+                <CheckBox fx:id="cbPremium" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" text="Is Premium" />
                 <PasswordField fx:id="passwordField" onKeyReleased="#passwordChanged" prefHeight="50.0" promptText="Password" />
                 <Button text="Browse..." onAction="#browsePicture"/>
                 <WebView fx:id="profileWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </WebView>
+                <Button text="Browse Channel Header..." onAction="#browseChannelHeader"/>
+                <WebView fx:id="channelWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>

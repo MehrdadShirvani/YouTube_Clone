@@ -27,7 +27,7 @@
    </StackPane>
     <HBox fx:id="downHBox" fillHeight="false">
         <children>
-         <StackPane fx:id="profileStackPane">
+         <StackPane fx:id="profileStackPane" onMouseClicked="#authorClicked">
             <HBox.margin>
                <Insets right="10.0" top="10.0" />
             </HBox.margin>
@@ -38,6 +38,9 @@
                   </cursor>
                </WebView>
             </children>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
          </StackPane>
             <VBox fx:id="rightVBox">
                 <children>
@@ -61,7 +64,10 @@
                </HBox>
                     <VBox spacing="1.0">
                         <children>
-                            <Label fx:id="authorLabel" onMouseClicked="#authorClicked" styleClass="caption-loading" text="James Gouse" />
+                            <Label fx:id="authorLabel" onMouseClicked="#authorClicked" styleClass="caption-loading" text="James Gouse">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor></Label>
                             <Label fx:id="viewsLabel" layoutX="10.0" layoutY="10.0" styleClass="caption-loading" text="15K Views .1 week ago" />
                         </children>
                         <VBox.margin>
