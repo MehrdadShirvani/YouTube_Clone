@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Models.Account;
 import Shared.Models.Channel;
 import Shared.Models.Playlist;
 import Shared.Models.Video;
@@ -172,7 +173,7 @@ public class HomeController {
             @Override
             public void handle(ActionEvent event) {
                 accountPopup.hide();
-                YouTube.changeScene("edit-account-view.fxml");
+                setEditProfilePage();
             }
         });
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -493,6 +494,15 @@ public class HomeController {
         }
         AddEditPlaylistController controller = fxmlLoader.getController();
         controller.setPlaylist(playlist, this);
+    }
+    private void setEditProfilePage() {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("edit-account-view.fxml"));
+        try {
+            mainBorderPane.setCenter(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void showAccount(MouseEvent mouseEvent) {

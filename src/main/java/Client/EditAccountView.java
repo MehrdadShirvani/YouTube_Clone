@@ -38,15 +38,7 @@ public class EditAccountView implements Initializable {
     public WebView profileWebView;
     public DatePicker DPBirthDate;
     public WebView channelWebView;
-    public CheckBox cbPremium;
-    @FXML
-    BorderPane backgroundBorderPane;
-    @FXML
-    GridPane backgroundGridPane;
-    @FXML
-    Label designLabel;
-    @FXML
-    Button signupButton;
+    public ToggleButton cbPremium;
     @FXML
     TextField firstNameTextField;
     @FXML
@@ -58,30 +50,27 @@ public class EditAccountView implements Initializable {
     PasswordField passwordField;
     @FXML
     VBox signupVbox;
-    @FXML
-    GridPane designGridBox;
-    @FXML
-    VBox designVBox;
-    @FXML
-    HBox commentHBox;
     Label firstNameLabel;
     Label usernameLabel;
     Label passwordLabel;
     @FXML
     Label emailLabel;
+    @FXML
+    VBox backgroundGridPane;
     private Account currnetAccount;
     File pictureFile;
     File channelHeaderFile;
 
     ExecutorService executorService = Executors.newCachedThreadPool();
-
     public void setAccount(Account account) throws IOException {
+        signupVbox.prefWidthProperty().bind(backgroundGridPane.widthProperty().multiply(0.75));
+        signupVbox.prefHeightProperty().bind(backgroundGridPane.heightProperty().multiply(0.83));
         this.currnetAccount = account;
         firstNameTextField.setText(account.getFirstName());
         lastNameTextField.setText(account.getLastName());
         usernameTextField.setText(account.getUsername());
 
-        emailLabel.setText(account.getEmail());
+        emailLabel.setText("*Logged-in as: "+account.getEmail());
 
         cbPremium.setSelected(!(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date())));
 

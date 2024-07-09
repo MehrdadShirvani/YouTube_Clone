@@ -36,6 +36,7 @@ TextField:focused, PasswordField:focused, DatePicker:focused{
 .account-title
 {
     -fx-font-family: "Product Sans";
+    -fx-font-weight: bold;
     /*-fx-font-size: 45;*/
 }
 DatePicker .text-field{
@@ -114,4 +115,28 @@ DatePicker .month-year-pane .spinner {
 }
 #retryButton:disabled{
     -fx-opacity: 0.2;
+}
+.browse-button
+{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: -fx-bright-gray-color;
+    -fx-text-fill: black;
+    -fx-font-family: Roboto;
+    -fx-font-size: 14;
+}
+.toggle-button{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-blue-color;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-border-width: 1;
+    -fx-border-color: -fx-blue-color;
+}
+.toggle-button:selected{
+    -fx-background-color: -fx-blue-color;
+    -fx-text-fill: #f1f1f1;
 }

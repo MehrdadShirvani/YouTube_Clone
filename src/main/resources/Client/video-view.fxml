@@ -9,17 +9,17 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.web.*?>
 
-<BorderPane fx:id="mainBorderPane" prefHeight="1000.0" prefWidth="1084.0" style="-fx-border-color: purple; -fx-border-image-width: 2; -fx-border-style: dotted;" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.VideoViewController">
+<BorderPane fx:id="mainBorderPane" prefHeight="1000.0" prefWidth="1084.0" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.VideoViewController">
     <stylesheets>
         <URL value="@video-view.css" />
     </stylesheets>
     <right>
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <content>
-             <FlowPane fx:id="sideBarFlow" hgap="1.0" rowValignment="TOP" vgap="10.0">
+             <VBox fx:id="sideBarVBox" spacing="5.0">
                  <padding>
-                     <Insets bottom="14.0" left="1.0" right="1.0" top="14.0" />
-                 </padding></FlowPane>
+                     <Insets bottom="20.0" left="5.0" right="5.0" top="20.0" />
+                 </padding></VBox>
 <!--              <VBox fx:id="rightVBox" prefHeight="662.0" prefWidth="271.0">-->
 
 <!--              </VBox>-->
@@ -33,7 +33,7 @@
     <center>
         <ScrollPane fx:id="leftScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER">
             <content>
-                <VBox fx:id="leftVBox" prefWidth="796.0" style="-fx-border-color: green;" BorderPane.alignment="CENTER">
+                <VBox fx:id="leftVBox" prefWidth="796.0" BorderPane.alignment="CENTER">
                     <children>
                         <StackPane fx:id="stack">
                             <children>
@@ -97,7 +97,7 @@
                                                 <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
                                             </padding>
                                         </Button>
-                                        <Button fx:id="saveButton" onAction="#saveAction" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Save">
+                                        <Button fx:id="saveButton" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveAction" prefHeight="35.0" styleClass="caption-button" text="Save">
                                             <graphic>
                                                 <SVGPath content="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z" fill="#f1f1f1" />
                                             </graphic>

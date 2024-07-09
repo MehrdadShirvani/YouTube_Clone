@@ -4,8 +4,6 @@ import Shared.Models.*;
 import Shared.Utils.DateFormats;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Worker;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,7 +22,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebEngine;
@@ -36,7 +33,6 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.nio.file.Files;
@@ -49,10 +45,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.stream.Collectors;
 
 public class VideoViewController {
     public Label titleLabel;
@@ -64,7 +58,7 @@ public class VideoViewController {
     public Label subsLabel;
     public ToggleButton subsButton;
     public Label desLabel;
-    public FlowPane sideBarFlow;
+    public VBox sideBarVBox;
     public Label commentsLabel;
     public Button editVideoBtn;
     public Button saveButton;
@@ -112,7 +106,6 @@ public class VideoViewController {
     public void initialize() {
         //Pref of main border pane: 1084 * 664
         //bindings
-//        rightVBox.prefWidthProperty().bind(mainBorderPane.widthProperty().divide(4));
         videoWebView.prefHeightProperty().bind(videoWebView.widthProperty().multiply(0.562));
         videoWebView.setPageFill(Color.TRANSPARENT);
         authorProfile.setPageFill(Color.TRANSPARENT);
@@ -280,7 +273,8 @@ public class VideoViewController {
                             }
                             SmallVideoView controller = fxmlLoader.getController();
                             controller.setVideo(recVideo, homeController, playlist, playlistVideos);
-                            sideBarFlow.getChildren().add(smallVideo);
+                            controller.setPref(0.8,true,true);
+                            sideBarVBox.getChildren().add(smallVideo);
                         }
                     }
                     isChannelSubscribed = YouTube.client.isSubscribedToChannel(video.getChannelId());

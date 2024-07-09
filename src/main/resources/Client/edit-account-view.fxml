@@ -1,88 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.net.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.web.WebView?>
-<GridPane fx:id="backgroundGridPane" alignment="CENTER" prefHeight="641.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.EditAccountView">
-<stylesheets>
-    <URL value="@login-signup.css" />
-</stylesheets>
-<BorderPane fx:id="backgroundBorderPane" layoutX="64.0" layoutY="73.0" prefHeight="455.0" prefWidth="892.0">
-    <right>
-        <VBox fx:id="signupVbox" alignment="CENTER" prefHeight="510.0" prefWidth="426.0" spacing="30.0" stylesheets="@login-signup.css" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets left="20.0" />
-            </BorderPane.margin>
-            <children>
-                <Label fx:id="emailLabel" textFill="white" layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" />
-                <TextField fx:id="firstNameTextField" onKeyReleased="#firstNameChanged" prefHeight="50.0" prefWidth="451.0" promptText="First name" />
-                <TextField fx:id="lastNameTextField"  layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
-                <TextField fx:id="usernameTextField"  onKeyReleased="#usernameChanged" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
-                <CheckBox fx:id="cbPremium" layoutX="10.0" layoutY="302.0" prefHeight="50.0" prefWidth="451.0" text="Is Premium" />
-                <PasswordField fx:id="passwordField" onKeyReleased="#passwordChanged" prefHeight="50.0" promptText="Password" />
-                <Button text="Browse..." onAction="#browsePicture"/>
-                <WebView fx:id="profileWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </WebView>
-                <Button text="Browse Channel Header..." onAction="#browseChannelHeader"/>
-                <WebView fx:id="channelWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </WebView>
-                <DatePicker fx:id="DPBirthDate" />
-                <HBox alignment="CENTER_RIGHT">
-                    <children>
-                        <Button fx:id="cancelBtn" alignment="CENTER" layoutX="345.0" layoutY="20.0" minHeight="34.0" mnemonicParsing="false" onAction="#cancel" prefHeight="41.0" prefWidth="192.0" styleClass="secondary-button" text="cancel" textAlignment="CENTER">
-                            <HBox.margin>
-                                <Insets right="10.0" top="10.0" />
-                            </HBox.margin>
-                        </Button>
-                        <Button fx:id="editBtn" alignment="CENTER" minHeight="34.0" mnemonicParsing="false" onAction="#changeDetails" prefHeight="53.0" prefWidth="91.0" styleClass="conformation-button" text="edit" textAlignment="CENTER">
-                            <HBox.margin>
-                                <Insets top="10.0" />
-                            </HBox.margin></Button>
-                    </children>
-                </HBox>
-            </children>
-            <padding>
-                <Insets bottom="30.0" top="40.0" />
-            </padding>
-        </VBox>
-    </right>
-    <padding>
-        <Insets left="20.0" right="20.0" />
-    </padding>
-    <center>
-        <GridPane fx:id="designGridBox" alignment="CENTER">
-            <columnConstraints>
-                <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints />
-            </rowConstraints>
-        </GridPane>
-    </center>
-</BorderPane>
-<padding>
-    <Insets top="20.0" />
-</padding>
-<columnConstraints>
-    <ColumnConstraints />
-</columnConstraints>
-<rowConstraints>
-    <RowConstraints />
-</rowConstraints>
-<!--  <padding>-->
-<!--    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />-->
-<!--  </padding>-->
-
-</GridPane>
+<VBox fx:id="backgroundGridPane" alignment="CENTER" fillWidth="false" prefHeight="747.0" prefWidth="892.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.EditAccountView">
+    <stylesheets>
+        <URL value="@login-signup.css" />
+    </stylesheets>
+     <VBox fx:id="signupVbox" alignment="CENTER_LEFT" spacing="10.0" stylesheets="@login-signup.css" BorderPane.alignment="CENTER">
+         <children>
+         <Label stylesheets="@login-signup.css" text="Edit account" textFill="#f1f1f1">
+            <font>
+               <Font name="Product Sans Bold" size="45.0" />
+            </font></Label>
+             <Label fx:id="emailLabel" layoutX="10.0" layoutY="342.0" prefHeight="50.0" prefWidth="451.0" styleClass="h2" stylesheets="@login-signup.css" text="*Logged-in as: " textFill="#f1f1f1" />
+             <TextField fx:id="firstNameTextField" onKeyReleased="#firstNameChanged" prefHeight="50.0" prefWidth="451.0" promptText="First name" />
+             <TextField fx:id="lastNameTextField" layoutX="10.0" layoutY="50.0" prefHeight="50.0" prefWidth="451.0" promptText="Last Name (optional)" />
+             <TextField fx:id="usernameTextField" layoutX="10.0" layoutY="302.0" onKeyReleased="#usernameChanged" prefHeight="50.0" prefWidth="451.0" promptText="Username" />
+             <PasswordField fx:id="passwordField" onKeyReleased="#passwordChanged" prefHeight="50.0" promptText="Password" />
+             <Button onAction="#browsePicture" styleClass="browse-button" text="Browse..." />
+             <WebView fx:id="profileWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+                 <cursor>
+                     <Cursor fx:constant="HAND" />
+                 </cursor>
+             </WebView>
+             <Button onAction="#browseChannelHeader" styleClass="browse-button" text="Browse art channel..." />
+             <WebView fx:id="channelWebView" disable="true" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" prefHeight="50.0" prefWidth="50.0">
+                 <cursor>
+                     <Cursor fx:constant="HAND" />
+                 </cursor>
+             </WebView>
+             <DatePicker fx:id="DPBirthDate" />
+         <ToggleButton fx:id="cbPremium" mnemonicParsing="false" text="Premium" />
+             <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                 <children>
+                     <Button fx:id="cancelBtn" alignment="CENTER" layoutX="345.0" layoutY="20.0" minHeight="34.0" mnemonicParsing="false" onAction="#cancel" styleClass="secondary-button" text="cancel" textAlignment="CENTER">
+                         <HBox.margin>
+                             <Insets />
+                         </HBox.margin>
+                  <padding>
+                     <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                  </padding>
+                     </Button>
+                     <Button fx:id="editBtn" alignment="CENTER" mnemonicParsing="false" onAction="#changeDetails" styleClass="conformation-button" text="edit" textAlignment="CENTER">
+                         <HBox.margin>
+                             <Insets />
+                         </HBox.margin>
+                  <padding>
+                     <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                  </padding>
+                  </Button>
+                 </children>
+             </HBox>
+         </children>
+      <padding>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+     </VBox>
+</VBox>
