@@ -18,31 +18,32 @@ public class TextValidator {
         }
 
         Matcher matcher = Pattern.compile("[a-z]").matcher(password);
-        if(matcher.matches())
+        //matcher.matches() this one considers the whole string,and want it to be like the patter
+        if(!matcher.find())
         {
             errorMessage += "\n   * Should contain a lower case letter";
         }
 
         matcher = Pattern.compile("[A-Z]").matcher(password);
-        if(matcher.matches())
+        if(!matcher.find())
         {
             errorMessage += "\n   * Should contain an upper case letter";
         }
         matcher = Pattern.compile("[0-9]").matcher(password);
-        if(matcher.matches())
+        if(!matcher.find())
         {
             errorMessage += "\n   * Should contain at least a number";
         }
 
         matcher = Pattern.compile("[!@#$%^&*]").matcher(password);
-        if(matcher.matches())
+        if(!matcher.find())
         {
             errorMessage += "\n   * Should contain at least a symbol !@#$%^&*";
         }
 
         if(!errorMessage.isBlank())
         {
-            return "Some password requirements are not met:\n" + errorMessage;
+            return "Some password requirements are not met:\n" + errorMessage.trim();
         }
         return errorMessage;
     }

@@ -224,7 +224,7 @@ public class ChannelViewController {
                             throw new RuntimeException(e);
                         }
                         SmallVideoView smallVideoController = fxmlLoader.getController();
-                        smallVideoController.setVideo(recVideo, homeController);
+                        smallVideoController.setVideo(recVideo, homeController, null, null);
                         popularHBox.getChildren().add(smallVideo);
                     }
 
@@ -242,7 +242,7 @@ public class ChannelViewController {
                             throw new RuntimeException(e);
                         }
                         SmallVideoView smallVideoController = fxmlLoader.getController();
-                        smallVideoController.setVideo(recVideo, homeController);
+                        smallVideoController.setVideo(recVideo, homeController, null, null);
                         recentHBox.getChildren().add(smallVideo);
                     }
                     List<Playlist> playlists = YouTube.client.getPlaylistsOfChannel(channel.getChannelId(), isSelf);
@@ -262,7 +262,7 @@ public class ChannelViewController {
                                 throw new RuntimeException(e);
                             }
                             SmallPlayListController smallVideoController = fxmlLoader.getController();
-                            smallVideoController.setPlayList(playlist);
+                            smallVideoController.setPlayList(playlist, homeController);
                             playListFlowPane.getChildren().add(smallPlayList);
                         }
                     }
@@ -282,7 +282,7 @@ public class ChannelViewController {
                             throw new RuntimeException(e);
                         }
                         ((SmallVideoView) fxmlLoader.getController()).setPref(1, false, false);
-                        ((SmallVideoView) fxmlLoader.getController()).setVideo(video, homeController);
+                        ((SmallVideoView) fxmlLoader.getController()).setVideo(video, homeController, null, null );
                     }
 
 

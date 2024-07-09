@@ -5,7 +5,6 @@ import Shared.Models.Playlist;
 import Shared.Models.Video;
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.css.StyleClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,14 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebView;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -73,6 +70,8 @@ public class HomeController {
     WebView profileWebView;
     @FXML
     StackPane proStackPane;
+    @FXML
+    VBox subsVBox;
     Boolean isMinimized;
     private List<Video> currentVideos;
     private Rectangle maskProRec;
@@ -245,6 +244,7 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
 
+
     public void setVideoPage(Video video) {
         if (currentVideoViewController != null) {
             currentVideoViewController.videoWebView.getEngine().load(null);
@@ -257,13 +257,32 @@ public class HomeController {
         try {
             videoPage = fxmlLoader.load();
             currentVideoViewController = fxmlLoader.getController();
-            currentVideoViewController.setVideo(video, this);
+            currentVideoViewController.setVideo(video, this, null, null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         mainBorderPane.setCenter(videoPage);
     }
+    public void setVideoPage(Video video, Playlist playlist, List<Video> videos)
+    {
+        if (currentVideoViewController != null) {
+            currentVideoViewController.videoWebView.getEngine().load(null);
+            currentVideoViewController.commentProfile.getEngine().load(null);
+            currentVideoViewController.authorProfile.getEngine().load(null);
+        }
 
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+            currentVideoViewController = fxmlLoader.getController();
+            currentVideoViewController.setVideo(video, this, playlist, videos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
     private void setHome() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
@@ -285,9 +304,45 @@ public class HomeController {
             SmallVideoView controller = fxmlLoader.getController();
             currentSmallVideos.add(controller);
 
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
+        //TODO: Set subs
+        Platform.runLater(() -> {
+
+            List<Channel> channels = new ArrayList<>();
+            channels = YouTube.client.getSubscriptions();
+            channels.add(new Channel());
+            channels.add(new Channel());
+            if (!channels.isEmpty())
+                subsVBox.setVisible(true);
+            for (Channel channel : channels) {
+                FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("subs-view.fxml"));
+                VBox mainVBox;
+                try {
+                    mainVBox = fxmlLoader.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Button subs = (Button) mainVBox.lookup("#subsButton");
+                subsVBox.getChildren().add(subs);
+                WebView myWebView = (WebView) subs.getGraphic();
+                Rectangle rec = new Rectangle(24, 24);
+                rec.setArcWidth(24);
+                rec.setArcHeight(24);
+                myWebView.setClip(rec);
+                rec.widthProperty().bind(myWebView.widthProperty());
+                rec.heightProperty().bind(myWebView.heightProperty());
+                try {
+                    Path path = new File("src/main/resources/Client/profile.html").toPath();
+                    String htmlContent = new String(Files.readAllBytes(path));
+                    myWebView.getEngine().loadContent(htmlContent.replace("@id", YouTube.client.getAccount().getChannelId() + ""));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
     }
 
     public void menuSwipe(MouseEvent mouseEvent) {
@@ -364,7 +419,7 @@ public class HomeController {
                 throw new RuntimeException(e);
             }
             SmallVideoView controller = fxmlLoader.getController();
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }

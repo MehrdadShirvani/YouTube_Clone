@@ -1,12 +1,15 @@
 package Client;
 
+import Shared.Models.Playlist;
 import Shared.Models.Video;
 import Shared.Utils.DateFormats;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class SmallVideoView {
     @FXML
@@ -45,17 +49,23 @@ public class SmallVideoView {
     VBox rightVBox;
     Video video;
     HomeController homeController;
+    private Playlist playlist;
+    private List<Video> playlistVideos;
+    private Boolean isOnPreview;
     private Timeline shimmerTimelineTitle;
     private Timeline shimmerTimelineViews;
     private Timeline shimmerTimelineAuthor;
+    private PauseTransition previewTransition;
 
     public SmallVideoView() {
 
     }
 
-    public void setVideo(Video video, HomeController homeController) {
+    public void setVideo(Video video, HomeController homeController, Playlist playlist, List<Video> playlistVideos) {
         this.video = video;
         this.homeController = homeController;
+        this.playlist = playlist;
+        this.playlistVideos = playlistVideos;
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
@@ -115,6 +125,21 @@ public class SmallVideoView {
     }
 
     public void initialize() {
+        isOnPreview = false;
+        //Wait to load completely
+        webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                webView.setVisible(true);
+            }
+        });
+        //Preview transition
+        previewTransition = new PauseTransition(Duration.seconds(1));
+        previewTransition.setOnFinished(event -> {
+            //TODO: select video to play
+            isOnPreview = true;
+            String path = HomeController.class.getResource("video-player-no-control.html").toExternalForm();
+            webView.getEngine().load(path);
+        });
         //Loading Animation
         shimmerTimelineTitle = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(titleLabel.opacityProperty(), 1)),
@@ -168,6 +193,7 @@ public class SmallVideoView {
     public void videoClicked(MouseEvent mouseEvent) {
         homeController.setVideoPage(video);
     }
+
     public void authorClicked(MouseEvent mouseEvent) {
         homeController.setChannel(video.getChannel());
     }
@@ -189,5 +215,24 @@ public class SmallVideoView {
         }
         if (!author)
             ((VBox) authorLabel.getParent()).getChildren().remove(authorLabel);
+    }
+
+    public void preview(MouseEvent mouseEvent) {
+        previewTransition.playFromStart();
+    }
+
+    public void exitPreview(MouseEvent mouseEvent) {
+        previewTransition.stop();
+        if (isOnPreview) {
+            Path path = new File("src/main/resources/Client/small-video-thumbnail.html").toPath();
+            String htmlContent = null;
+            try {
+                htmlContent = new String(Files.readAllBytes(path));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            webView.getEngine().loadContent(htmlContent.replace("@id", video.getVideoId() + ""));
+            isOnPreview = false;
+        }
     }
 }

@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Models.*;
 import Shared.Utils.DateFormats;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
@@ -11,8 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,22 +29,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.util.Duration;
 
 import java.awt.*;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,6 +61,7 @@ public class VideoViewController {
     public FlowPane sideBarFlow;
     public Label commentsLabel;
     public Button editVideoBtn;
+    public Button saveButton;
     @FXML
     BorderPane mainBorderPane;
     @FXML
@@ -175,10 +179,14 @@ public class VideoViewController {
 
     Video video;
     private HomeController homeController;
+    private Playlist playlist;
+    private List<Video> playlistVideos;
 
-    public void setVideo(Video video, HomeController homeController) {
+    public void setVideo(Video video, HomeController homeController, Playlist playlist, List<Video> playlistVideos) {
         this.video = video;
         this.homeController = homeController;
+        this.playlist = playlist;
+        this.playlistVideos = playlistVideos;
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
@@ -206,16 +214,31 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-            String path = HomeController.class.getResource("video-player.html").toExternalForm();
-            engine = videoWebView.getEngine();
-            engine.load(path);
+        boolean isPremium = !(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()));
+        if(isPremium == false)
+        {
+            List<Video> ads = YouTube.client.searchAd(YouTube.client.getAccount().getChannelId(), null, "",1,1);
+            if(ads != null && ads.size() > 0)
+            {
+                Video ad =  ads.getFirst();
+                //TODO show the ad using the ad.getVideoId();
+            }
+        }
+        Date eighteenBefore = Date.from(LocalDate.now().minusYears(18).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if(video.getAgeRestricted() && (YouTube.client.getAccount().getBirthDate() == null || YouTube.client.getAccount().getBirthDate().after(eighteenBefore)))
+        {
+            //TODO this is adult content and the user should now watch it
+        }
+
+        String path = HomeController.class.getResource("video-player.html").toExternalForm();
+        engine = videoWebView.getEngine();
+        engine.load(path);
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
                     setUpComments();
                     YouTube.client.addVideoView(new VideoView(video.getVideoId(), YouTube.client.getAccount().getChannelId()));
-                    recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
 
@@ -227,8 +250,15 @@ public class VideoViewController {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
+                    recommendedVideos = playlistVideos;
+                    if(recommendedVideos == null)
+                    {
+                        recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
+                    }
+
                     for (Video recVideo : recommendedVideos) {
-                        if (!Objects.equals(recVideo.getVideoId(), video.getVideoId())) {
+                        if (!Objects.equals(recVideo.getVideoId(), video.getVideoId()) || playlistVideos != null) {
                             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
                             Parent smallVideo = null;
                             try {
@@ -237,7 +267,7 @@ public class VideoViewController {
                                 throw new RuntimeException(e);
                             }
                             SmallVideoView controller = fxmlLoader.getController();
-                            controller.setVideo(recVideo, homeController);
+                            controller.setVideo(recVideo, homeController, playlist, playlistVideos);
                             sideBarFlow.getChildren().add(smallVideo);
                         }
                     }
@@ -466,5 +496,46 @@ public class VideoViewController {
 
     public void editBtnAction(ActionEvent actionEvent) {
          homeController.setVideoEditingPage(video);
+    }
+
+    public void share(ActionEvent event) {
+        shareButton.setDisable(true);
+        shareButton.setText("Copied!");
+        StringSelection stringSelection = new StringSelection("http://localhost:2131/video/"+video.getVideoId());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            shareButton.setText("Share");
+            shareButton.setDisable(false);
+        });
+        pause.play();
+    }
+
+    public void saveAction(ActionEvent actionEvent)
+    {
+
+        javafx.scene.control.Dialog<ButtonType> dialog = new javafx.scene.control.Dialog<>();
+        dialog.setTitle("Example Dialog");
+        dialog.setHeaderText("This is a header text");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("save-to-playlist-view.fxml"));
+        try {
+            VBox content = loader.load();
+            SaveToPlaylistViewController controller = loader.getController();
+            controller.setVideo(video);
+            dialog.getDialogPane().setContent(content);
+
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response.equals(ButtonType.OK)) {
+                controller.save();
+            } else {
+
+            }
+        });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

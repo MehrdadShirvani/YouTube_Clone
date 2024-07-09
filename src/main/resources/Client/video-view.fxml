@@ -81,7 +81,7 @@
                                                 </ToggleButton>
                                             </children>
                                         </HBox>
-                                        <Button fx:id="shareButton" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Share">
+                                        <Button fx:id="shareButton" mnemonicParsing="false" onAction="#share" prefHeight="35.0" styleClass="caption-button" text="Share">
                                             <graphic>
                                                 <SVGPath content="M15 5.63 20.66 12 15 18.37V14h-1c-3.96 0-7.14 1-9.75 3.09 1.84-4.07 5.11-6.4 9.89-7.1l.86-.13V5.63M14 3v6C6.22 10.13 3.11 15.33 2 21c2.78-3.97 6.44-6 12-6v6l8-9-8-9z" fill="#f1f1f1" />
                                             </graphic>
@@ -97,7 +97,7 @@
                                                 <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
                                             </padding>
                                         </Button>
-                                        <Button fx:id="shareButton11" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Save">
+                                        <Button fx:id="saveButton" onAction="#saveAction" layoutX="214.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" styleClass="caption-button" text="Save">
                                             <graphic>
                                                 <SVGPath content="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z" fill="#f1f1f1" />
                                             </graphic>
@@ -105,7 +105,7 @@
                                                 <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
                                             </padding>
                                         </Button>
-                                        <Button fx:id="editVideoBtn" onAction="#editBtnAction" contentDisplay="GRAPHIC_ONLY" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="caption-button" text="..." textAlignment="CENTER">
+                                        <Button fx:id="editVideoBtn" contentDisplay="GRAPHIC_ONLY" layoutX="130.0" layoutY="10.0" mnemonicParsing="false" onAction="#editBtnAction" prefHeight="35.0" prefWidth="35.0" styleClass="caption-button" text="..." textAlignment="CENTER">
                                             <graphic>
                                                 <SVGPath content="M7.5 12c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm4.5-1.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm6 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z" fill="#f1f1f1" />
                                             </graphic>
