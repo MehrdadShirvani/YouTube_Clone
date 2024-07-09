@@ -52,6 +52,7 @@ import java.util.concurrent.Executors;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 public class VideoViewController {
     public Label titleLabel;
@@ -105,6 +106,8 @@ public class VideoViewController {
     private Reaction currentReaction;
     private Long initialLikeCount = 0L;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private Node firstComment;
+    private long currentCommentCount = 0;
 
     public void initialize() {
         //Pref of main border pane: 1084 * 664
@@ -247,7 +250,6 @@ public class VideoViewController {
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
-                    setUpComments();
                     YouTube.client.addVideoView(new VideoView(video.getVideoId(), YouTube.client.getAccount().getChannelId()));
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
@@ -294,6 +296,9 @@ public class VideoViewController {
                         subsButton.setVisible(false);
                         editVideoBtn.setVisible(true);
                     }
+
+                    setUpComments();
+
                 });
 
 
@@ -332,54 +337,65 @@ public class VideoViewController {
 
     public void setUpComments() {
         commentList = YouTube.client.getCommentsOfVideo(video.getVideoId());
-        commentsLabel.setText(commentList.size() + " Comments");
-        ////////////////////////////////////
-//        for (int i = 0; i < 2; i++) {
-//            try {
-//                FXMLLoader fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-//                leftVBox.getChildren().add(fxmlLoader.load());
-//                if (i == 0) {
-//                    CommentViewController comment = fxmlLoader.getController();
-//                    fxmlLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-//                    CommentViewController reply = fxmlLoader.getController();
-//                    comment.addReply(fxmlLoader.load());
-//                    //Can't see why has error?!
-////                    reply.isOnReply = true;
-//                }
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
 
-        ////////////////////////////////////
+        List<CommentReaction> commentReactions = YouTube.client.getCommentReactionsOfVideo(video.getVideoId());
+
+        currentCommentCount = commentList.size();
+        commentsLabel.setText(currentCommentCount + " Comments");
+
+        List<CommentViewController> commentViewControllers = new ArrayList<CommentViewController>();
+        firstComment = null;
+
         for (Comment comment : commentList) {
-            try {
-                FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-                leftVBox.getChildren().add(commentLoader.load());
-                CommentViewController controller = commentLoader.getController();
 
-//                //TODO TOO MUCH OVERLOAD
-//                //controller.isCommentLiked = YouTube.client.isCommentLiked(comment.getCommentId());
-//
-//                controller.setComment(comment.getChannel().getName(),comment.getChannelId(),comment.getText(),DateFormats.toRelativeTime(comment.getCreatedDateTime()),YouTube.client.getLikesOfComment(comment.getCommentId()),video.getVideoId(), comment.getCommentId(), this);
-//                //TODO: Reactions
-//                //Replies
-//                    List<Comment> replies = YouTube.client.getRepliesOfComment(comment.getCommentId());
-//                for(Comment reply : replies) {
-//                    commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
-//                    controller.addReply(commentLoader.load());
-//                    CommentViewController replyController = commentLoader.getController();
-//                    //TODO TOO MUCH OVERLOAD
-////                    replyController.isCommentLiked = YouTube.client.isCommentLiked(reply.getCommentId());
-//                    replyController.setComment(reply.getChannel().getName(),reply.getChannelId(),reply.getText(),DateFormats.toRelativeTime(reply.getCreatedDateTime()),YouTube.client.getLikesOfComment(reply.getCommentId()), video.getVideoId(), reply.getCommentId(), this);
-//                }
+            if(comment.getRepliedCommentId() != null)
+            {
+                continue;
+            }
+            try {
+
+                FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+                Node node = commentLoader.load();
+                leftVBox.getChildren().add(node);
+                if(firstComment == null)
+                {
+                    firstComment = node;
+                }
+                CommentViewController controller = commentLoader.getController();
+                commentViewControllers.add(controller);
+
+                controller.setComment(comment, this, null);
+                List<Comment> replies = commentList.stream().filter(c -> Objects.equals(c.getRepliedCommentId(), comment.getCommentId())).toList();
+                for(Comment reply : replies) {
+                    commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+                    controller.addReply(commentLoader.load());
+                    CommentViewController replyController = commentLoader.getController();
+                    replyController.setComment(reply ,this, controller);
+                    commentViewControllers.add(replyController);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            System.out.printf(comment.getText());
-            //YouTube.client.getRepliesOfComment(comment.getCommentId());
-
         }
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for(CommentViewController controller : commentViewControllers)
+        {
+            List<CommentReaction> commentReactionsOfComment = commentReactions.stream().filter(x -> Objects.equals(x.getCommentId(), controller.comment.getCommentId())).toList();
+            List<CommentReaction> userReaction = commentReactionsOfComment .stream().filter(x ->  Objects.equals(x.getChannelId(), YouTube.client.getAccount().getChannelId())).toList();
+            HashMap<Boolean, Short> commentLiked = new HashMap<>();
+            if(!userReaction.isEmpty())
+            {
+                commentLiked.put(true, userReaction.getFirst().getCommentReactionTypeId());
+            }
+            controller.setCommentLiked(commentLiked , (long) commentReactionsOfComment.size());
+        }
+
     }
 
     long changeInLike = 0;
@@ -438,8 +454,7 @@ public class VideoViewController {
             isVideoLiked.put(true, (short) 1);
             currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short) 1);
             CompletableFuture.runAsync(() -> {
-                YouTube.client.sendVideoLikeAddRequest(currentReaction);
-                currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+                currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
             }, executorService).exceptionally(ex -> {
                 ex.printStackTrace();
                 return null;
@@ -473,8 +488,7 @@ public class VideoViewController {
             isVideoLiked.put(true, (short) -1);
             currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short) -1);
             CompletableFuture.runAsync(() -> {
-                YouTube.client.sendVideoLikeAddRequest(currentReaction);
-                currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+                currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
             }, executorService).exceptionally(ex -> {
                 ex.printStackTrace();
                 return null;
@@ -503,6 +517,7 @@ public class VideoViewController {
                 isChannelSubscribed = !isChannelSubscribed;
                 int subscribersCount = YouTube.client.getChannelSubscribers(video.getChannelId()).size();
                 Platform.runLater(() -> subsLabel.setText(subscribersCount + " subscribers "));
+                homeController.updateSubsList();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -513,8 +528,29 @@ public class VideoViewController {
         if (commentTextField.getText().isBlank()) {
             return;
         }
-        YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), video.getVideoId(), YouTube.client.getAccount().getChannelId(), null));
-        commentTextField.setText("");
+        Comment newComment = YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), video.getVideoId(), YouTube.client.getAccount().getChannelId(), null));
+        cancelCommentAction(new ActionEvent());
+
+        FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+        try {
+            Node theCommentNode = commentLoader.load();
+            if(firstComment == null)
+            {
+                leftVBox.getChildren().add(theCommentNode);
+            }
+            else {
+                int index = leftVBox.getChildren().indexOf(firstComment);
+                leftVBox.getChildren().add(index, theCommentNode);
+            }
+            firstComment = theCommentNode;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        CommentViewController newCommentController = commentLoader.getController();
+
+        newCommentController.setComment(newComment,this, null);
+        newCommentController.setCommentLiked(new HashMap<>(), 0L);
+        notifyOneCommentUp();
     }
 
     public void cancelCommentAction(ActionEvent actionEvent) {
@@ -569,5 +605,11 @@ public class VideoViewController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void notifyOneCommentUp() {
+        currentCommentCount++;
+        commentsLabel.setText(currentCommentCount + " Comments");
+
     }
 }
