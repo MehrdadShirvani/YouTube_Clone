@@ -111,6 +111,11 @@ public class DatabaseManager {
     public static boolean isSubscribedToChannel(long subscriberChannelId, long targetChannelId)
     {
         List<Channel> list = getSubscribedChannels(subscriberChannelId);
+        if(list == null)
+        {
+            return  false;
+        }
+
         for(Channel channel : list)
         {
             if(channel.getChannelId() == targetChannelId)
