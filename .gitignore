@@ -55,10 +55,11 @@ src/main/resources/META-INF
 ### Thumbnail TempFiles ###
 src/main/resources/Client/tempImages
 
-### DatabaseProperites ###
-src/main/java/Server/Database/DatabaseProperties.java
+### DatabaseConfig ###
+src/main/java/Server/.DatabaseConfig.txt
 
 
 ### Media Files ###
 src/main/resources/Server/Videos
 src/main/resources/Server/Images
+
