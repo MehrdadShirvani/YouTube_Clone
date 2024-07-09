@@ -36,7 +36,7 @@
                  </cursor>
              </WebView>
              <DatePicker fx:id="DPBirthDate" />
-         <ToggleButton fx:id="cbPremium" mnemonicParsing="false" text="Premium" />
+         <ToggleButton fx:id="cbPremium" mnemonicParsing="false" styleClass="premium-toggle-button" text="Premium" />
              <HBox alignment="CENTER_RIGHT" spacing="10.0">
                  <children>
                      <Button fx:id="cancelBtn" alignment="CENTER" layoutX="345.0" layoutY="20.0" minHeight="34.0" mnemonicParsing="false" onAction="#cancel" styleClass="secondary-button" text="cancel" textAlignment="CENTER">

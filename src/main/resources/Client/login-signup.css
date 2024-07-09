@@ -125,7 +125,7 @@ DatePicker .month-year-pane .spinner {
     -fx-font-family: Roboto;
     -fx-font-size: 14;
 }
-.toggle-button{
+.premium-toggle-button{
     -fx-background-radius: 20;
     -fx-border-radius: 20;
     -fx-background-color: transparent;
@@ -136,7 +136,37 @@ DatePicker .month-year-pane .spinner {
     -fx-border-width: 1;
     -fx-border-color: -fx-blue-color;
 }
-.toggle-button:selected{
+.premium-toggle-button:selected{
     -fx-background-color: -fx-blue-color;
+    -fx-text-fill: #f1f1f1;
+}
+.private-toggle{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: #dd2c00;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-border-width: 1;
+    -fx-border-color: #dd2c00;
+}
+.private-toggle:selected{
+    -fx-background-color: #dd2c00;
+    -fx-text-fill: #f1f1f1;
+}
+#CBIsCollaborative{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: #2ba640;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-border-width: 1;
+    -fx-border-color: #2ba640;
+}
+#CBIsCollaborative:selected{
+    -fx-background-color: #2ba640;
     -fx-text-fill: #f1f1f1;
 }

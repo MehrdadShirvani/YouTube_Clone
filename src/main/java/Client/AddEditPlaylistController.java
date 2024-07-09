@@ -5,13 +5,14 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 import java.util.Objects;
 
 public class AddEditPlaylistController {
     public TextField TxtName;
-    public CheckBox CBIsPrivate;
-    public CheckBox CBIsCollaborative;
+    public ToggleButton CBIsPrivate;
+    public ToggleButton CBIsCollaborative;
     public Button SubmitBtn;
     private Playlist playlist;
 

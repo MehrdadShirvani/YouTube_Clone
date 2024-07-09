@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.web.WebView?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Client.AddEditPlaylistController"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox fx:id="VControls">
-        <TextField fx:id="TxtName" promptText="Name"/>
-        <CheckBox  fx:id="CBIsPrivate" onAction="#cbPrivateAction" text="Is Private"> </CheckBox>
-        <CheckBox fx:id="CBIsCollaborative" text="Is Collaborative"> </CheckBox>
-        <Button fx:id="SubmitBtn" onAction="#submitAction" text="Create"/>
+<VBox alignment="CENTER" fillWidth="false" prefHeight="400.0" prefWidth="600.0" styleClass="side-bar" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.AddEditPlaylistController">
+    <stylesheets>
+        <URL value="@login-signup.css" />
+    </stylesheets>
+    <VBox fx:id="signupVbox" alignment="CENTER_LEFT" prefHeight="96.0" prefWidth="520.0" spacing="10.0">
+      <Label text="Playlist" textFill="#f1f1f1">
+         <font>
+            <Font name="Product Sans Bold" size="30.0" />
+         </font></Label>
+        <TextField fx:id="TxtName" promptText="Name" />
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <ToggleButton fx:id="CBIsCollaborative" mnemonicParsing="false" text="Collaborative">
+                <toggleGroup>
+                    <ToggleGroup fx:id="toggleGroup" />
+                </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="CBIsPrivate" toggleGroup="$toggleGroup" mnemonicParsing="false" styleClass="private-toggle" text="Private" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+         <children>
+              <Button fx:id="SubmitBtn" onAction="#submitAction" styleClass="conformation-button" text="Create" />
+         </children>
+      </HBox>
+      <padding>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
     </VBox>
-</AnchorPane>
+</VBox>
