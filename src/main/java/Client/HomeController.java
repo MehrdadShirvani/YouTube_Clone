@@ -20,12 +20,14 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebView;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -78,8 +80,12 @@ public class HomeController {
     private List<SmallVideoView> currentSmallVideos = new ArrayList<SmallVideoView>();
     private VideoViewController currentVideoViewController;
     private VBox accountVBox;
+    private ArrayList<String> searchHistory;
 
     public void initialize() {
+        searchHistory = YouTube.client.readSearchHistory();
+        TextFields.bindAutoCompletion(searchTextField , searchHistory);
+
         isMinimized = false;
         //Search transition
         ScaleTransition st = new ScaleTransition(Duration.millis(200), searchTextField);
@@ -408,6 +414,10 @@ public class HomeController {
     private void setSearch() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
+
+        searchHistory.add(searchTextField.getText());
+        YouTube.client.saveSearchHistory(searchHistory);
+        TextFields.bindAutoCompletion(searchTextField , searchHistory);
 
         List<Video> videos = YouTube.client.searchVideo(null, searchTextField.getText(), 10, 1);
         for (Video video : videos) {
