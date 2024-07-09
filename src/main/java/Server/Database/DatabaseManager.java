@@ -4,15 +4,44 @@ import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 public class DatabaseManager {
-    static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("mainPersistentUnit");
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(10); // Custom thread pool
+
+    private static HikariDataSource dataSource;
+
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/YoutubeDB");
+        config.setUsername("root");
+        config.setPassword(DatabaseProperties.getPassword());
+        config.setMaximumPoolSize(20);
+        config.setMinimumIdle(5);
+        config.setIdleTimeout(30000);
+        config.setConnectionTimeout(20000);
+        config.setMaxLifetime(1800000);
+
+        dataSource = new HikariDataSource(config);
+    }
+
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return Persistence.createEntityManagerFactory("mainPersistentUnit", getProperties());
+    }
+
+    private static Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("javax.persistence.nonJtaDataSource", dataSource);
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.put("hibernate.hbm2ddl.auto", "update");
+        return properties;
+    }
+
+    private static final EntityManagerFactory entityManagerFactory = DatabaseManager.getEntityManagerFactory();
     //region Channels
     public static Channel addChannel(Channel channel) {
         EntityManager entityManager = null;
@@ -541,6 +570,7 @@ public class DatabaseManager {
             }
         }
     }
+
     public static CommentReaction getCommentReaction(Long channelId, Long commentId)
     {
         EntityManager entityManager = null;
