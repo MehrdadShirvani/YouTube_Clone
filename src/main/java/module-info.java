@@ -22,6 +22,7 @@ module org.example.youtube {
     requires googleauth;
     requires com.google.zxing;
     requires com.google.zxing.javase;
+    requires com.zaxxer.hikari;
 
     opens Server to javafx.fxml;
     exports Server;
