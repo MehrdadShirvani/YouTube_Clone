@@ -3,6 +3,7 @@ package Client;
 import Shared.Models.Channel;
 import Shared.Models.Playlist;
 import Shared.Models.Video;
+import Shared.Utils.QrCodeGenerator;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -187,6 +189,13 @@ public class HomeController {
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                File file = new File("src/main/java/Client/.cache");
+                String[] entries = file.list();
+                for(String entry : entries){
+                    File currentFile = new File(file.getPath(),entry);
+                    currentFile.delete();
+                }
+
                 accountPopup.hide();
                 YouTube.client.setAccount(null);
                 YouTube.changeScene("login-view.fxml");
