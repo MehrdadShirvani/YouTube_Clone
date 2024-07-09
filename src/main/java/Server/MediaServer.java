@@ -159,7 +159,7 @@ public class MediaServer {
                 else if(contentType.split("[|]")[0].equalsIgnoreCase("text/vtt"))
                 {
                     String vttId = (contentType.split("[|]")[1]);
-                    String uploadPath = "src/main/resources/Server/Images/" + vttId + ".vtt";
+                    String uploadPath = "src/main/resources/Server/Videos/" + vttId + ".vtt";
                     file = new File(uploadPath);
                 }
                 else {
