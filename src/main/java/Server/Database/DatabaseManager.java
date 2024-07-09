@@ -1229,18 +1229,26 @@ public static Long getAllViewsOfChannel(long channelId)
 
     //region Videos
     public static Video addVideo(Video video) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
             transaction.begin();
 
             entityManager.persist(video);
             transaction.commit();
 
-            Video savedVideo = entityManager.find(Video.class, video.getVideoId());
-
-            entityManager.close();
-            return savedVideo;
+            return entityManager.find(Video.class, video.getVideoId());
+        } catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e; // or handle it as needed
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static Video editVideo(Video video)
