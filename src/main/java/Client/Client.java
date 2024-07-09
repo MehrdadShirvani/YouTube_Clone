@@ -38,7 +38,7 @@ public class Client {
     private final ClientEncryption clientEncryption;
     private PublicKey serverPublicKey;
     private Account account;
-    private final String SEARCH_HISTORY_ADDRESS = ".cache/Search_History.json" ;
+    private final String SEARCH_HISTORY_ADDRESS = "src/main/java/Client/.cache/Search_History.json" ;
     public static final int LIKE_ID = 1;
     public static final int DISLIKE_ID = -1;
 
@@ -771,7 +771,7 @@ public class Client {
 
             objectMapper.writeValue(file , searchHistory);
         } catch (IOException e) {
-            System.err.println("Error : while save search history!");
+            System.err.println("Error: while saving search history!");
             e.printStackTrace();
         }
     }
@@ -787,14 +787,13 @@ public class Client {
                 fileDir.mkdirs();
             }
 
-            if (!file.exists()) {
+            if (!file.exists() || file.length() == 0) {
                 file.createNewFile();
                 return new ArrayList<>();
             }
             return objectMapper.readValue(file , new TypeReference<ArrayList<String>>() {});
-
         } catch (IOException e) {
-            System.err.println("Error : while read search history!");
+            System.err.println("Error: while reading search history!");
             e.printStackTrace();
             return new ArrayList<>();
         }
