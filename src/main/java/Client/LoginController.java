@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Utils.TextEncryptor;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -76,7 +77,7 @@ public class LoginController {
     }
 
     public void login(ActionEvent event) {
-        if(!YouTube.client.sendLoginRequest(emailTextField.getText(), passwordField.getText()))
+        if(!YouTube.client.sendLoginRequest(emailTextField.getText(), TextEncryptor.encrypt(passwordField.getText())))
         {
             //TODO Ehsasn Stylize
             Alert alert = new Alert(Alert.AlertType.ERROR);

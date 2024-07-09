@@ -115,17 +115,30 @@ public class Recommendation {
 
 
     private HashMap<Video , Double> getTrendedVideos() {
-        List<Video> videos = DatabaseManager.searchVideo(this.channelId , null , "" , 40 , 1);
+        List<Video> videos = DatabaseManager.searchVideo(this.channelId , null , "" , 40 , ((perPage * pageNumber) / 40) + 1);
         HashMap<Video , Double> trendingRate = new HashMap<>();
+
+        List<Reaction> allReactions =  DatabaseManager.getVideoReactions();
+        List<Comment> allComments =  DatabaseManager.getVideoComments();
+
+        if(allReactions == null)
+        {
+            allReactions = new ArrayList<>();
+        }
+        if(allComments == null)
+        {
+            allComments = new ArrayList<>();
+        }
+
 
         for (Video video : videos) {
             Long videoId = video.getVideoId();
             Long viewCount = DatabaseManager.getNumberOfViews(videoId);
-            List<Reaction> videoReactions = DatabaseManager.getVideoReactions(videoId);
-            List<Comment> comments = DatabaseManager.getVideoComments(videoId);
-            Long numberOfLikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count() : 0;
-            Long numberOfDislikes = (videoReactions != null) ? videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count() : 0;
-            Long numberOfComments = (comments != null) ? (long) comments.size() : 0;
+            List<Reaction> videoReactions = allReactions.stream().filter(x -> Objects.equals(x.getVideoId(), video.getVideoId())).toList();
+            List<Comment> videoComments = allComments.stream().filter(x -> Objects.equals(x.getVideoId(), video.getVideoId())).toList();
+            Long numberOfLikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == 1).count();
+            Long numberOfDislikes = videoReactions.stream().filter(videoReaction -> videoReaction.getReactionTypeId() == -1).count();
+            Long numberOfComments = (long) videoComments.size();
 
             Double rating = calculateRating(numberOfLikes , numberOfDislikes , numberOfComments , viewCount);
             trendingRate.put(video , rating);

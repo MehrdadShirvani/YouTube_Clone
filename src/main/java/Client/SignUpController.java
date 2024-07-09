@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Models.Account;
 import Shared.Models.Playlist;
+import Shared.Utils.TextEncryptor;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -147,7 +148,7 @@ public class SignUpController {
             return;
         }
 
-        Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), null);
+        Account account = new Account(firstNameTextField.getText(), lastNameTextField.getText(), usernameTextField.getText(), emailTextField.getText(), TextEncryptor.encrypt(passwordField.getText()), null);
         if(!YouTube.client.sendSignupRequest(account))
         {
             //TODO Stylize
