@@ -1686,6 +1686,22 @@ public static Long getAllViewsOfChannel(long channelId)
             return query.getResultList();
         }
     }
+    public static List<Reaction> getVideoReactions() {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            TypedQuery<Reaction> query = entityManager.createQuery(
+                    "SELECT r FROM Reaction r", Reaction.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+    }
     public static List<Reaction> getVideoReactions(Long videoId) {
         EntityManager entityManager = null;
         try {
@@ -1701,6 +1717,14 @@ public static Long getAllViewsOfChannel(long channelId)
             if (entityManager != null) {
                 entityManager.close();
             }
+        }
+    }
+    public static List<Comment> getVideoComments() {
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            entityManager.getTransaction().begin();
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c Order By c.createdDateTime Desc", Comment.class);
+            return query.getResultList();
         }
     }
     public static List<Comment> getVideoComments(Long videoId)
@@ -1829,5 +1853,9 @@ public static Long getAllViewsOfChannel(long channelId)
             return category;
         }
     }
+
+
+
+
     //endregion
 }
