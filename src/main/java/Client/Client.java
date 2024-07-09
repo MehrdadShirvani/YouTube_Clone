@@ -732,9 +732,7 @@ public class Client {
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        //TODO -> get this back to normal
-//        requestBody.setChannelId(this.account.getChannelId());
-        requestBody.setChannelId(1L);
+        requestBody.setChannelId(this.account.getChannelId());
         requestBody.setCategories(categories);
         requestBody.setPerPage(perPage);
         requestBody.setPageNumber(pageNumber);
@@ -1124,6 +1122,8 @@ public class Client {
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
          Body requestBody = new Body();
+         requestBody.setPerPage(perPage);
+         requestBody.setPageNumber(pageNumber);
 
          Request request = new Request(requestHeader , requestBody);
 
@@ -1147,6 +1147,8 @@ public class Client {
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
 
         Request request = new Request(requestHeader , requestBody);
 
