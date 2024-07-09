@@ -13,11 +13,16 @@ public class AddEditPlaylistController {
     public VBox txtVBox;
     public ToggleButton CBIsPrivate;
     public ToggleButton CBIsCollaborative;
+    public VBox outVBox;
+    public VBox signupVbox;
     public Button SubmitBtn;
     private Playlist playlist;
     private Label errLabel;
 
     public void setPlaylist(Playlist playlist, HomeController controller) {
+        //Binding
+        signupVbox.prefWidthProperty().bind(outVBox.widthProperty().multiply(0.75));
+        signupVbox.prefHeightProperty().bind(outVBox.heightProperty().multiply(0.3));
         this.playlist = playlist;
         if (playlist != null) {
             TxtName.setText(playlist.getName());

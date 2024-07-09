@@ -167,6 +167,14 @@ public class HomeController {
         editPro.setFill(Color.WHITE);
         editProfile.setGraphic(editPro);
 
+        Button addPlaylist = new Button("Add playlist");
+        addPlaylist.getStylesheets().add(getClass().getResource("home.css").toExternalForm());
+        addPlaylist.getStyleClass().add("menu-toggle-button");
+        accountVBox.getChildren().add(addPlaylist);
+        SVGPath playListSVG = new SVGPath();
+        playListSVG.setContent("M11.53 9.42V16.27L17.19 12.85L11.53 9.43V9.42ZM0.199997 9.42H9.26V11.7H0.199997V9.42ZM0.199997 0.279999H13.8V2.56H0.199997V0.279999ZM0.199997 4.85H13.8V7.13H0.199997V4.85Z");
+        playListSVG.setFill(Color.WHITE);
+        addPlaylist.setGraphic(playListSVG);
 
         accountPopup.getContent().add(accountVBox);
         proStackPane.setOnMouseClicked(e -> {
@@ -191,6 +199,13 @@ public class HomeController {
                 accountPopup.hide();
                 YouTube.client.setAccount(null);
                 YouTube.changeScene("login-view.fxml");
+            }
+        });
+        addPlaylist.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                accountPopup.hide();
+                setPlaylistPage(null);
             }
         });
 

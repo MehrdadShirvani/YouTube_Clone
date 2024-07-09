@@ -64,8 +64,10 @@ public class EditAccountView implements Initializable {
 
     ExecutorService executorService = Executors.newCachedThreadPool();
     public void setAccount(Account account) throws IOException {
+        //Binding
         signupVbox.prefWidthProperty().bind(backgroundGridPane.widthProperty().multiply(0.75));
         signupVbox.prefHeightProperty().bind(backgroundGridPane.heightProperty().multiply(0.83));
+
         this.currnetAccount = account;
         firstNameTextField.setText(account.getFirstName());
         lastNameTextField.setText(account.getLastName());
