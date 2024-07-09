@@ -244,6 +244,7 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
 
+
     public void setVideoPage(Video video) {
         if (currentVideoViewController != null) {
             currentVideoViewController.videoWebView.getEngine().load(null);
@@ -256,13 +257,32 @@ public class HomeController {
         try {
             videoPage = fxmlLoader.load();
             currentVideoViewController = fxmlLoader.getController();
-            currentVideoViewController.setVideo(video, this);
+            currentVideoViewController.setVideo(video, this, null, null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         mainBorderPane.setCenter(videoPage);
     }
+    public void setVideoPage(Video video, Playlist playlist, List<Video> videos)
+    {
+        if (currentVideoViewController != null) {
+            currentVideoViewController.videoWebView.getEngine().load(null);
+            currentVideoViewController.commentProfile.getEngine().load(null);
+            currentVideoViewController.authorProfile.getEngine().load(null);
+        }
 
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("video-view.fxml"));
+        BorderPane videoPage = null;
+        try {
+            videoPage = fxmlLoader.load();
+            currentVideoViewController = fxmlLoader.getController();
+            currentVideoViewController.setVideo(video, this, playlist, videos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainBorderPane.setCenter(videoPage);
+    }
     private void setHome() {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
@@ -284,7 +304,7 @@ public class HomeController {
             SmallVideoView controller = fxmlLoader.getController();
             currentSmallVideos.add(controller);
 
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
         //TODO: Set subs
@@ -399,7 +419,7 @@ public class HomeController {
                 throw new RuntimeException(e);
             }
             SmallVideoView controller = fxmlLoader.getController();
-            controller.setVideo(video, this);
+            controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
     }
