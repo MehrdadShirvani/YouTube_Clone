@@ -81,10 +81,19 @@ public class HomeController {
     private VideoViewController currentVideoViewController;
     private VBox accountVBox;
     private ArrayList<String> searchHistory;
+    private int perPage = 8;
+    private int pageNumber = 1;
 
     public void initialize() {
         searchHistory = YouTube.client.readSearchHistory();
         TextFields.bindAutoCompletion(searchTextField , searchHistory);
+
+        homeScrollPane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.doubleValue() == homeScrollPane.getVmax()) {
+                updateHomepage();
+            }
+        });
+
 
         isMinimized = false;
         //Search transition
@@ -294,7 +303,9 @@ public class HomeController {
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
 
-        currentVideos = YouTube.client.searchVideo(null, "", 10, 1);
+        currentVideos = YouTube.client.getHomepageVideos(8 , 1);
+        System.out.println("currentVideos = " + currentVideos);
+        updateHomepage();
         for (SmallVideoView controller : currentSmallVideos) {
             controller.webView.getEngine().load(null);
             controller.profileWebView.getEngine().load(null);
@@ -318,6 +329,33 @@ public class HomeController {
             updateSubsList();
         });
 
+    }
+
+    public void updateHomepage() {
+        pageNumber++;
+        currentVideos = YouTube.client.getHomepageVideos(perPage, pageNumber);
+        for (SmallVideoView controller : currentSmallVideos) {
+            controller.webView.getEngine().load(null);
+            controller.profileWebView.getEngine().load(null);
+        }
+        currentSmallVideos = new ArrayList<SmallVideoView>();
+        for (Video video : currentVideos) {
+            FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
+            Parent smallVideo = null;
+            try {
+                smallVideo = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            SmallVideoView controller = fxmlLoader.getController();
+            currentSmallVideos.add(controller);
+
+            controller.setVideo(video, this, null, null);
+            homeVideosFlowPane.getChildren().add(smallVideo);
+        }
+        Platform.runLater(() -> {
+            updateSubsList();
+        });
     }
 
     public void updateSubsList()
