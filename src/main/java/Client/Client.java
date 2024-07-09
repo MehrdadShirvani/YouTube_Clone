@@ -1622,7 +1622,7 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return requestBody.getPlaylists();
+            return responseBody.getPlaylists();
         }
 
         System.out.println(responseBody.getMessage());
