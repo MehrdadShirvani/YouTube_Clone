@@ -552,13 +552,13 @@ public class Client {
     }
 
 
-    public boolean sendCommentLikeDeleteRequest(Long commentId) {
+    public boolean sendCommentLikeDeleteRequest(Long commentReactionId) {
         String endpoint = "/api/comment/like/delete";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
 
-        requestBody.setCommentId(commentId);
+        requestBody.setCommentReactionId(commentReactionId);
 
         Request request = new Request(requestHeader , requestBody);
 
