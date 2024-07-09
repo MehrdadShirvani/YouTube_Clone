@@ -38,7 +38,7 @@ public class Client {
     private final ClientEncryption clientEncryption;
     private PublicKey serverPublicKey;
     private Account account;
-    private final String SEARCH_HISTORY_ADDRESS = ".cache/Search_History.json" ;
+    private final String SEARCH_HISTORY_ADDRESS = "src/main/java/Client/.cache/Search_History.json" ;
     public static final int LIKE_ID = 1;
     public static final int DISLIKE_ID = -1;
 
@@ -755,7 +755,7 @@ public class Client {
     }
 
 
-    public void saveSearchHistory(String[] searchHistory) {
+    public void saveSearchHistory(ArrayList<String> searchHistory) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -777,7 +777,7 @@ public class Client {
     }
 
 
-    public String[] readSearchHistory() {
+    public ArrayList<String> readSearchHistory() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(SEARCH_HISTORY_ADDRESS);
@@ -787,16 +787,15 @@ public class Client {
                 fileDir.mkdirs();
             }
 
-            if (!file.exists()) {
+            if (!file.exists() || file.length() == 0) {
                 file.createNewFile();
-                return new String[0];
+                return new ArrayList<>();
             }
-
-            return objectMapper.readValue(file, new TypeReference<String[]>() {});
+            return objectMapper.readValue(file , new TypeReference<ArrayList<String>>() {});
         } catch (IOException e) {
             System.err.println("Error: while reading search history!");
             e.printStackTrace();
-            return new String[0];
+            return new ArrayList<>();
         }
     }
 
