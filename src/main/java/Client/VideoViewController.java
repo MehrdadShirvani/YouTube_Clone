@@ -389,11 +389,13 @@ public class VideoViewController {
             List<CommentReaction> commentReactionsOfComment = commentReactions.stream().filter(x -> Objects.equals(x.getCommentId(), controller.comment.getCommentId())).toList();
             List<CommentReaction> userReaction = commentReactionsOfComment .stream().filter(x ->  Objects.equals(x.getChannelId(), YouTube.client.getAccount().getChannelId())).toList();
             HashMap<Boolean, Short> commentLiked = new HashMap<>();
+            CommentReaction commentReaction = null;
             if(!userReaction.isEmpty())
             {
                 commentLiked.put(true, userReaction.getFirst().getCommentReactionTypeId());
+                commentReaction = userReaction.getFirst();
             }
-            controller.setCommentLiked(commentLiked , (long) commentReactionsOfComment.size());
+            controller.setCommentLiked(commentLiked , (long) commentReactionsOfComment.size(), commentReaction);
         }
 
     }
@@ -432,33 +434,19 @@ public class VideoViewController {
             if (isVideoLiked.get(true) == 1) {
                 changeInLike = -1;
                 isVideoLiked.remove(true);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
-                }, executorService).thenRun(() -> currentReaction = null).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
+                currentReaction = null;
             } else {
                 changeInLike = +1;
                 isVideoLiked.replace(true, (short) 1);
                 currentReaction.setReactionTypeId((short) 1);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendVideoLikeAddRequest(currentReaction);
-                }, executorService).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendVideoLikeAddRequest(currentReaction);
             }
         } catch (Exception exception) {
             changeInLike = +1;
             isVideoLiked.put(true, (short) 1);
             currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short) 1);
-            CompletableFuture.runAsync(() -> {
-                currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
-            }, executorService).exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
         }
         setVideoLikedState();
     }
@@ -469,30 +457,16 @@ public class VideoViewController {
                 changeInLike = -1;
                 isVideoLiked.replace(true, (short) -1);
                 currentReaction.setReactionTypeId((short) -1);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendVideoLikeAddRequest(currentReaction);
-                }, executorService).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendVideoLikeAddRequest(currentReaction);
             } else {
                 isVideoLiked.remove(true);
-                CompletableFuture.runAsync(() -> {
-                    YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
-                }, executorService).thenRun(() -> currentReaction = null).exceptionally(ex -> {
-                    ex.printStackTrace();
-                    return null;
-                });
+                YouTube.client.sendVideoLikeDeleteRequest(currentReaction.getReactionId());
+                currentReaction = null;
             }
         } catch (Exception exception) {
             isVideoLiked.put(true, (short) -1);
             currentReaction = new Reaction(video.getVideoId(), YouTube.client.getAccount().getChannelId(), (short) -1);
-            CompletableFuture.runAsync(() -> {
-                currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
-            }, executorService).exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            currentReaction = YouTube.client.sendVideoLikeAddRequest(currentReaction);
         }
         setVideoLikedState();
     }
@@ -549,7 +523,7 @@ public class VideoViewController {
         CommentViewController newCommentController = commentLoader.getController();
 
         newCommentController.setComment(newComment,this, null);
-        newCommentController.setCommentLiked(new HashMap<>(), 0L);
+        newCommentController.setCommentLiked(new HashMap<>(), 0L, null);
         notifyOneCommentUp();
     }
 
