@@ -15,8 +15,9 @@ public class DatabaseManager {
     private static final ExecutorService executorService = Executors.newFixedThreadPool(10); // Custom thread pool
     //region Channels
     public static Channel addChannel(Channel channel) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(channel);
@@ -24,46 +25,17 @@ public class DatabaseManager {
 
             Channel savedChannel = entityManager.find(Channel.class, channel.getChannelId());
 
-            entityManager.close();
             return savedChannel;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
+            if (entityManager != null && entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
             e.printStackTrace();
             return null;
-        }
-    }
-    public static Channel editChannel(Channel updatedChannel) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            Channel mergedChannel = entityManager.merge(updatedChannel);
-
-            transaction.commit();
-            entityManager.close();
-            return mergedChannel;
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Channel getChannel(Long channelId)
-    {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
-            return entityManager.find(Channel.class, channelId);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
     }
     public static List<Channel> getChannels() {
