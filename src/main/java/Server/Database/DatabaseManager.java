@@ -463,26 +463,18 @@ public class DatabaseManager {
     }
     public static List<CommentReaction> getCommentReactionsOfVideo(Long videoId)
     {
-        try {
-            CompletableFuture<List<CommentReaction>> future = CompletableFuture.supplyAsync(() -> {
-                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-                {
-                    EntityTransaction transaction = entityManager.getTransaction();
-                    transaction.begin();
+        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+        {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
 
-                    TypedQuery<CommentReaction> query = entityManager.createQuery(
-                            "SELECT cr FROM CommentReaction cr " +
-                                    "Inner Join Comment c on c.commentId = cr.commentId " +
-                                    "WHERE c.videoId = :videoId " +
-                                    "", CommentReaction.class);
-                    query.setParameter("videoId", videoId);
-                    return  query.getResultList();
-                }
-            });
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+            TypedQuery<CommentReaction> query = entityManager.createQuery(
+                    "SELECT cr FROM CommentReaction cr " +
+                            "Inner Join Comment c on c.commentId = cr.commentId " +
+                            "WHERE c.videoId = :videoId " +
+                            "", CommentReaction.class);
+            query.setParameter("videoId", videoId);
+            return  query.getResultList();
         }
     }
     public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
@@ -1652,7 +1644,7 @@ public static Long getAllViewsOfChannel(long channelId)
         try(EntityManager entityManager = entityManagerFactory.createEntityManager())
         {
             entityManager.getTransaction().begin();
-            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId AND (c.repliedCommentId = NULL)", Comment.class);
+            TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.videoId = :videoId Order By c.createdDateTime Desc", Comment.class);
             query.setParameter("videoId",videoId);
             return query.getResultList();
         }
