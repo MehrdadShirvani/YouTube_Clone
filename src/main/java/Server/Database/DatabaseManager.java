@@ -422,24 +422,34 @@ public class DatabaseManager {
 
     //region CommentReactions
     public static CommentReaction addCommentReaction(CommentReaction commentReaction) {
-        if(commentReaction == null)
-        {
-            return  null;
+        if (commentReaction == null) {
+            return null;
         }
-        if(getCommentReaction(commentReaction.getChannelId(), commentReaction.getCommentId()) != null)
-        {
+
+        CommentReaction existingReaction = getCommentReaction(commentReaction.getChannelId(), commentReaction.getCommentId());
+        if (existingReaction != null) {
             return editCommentReaction(commentReaction);
         }
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
+
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(commentReaction);
             transaction.commit();
             return commentReaction;
         } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
     public static CommentReaction editCommentReaction(CommentReaction commentReaction) {
