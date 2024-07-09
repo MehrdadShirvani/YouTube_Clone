@@ -1,6 +1,7 @@
 package Client;
 
 import Shared.Models.*;
+import Shared.Utils.DateFormats;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -63,26 +64,24 @@ public class CommentViewController {
     Label commentTextLabel;
     @FXML
     Label dateLabel;
-    private Long initialLikeCount = 0L;
+    public Long initialLikeCount = 0L;
 
     public HashMap<Boolean , Short> isCommentLiked;
     private CommentReaction currentReaction;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     long changeInLike = 0;
-    private static HBox belowHBox1;
-    private static HBox belowHBox2;
+    private HBox belowHBox1;
+    private HBox belowHBox2;
     private Rectangle maskProfileRec;
     //Must be used when reply button is clicked. (Tag instead of reply)
-    public Boolean isOnReply;
     //To be used when submitting new comment
-    private long commentID;
     private VideoViewController videoViewController;
     public Comment comment;
-    private long videoId;
+    private CommentViewController parentController;
+    private Channel channel;
 
     public void initialize() {
-        isOnReply = false;
         replyHBox.getChildren().remove(replyTitledPane);
         //Mask profile
         maskProfileRec = new Rectangle(48, 48);
@@ -108,15 +107,13 @@ public class CommentViewController {
         belowHBox2 = commentBelowHBox;
         mainVBox.getChildren().remove(commentHBox);
         mainVBox.getChildren().remove(commentBelowHBox);
-
-
-
     }
 
     public void addReply(Node node) {
         if (!replyHBox.getChildren().contains(replyTitledPane))
             replyHBox.getChildren().addLast(replyTitledPane);
-        replyVBox.getChildren().add(node);
+        replyVBox.getChildren().addFirst(node);
+        replyTitledPane.setText(replyVBox.getChildren().size() + " replies");
     }
 
     public void cancelCommentAction(ActionEvent event) {
@@ -130,13 +127,28 @@ public class CommentViewController {
         if (commentTextField.getText().isBlank()) {
             return;
         }
-        YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), videoId, YouTube.client.getAccount().getChannelId(), commentID));
-        commentTextField.setText("");
 
-        videoViewController.setUpComments();
+        FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
+        try {
+            addReply(commentLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        CommentViewController newCommentController = commentLoader.getController();
+        Comment newComment = YouTube.client.sendCommentAddRequest(new Comment(commentTextField.getText(), comment.getVideoId(), YouTube.client.getAccount().getChannelId(), comment.getCommentId()));
+        newCommentController.setComment(newComment,videoViewController, this);
+        newCommentController.setCommentLiked(new HashMap<>(), 0L);
+        cancelCommentAction(new ActionEvent());
+        videoViewController.notifyOneCommentUp();
     }
 
     public void replyOnComment(ActionEvent event) {
+        if(parentController != null)
+        {
+            parentController.replyOnCommentWithId(channel.getName());
+            return;
+        }
+
         if (belowHBox1.getParent() != null) {
             mainVBox.getChildren().remove(belowHBox1);
             mainVBox.getChildren().remove(belowHBox2);
@@ -145,24 +157,29 @@ public class CommentViewController {
         mainVBox.getChildren().addLast(belowHBox2);
     }
 
+    private void replyOnCommentWithId(String name)
+    {
+        replyOnComment(new ActionEvent());
+        commentTextField.setText("@" + name + " ");
+    }
+
     public void commentChanged(KeyEvent keyEvent) {
         commentButton.setDisable(commentTextField.getText().isBlank());
     }
 
-    public void setComment(Comment comment, String channel,long authorChannelId, String text,String date,long likes, long videoId, long commentID, VideoViewController videoViewController) {
+    public void setComment(Comment comment, VideoViewController videoViewController, CommentViewController parentController) {
         this.comment = comment;
-        this.videoId = videoId;
-        this.commentID = commentID;
+        this.parentController = parentController;
         this.videoViewController = videoViewController;
-        authorLabel.setText(channel);
-        commentTextLabel.setText(text);
-        dateLabel.setText(date);
-        likeCommentButton.setText(String.valueOf(likes));
+        channel = YouTube.client.getChannelInfo(comment.getChannelId());
+        authorLabel.setText(channel.getName());
+        commentTextLabel.setText(comment.getText());
+        dateLabel.setText(DateFormats.toRelativeTime(comment.getCreatedDateTime()));
 
         try {
             Path path = new File("src/main/resources/Client/profile.html").toPath();
             String htmlContent = new String(Files.readAllBytes(path));
-            commentProfile.getEngine().loadContent(htmlContent.replace("@id", authorChannelId + ""));
+            commentProfile.getEngine().loadContent(htmlContent.replace("@id", comment.getChannelId() + ""));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -195,11 +212,9 @@ public class CommentViewController {
         } catch (Exception exception) {
             changeInLike = +1;
             isCommentLiked.put(true, (short) 1);
-            currentReaction = new CommentReaction(commentID,YouTube.client.getAccount().getChannelId(), (short) 1);
+            currentReaction = new CommentReaction(comment.getCommentId(), YouTube.client.getAccount().getChannelId(), (short) 1);
             CompletableFuture.runAsync(() -> {
-                YouTube.client.sendCommentLikeAddRequest(currentReaction);
-                //TODO Mohsen
-                //currentReaction = YouTube.client.sendCommentReaction(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+                currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
             }, executorService).exceptionally(ex -> {
                 ex.printStackTrace();
                 return null;
@@ -231,11 +246,9 @@ public class CommentViewController {
             }
         } catch (Exception exception) {
             isCommentLiked.put(true, (short) -1);
-            currentReaction = new CommentReaction(commentID, YouTube.client.getAccount().getChannelId(), (short) -1);
+            currentReaction = new CommentReaction(comment.getCommentId(), YouTube.client.getAccount().getChannelId(), (short) -1);
             CompletableFuture.runAsync(() -> {
-                YouTube.client.sendCommentLikeAddRequest(currentReaction);
-                //TODO mohsen
-//                currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
+                currentReaction = YouTube.client.sendCommentLikeAddRequest(currentReaction);
             }, executorService).exceptionally(ex -> {
                 ex.printStackTrace();
                 return null;
@@ -262,27 +275,9 @@ public class CommentViewController {
         changeInLike = 0;
     }
 
-    public void setCommentLiked(HashMap<Boolean, Short> commentLiked) {
+    public void setCommentLiked(HashMap<Boolean, Short> commentLiked, Long initialLikeCount) {
         isCommentLiked = commentLiked;
-        Task<Void> loaderView = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Platform.runLater(() -> {
-//                    currentReaction = YouTube.client.sendRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
-
-                    initialLikeCount = YouTube.client.getLikesOfComment(commentID);
-                    setVideoLikedState();
-                });
-
-
-                return null;
-            }
-
-
-        };
-
-        Thread thread = new Thread(loaderView);
-        thread.setDaemon(true);
-        thread.start();
+        this.initialLikeCount = initialLikeCount;
+        setVideoLikedState();
     }
 }
