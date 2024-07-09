@@ -502,21 +502,19 @@ public class DatabaseManager {
     }
     public static CommentReaction getCommentReaction(Long channelId, Long commentId)
     {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
-
+        EntityManager entityManager = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
             TypedQuery<CommentReaction> query = entityManager.createQuery(
                     "SELECT cr FROM CommentReaction cr WHERE cr.channelId = :channelId AND cr.commentId = :commentId", CommentReaction.class);
             query.setParameter("channelId", channelId);
             query.setParameter("commentId", commentId);
-            try
-            {
-                return query.getSingleResult();
-            }catch (NoResultException e)
-            {
-                return null;
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
