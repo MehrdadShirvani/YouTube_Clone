@@ -1485,10 +1485,22 @@ public static Long getAllViewsOfChannel(long channelId)
     public static void deleteVideoCategories(Long videoId)
     {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
-            entityManager.createQuery("DELETE FROM VideoCategory vc WHERE vc.videoId = :videoId")
-                    .setParameter("videoId", videoId)
-                    .executeUpdate();
-        }    }
+            EntityTransaction transaction = entityManager.getTransaction();
+            try {
+                transaction.begin();
+                String query = "DELETE FROM VideoCategory vc WHERE vc.videoId = :videoId";
+                int deletedCount = entityManager.createQuery(query)
+                        .setParameter("videoId", videoId)
+                        .executeUpdate();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw e;
+            }
+        }
+    }
     public static VideoCategory addVideoCategory(Long videoId, int categoryId) {
         if(getVideo(videoId) == null || getCategory(categoryId) == null)
         {
