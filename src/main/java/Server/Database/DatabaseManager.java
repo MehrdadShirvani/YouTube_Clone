@@ -1303,7 +1303,7 @@ public static Long getAllViewsOfChannel(long channelId)
             entityManager = entityManagerFactory.createEntityManager();
 
             StringBuilder jpql = new StringBuilder("SELECT v ")
-                    .append("FROM Video WHERE c.channelId = :channelId");
+                    .append("FROM Video v WHERE v.channelId = :channelId");
 
             TypedQuery<Video> query = entityManager.createQuery(jpql.toString(), Video.class);
             query.setParameter("channelId", channelId);
@@ -1311,7 +1311,6 @@ public static Long getAllViewsOfChannel(long channelId)
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
-                return 0L;
             }
         }
 
