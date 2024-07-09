@@ -97,8 +97,13 @@ public class EditAccountView implements Initializable {
         Path path = new File("src/main/resources/Client/image-view.html").toPath();
         String htmlContent = new String(Files.readAllBytes(path));
         profileWebView.getEngine().loadContent(htmlContent.replace("@url", "http://localhost:2131/image/P_" + account.getChannelId().toString()));
-
-        //TODO  -> Mehrdad -> handle media server to handle lost video and pictures
+        Rectangle HeaderMaskRec = new Rectangle(50, 50);
+        HeaderMaskRec.setArcHeight(50);
+        HeaderMaskRec.setArcWidth(50);
+        channelWebView.setClip(HeaderMaskRec);
+        Path path2 = new File("src/main/resources/Client/image-view.html").toPath();
+        String htmlContent2 = new String(Files.readAllBytes(path2));
+        channelWebView.getEngine().loadContent(htmlContent2.replace("@url", "http://localhost:2131/image/H_" + account.getChannelId().toString()));
     }
     public void firstNameChanged(KeyEvent keyEvent) {
         if (firstNameTextField.getText().isBlank()) {
@@ -176,10 +181,20 @@ public class EditAccountView implements Initializable {
 
         if(pictureFile != null)
         {
-            uploadProfilePhoto(pictureFile, currnetAccount.getChannelId());
+            uploadProfilePhoto(pictureFile, currnetAccount.getChannelId(), false);
         }
-        
-        currnetAccount.setBirthDate(Date.from(DPBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        if(channelHeaderFile != null)
+        {
+            uploadProfilePhoto(channelHeaderFile, currnetAccount.getChannelId(), true);
+        }
+        if(DPBirthDate.getValue() != null)
+        {
+            currnetAccount.setBirthDate(Date.from(DPBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+        else
+        {
+            currnetAccount.setBirthDate(null);
+        }
         currnetAccount.setUsername(usernameTextField.getText());
         if(!passwordField.getText().isBlank())
         {
@@ -200,7 +215,7 @@ public class EditAccountView implements Initializable {
 
     }
 
-    private void uploadProfilePhoto(File pictureFile, Long channelId)
+    private void uploadProfilePhoto(File pictureFile, Long channelId, boolean isHeader)
     {
             try {
                 URL url = new URL("http://localhost:2131/upload");
@@ -208,7 +223,7 @@ public class EditAccountView implements Initializable {
 
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "image/jpg|P_" + channelId);
+                connection.setRequestProperty("Content-Type", "image/jpg|"+(isHeader?"H":"P")+"_" + channelId);
 
                 try (OutputStream outputStream = connection.getOutputStream();
                      FileInputStream fileInputStream = new FileInputStream(pictureFile)) {
@@ -232,10 +247,9 @@ public class EditAccountView implements Initializable {
             }
     }
 
-    File pictureFile;
     public void browsePicture(ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Video File");
+        fileChooser.setTitle("Choose Profile Picture");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
         fileChooser.getExtensionFilters().add(filter);
         Stage dialogStage = new Stage();
