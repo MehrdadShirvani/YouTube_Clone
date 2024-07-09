@@ -2,6 +2,7 @@ package Client;
 
 import Shared.Models.Account;
 import Shared.Models.Playlist;
+import Shared.Utils.TextEncryptor;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
