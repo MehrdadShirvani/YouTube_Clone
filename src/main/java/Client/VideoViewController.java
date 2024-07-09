@@ -214,9 +214,25 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-            String path = HomeController.class.getResource("video-player.html").toExternalForm();
-            engine = videoWebView.getEngine();
-            engine.load(path);
+        boolean isPremium = !(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()));
+        if(isPremium == false)
+        {
+            List<Video> ads = YouTube.client.searchAd(YouTube.client.getAccount().getChannelId(), null, "",1,1);
+            if(ads != null && ads.size() > 0)
+            {
+                Video ad =  ads.getFirst();
+                //TODO show the ad using the ad.getVideoId();
+            }
+        }
+        Date eighteenBefore = Date.from(LocalDate.now().minusYears(18).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if(video.getAgeRestricted() && (YouTube.client.getAccount().getBirthDate() == null || YouTube.client.getAccount().getBirthDate().after(eighteenBefore)))
+        {
+            //TODO this is adult content and the user should now watch it
+        }
+
+        String path = HomeController.class.getResource("video-player.html").toExternalForm();
+        engine = videoWebView.getEngine();
+        engine.load(path);
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
