@@ -453,17 +453,25 @@ public class DatabaseManager {
         }
     }
     public static CommentReaction editCommentReaction(CommentReaction commentReaction) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager())
-        {
-            EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
             transaction.begin();
-
             CommentReaction mergedCommentReaction = entityManager.merge(commentReaction);
-
             transaction.commit();
-            entityManager.close();
-
             return mergedCommentReaction;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
     public static void deleteCommentReaction(Long commentReactionId) {
