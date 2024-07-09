@@ -417,7 +417,9 @@ public class ClientHandler implements Runnable {
             } else if (endpointParsed[4].equals("delete")) {
                 handleDeleteVideoCategories(request);
 
-            }
+            } else {
+                handleBadRequest(header);
+             }
         } else if (header.isValidSearchQuery()) {
             handleSearchVideoRequest(request);
 
@@ -437,6 +439,12 @@ public class ClientHandler implements Runnable {
                 Long videoId = header.extractIds().getFirst();
                 handleGetPlaylistsOfVideo(request , videoId);
 
+            } else if (header.endpointParser()[4].equals("comment-reactions")) {
+                Long videoId = header.extractIds().getFirst();
+                handleGetCommentReaction(request , videoId);
+
+            } else {
+                handleBadRequest(header);
             }
         } else {
             handleBadRequest(header);
@@ -2331,6 +2339,28 @@ public class ClientHandler implements Runnable {
         responseBody.setSuccess(true);
         responseBody.setMessage("200 Ok");
         responseBody.setPlaylists(playlists);
+
+        response = new Response(requestHeader , responseBody);
+        sendResponse(response , this);
+    }
+
+
+    public void handleGetCommentReactionsOfVideo(Request request , Long videoId) {
+        Response response;
+        Header requestHeader = request.getHeader();
+
+        Body responseBody = new Body();
+
+        if (videoId == null) {
+            sendNullErrorResponse(requestHeader , "The videoId that sent is null");
+            return;
+        }
+
+        List<CommentReaction> commentReactions = DatabaseManager.getCommentReactionsOfVideo(videoId);
+
+        responseBody.setSuccess(true);
+        responseBody.setMessage("200 Ok");
+        responseBody.setCommentReactions(commentReactions);
 
         response = new Response(requestHeader , responseBody);
         sendResponse(response , this);

@@ -81,6 +81,7 @@ public class Body {
     private Boolean isVerified;
     private HashMap<String , String> twoFactorData;
     private Integer code;
+    private List<CommentReaction> commentReactions;
 
 
     public Body() {
@@ -629,5 +630,13 @@ public class Body {
 
     public void setCode(Integer code) {
         this.code = code;
+    }
+
+    public List<CommentReaction> getCommentReactions() {
+        return commentReactions;
+    }
+
+    public void setCommentReactions(List<CommentReaction> commentReactions) {
+        this.commentReactions = commentReactions;
     }
 }
