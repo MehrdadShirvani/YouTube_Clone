@@ -1124,6 +1124,8 @@ public class Client {
          String method = "GET";
          Header requestHeader = new Header(method , endpoint);
          Body requestBody = new Body();
+         requestBody.setPerPage(perPage);
+         requestBody.setPageNumber(pageNumber);
 
          Request request = new Request(requestHeader , requestBody);
 
@@ -1147,6 +1149,8 @@ public class Client {
         String method = "GET";
         Header requestHeader = new Header(method , endpoint);
         Body requestBody = new Body();
+        requestBody.setPerPage(perPage);
+        requestBody.setPageNumber(pageNumber);
 
         Request request = new Request(requestHeader , requestBody);
 
