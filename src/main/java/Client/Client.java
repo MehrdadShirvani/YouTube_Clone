@@ -480,7 +480,7 @@ public class Client {
     }
 
 
-    public boolean sendCommentAddRequest(Comment comment) {
+    public Comment sendCommentAddRequest(Comment comment) {
         String endpoint = "/api/comment/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -496,11 +496,11 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return true;
+            return responseBody.getComment();
         }
 
         System.out.println(responseBody.getMessage());
-        return false;
+        return null;
     }
 
 
