@@ -29,9 +29,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.util.Duration;
 
 import java.awt.*;
@@ -43,10 +40,10 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,6 +61,7 @@ public class VideoViewController {
     public FlowPane sideBarFlow;
     public Label commentsLabel;
     public Button editVideoBtn;
+    public Button saveButton;
     @FXML
     BorderPane mainBorderPane;
     @FXML
@@ -181,10 +179,14 @@ public class VideoViewController {
 
     Video video;
     private HomeController homeController;
+    private Playlist playlist;
+    private List<Video> playlistVideos;
 
-    public void setVideo(Video video, HomeController homeController) {
+    public void setVideo(Video video, HomeController homeController, Playlist playlist, List<Video> playlistVideos) {
         this.video = video;
         this.homeController = homeController;
+        this.playlist = playlist;
+        this.playlistVideos = playlistVideos;
         titleLabel.setText(video.getName());
         authorLabel.setText(video.getChannel().getName());
         DecimalFormat formatter = new DecimalFormat("#,###");
@@ -221,7 +223,6 @@ public class VideoViewController {
                 Platform.runLater(() -> {
                     setUpComments();
                     YouTube.client.addVideoView(new VideoView(video.getVideoId(), YouTube.client.getAccount().getChannelId()));
-                    recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
                     currentReaction = YouTube.client.sendVideoGetReactionRequest(YouTube.client.getAccount().getChannelId(), video.getVideoId());
                     isVideoLiked = YouTube.client.isVideoLiked(video.getVideoId());
 
@@ -233,8 +234,15 @@ public class VideoViewController {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
+                    recommendedVideos = playlistVideos;
+                    if(recommendedVideos == null)
+                    {
+                        recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
+                    }
+
                     for (Video recVideo : recommendedVideos) {
-                        if (!Objects.equals(recVideo.getVideoId(), video.getVideoId())) {
+                        if (!Objects.equals(recVideo.getVideoId(), video.getVideoId()) || playlistVideos != null) {
                             FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("small-video-view.fxml"));
                             Parent smallVideo = null;
                             try {
@@ -243,7 +251,7 @@ public class VideoViewController {
                                 throw new RuntimeException(e);
                             }
                             SmallVideoView controller = fxmlLoader.getController();
-                            controller.setVideo(recVideo, homeController);
+                            controller.setVideo(recVideo, homeController, playlist, playlistVideos);
                             sideBarFlow.getChildren().add(smallVideo);
                         }
                     }
