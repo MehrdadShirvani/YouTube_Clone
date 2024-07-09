@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -219,11 +220,17 @@ public class SignUpController {
         String error = Shared.Utils.TextValidator.validatePassword(passwordField.getText());
         if (!error.isBlank()) {
             if (signupVbox.getChildren().contains(passwordLabel)) {
+                passwordLabel.setText(error);
+                Text text = new Text(passwordLabel.getText());
+                text.setWrappingWidth(300);
+                passwordLabel.setMinHeight(text.getLayoutBounds().getHeight());
                 return;
             }
 
             passwordLabel = new Label();
-            passwordLabel.setText(error);//TODO Fix it to show all the text
+            passwordLabel.setMaxWidth(300);
+            passwordLabel.setWrapText(false);
+
             passwordLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(passwordField) + 1, passwordLabel);
         } else {
