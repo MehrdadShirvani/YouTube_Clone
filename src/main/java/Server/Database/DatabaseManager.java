@@ -461,6 +461,30 @@ public class DatabaseManager {
             entityManager.close();
         }
     }
+    public static List<CommentReaction> getCommentReactionsOfVideo(Long videoId)
+    {
+        try {
+            CompletableFuture<List<CommentReaction>> future = CompletableFuture.supplyAsync(() -> {
+                try(EntityManager entityManager = entityManagerFactory.createEntityManager())
+                {
+                    EntityTransaction transaction = entityManager.getTransaction();
+                    transaction.begin();
+
+                    TypedQuery<CommentReaction> query = entityManager.createQuery(
+                            "SELECT cr FROM CommentReaction cr " +
+                                    "Inner Join Comment c on c.commentId = cr.commentId " +
+                                    "WHERE c.videoId = :videoId " +
+                                    "", CommentReaction.class);
+                    query.setParameter("videoId", videoId);
+                    return  query.getResultList();
+                }
+            });
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static List<CommentReaction> getCommentReactionsOfComment(Long commentId)
     {
         try {
