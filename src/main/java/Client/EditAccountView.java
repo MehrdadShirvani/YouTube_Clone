@@ -4,6 +4,7 @@ import Shared.Models.Account;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,16 +24,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EditAccountView {
+public class EditAccountView implements Initializable {
 
     public WebView profileWebView;
     public DatePicker DPBirthDate;
+    public WebView channelWebView;
+    public CheckBox cbPremium;
     @FXML
     BorderPane backgroundBorderPane;
     @FXML
@@ -63,6 +70,9 @@ public class EditAccountView {
     @FXML
     Label emailLabel;
     private Account currnetAccount;
+    File pictureFile;
+    File channelHeaderFile;
+
     ExecutorService executorService = Executors.newCachedThreadPool();
 
     public void setAccount(Account account) throws IOException {
@@ -235,6 +245,30 @@ public class EditAccountView {
             Path path = new File("src/main/resources/Client/image-view.html").toPath();
             String htmlContent = new String(Files.readAllBytes(path));
             profileWebView.getEngine().loadContent(htmlContent.replace("@url","file:///" +  pictureFile.getAbsolutePath()));
+        }
+    }
+
+    public void browseChannelHeader(ActionEvent actionEvent) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Header File");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.jpg");
+        fileChooser.getExtensionFilters().add(filter);
+        Stage dialogStage = new Stage();
+        channelHeaderFile = fileChooser.showOpenDialog(dialogStage);
+        if(channelHeaderFile != null)
+        {
+            Path path = new File("src/main/resources/Client/image-view.html").toPath();
+            String htmlContent = new String(Files.readAllBytes(path));
+            channelWebView.getEngine().loadContent(htmlContent.replace("@url","file:///" +  channelHeaderFile.getAbsolutePath()));
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            setAccount(YouTube.client.getAccount());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
