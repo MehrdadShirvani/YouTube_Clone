@@ -408,7 +408,7 @@ public class Client {
     }
 
 
-    public boolean sendVideoLikeAddRequest(Reaction reaction) {
+    public Reaction sendVideoLikeAddRequest(Reaction reaction) {
         String endpoint = "/api/video/like/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -424,11 +424,11 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return true;
+            return responseBody.getReaction();
         }
 
         System.out.println(responseBody.getMessage());
-        return false;
+        return null;
     }
 
     public boolean sendVideoLikeDeleteRequest(Long reactionId) {
@@ -528,7 +528,7 @@ public class Client {
     }
 
 
-    public boolean sendCommentLikeAddRequest(CommentReaction commentReaction) {
+    public CommentReaction sendCommentLikeAddRequest(CommentReaction commentReaction) {
         String endpoint = "/api/comment/like/add";
         String method = "POST";
         Header requestHeader = new Header(method , endpoint);
@@ -544,11 +544,11 @@ public class Client {
         Body responseBody = response.getBody();
 
         if (responseBody.isSuccess()) {
-            return true;
+            return responseBody.getCommentReaction();
         }
 
         System.out.println(responseBody.getMessage());
-        return false;
+        return null;
     }
 
 
