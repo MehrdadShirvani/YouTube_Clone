@@ -7,24 +7,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.TwoFactorAuthenticatorController">
+<?import java.net.URL?>
+<?import javafx.scene.layout.GridPane?>
+<GridPane fx:id="backgroundGridPane" alignment="CENTER" prefHeight="641.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.TwoFactorAuthenticatorController">
+   <stylesheets>
+      <URL value="@login-signup.css" />
+   </stylesheets>
+<VBox maxHeight="-Infinity"  stylesheets="@login-signup.css"  maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" >
+
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="68.0" prefWidth="614.0" text="Two-factor Authentication">
+      <Label alignment="CENTER" styleClass="h1"  contentDisplay="CENTER" prefHeight="68.0" prefWidth="614.0" text="Two-factor Authentication">
          <font>
             <Font name="System Bold" size="37.0" />
          </font>
       </Label>
       <HBox prefHeight="51.0" prefWidth="600.0">
          <children>
-            <Label alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="37.0" prefWidth="606.0" text="Enter code from your authenticator app" />
+            <Label alignment="TOP_CENTER" styleClass="h1"  contentDisplay="TOP" prefHeight="37.0" prefWidth="606.0" text="Enter code from your authenticator app" />
          </children>
       </HBox>
       <TextArea fx:id="codeField" nodeOrientation="LEFT_TO_RIGHT" prefHeight="22.0" prefWidth="600.0" promptText="Enter your code" />
       <HBox prefHeight="89.0" prefWidth="600.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#useEmailButton" prefHeight="25.0" prefWidth="278.0" text="Use Email" />
-            <Button mnemonicParsing="false" onAction="#loginButton" prefHeight="25.0" prefWidth="322.0" text="Log In" />
+            <Button mnemonicParsing="false" styleClass="conformation-button" onAction="#useEmailButton" prefHeight="25.0" prefWidth="278.0" text="Use Email" />
+            <Button mnemonicParsing="false" onAction="#loginButton" styleClass="conformation-button" prefHeight="25.0" prefWidth="322.0" text="Log In" />
          </children>
       </HBox>
    </children>
 </VBox>
+</GridPane>
