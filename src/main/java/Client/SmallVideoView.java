@@ -137,8 +137,19 @@ public class SmallVideoView {
         previewTransition.setOnFinished(event -> {
             //TODO: select video to play
             isOnPreview = true;
-            String path = HomeController.class.getResource("video-player-no-control.html").toExternalForm();
-            webView.getEngine().load(path);
+//            String path = HomeController.class.getResource("video-player-no-control.html").toExternalForm();
+//            webView.getEngine().load(path);
+
+            try {
+                String htmlContent;
+                Path path = new File("src/main/resources/Client/video-player-no-control.html").toPath();
+                htmlContent = new String(Files.readAllBytes(path));
+                htmlContent = htmlContent.replace("@id", video.getVideoId() + "");
+                webView.getEngine().loadContent(htmlContent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         });
         //Loading Animation
         shimmerTimelineTitle = new Timeline(
