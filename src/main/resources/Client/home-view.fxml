@@ -65,11 +65,20 @@
                 </HBox>
             </center>
          <right>
-            <StackPane fx:id="proStackPane">
+            <HBox alignment="CENTER" spacing="10.0">
                <children>
-                  <WebView fx:id="profileWebView" disable="true" prefHeight="41.0" prefWidth="41.0" />
+                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#createVideo" styleClass="menu-toggle-button" text="Button">
+                     <graphic>
+                        <SVGPath content="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zm3-7H3v12h14v-6.39l4 1.83V8.56l-4 1.83V6m1-1v3.83L22 7v8l-4-1.83V19H2V5h16z" fill="#f1f1f1" />
+                     </graphic>
+                  </Button>
+                  <StackPane fx:id="proStackPane">
+                     <children>
+                        <WebView fx:id="profileWebView" disable="true" prefHeight="41.0" prefWidth="41.0" />
+                     </children>
+                  </StackPane>
                </children>
-            </StackPane>
+            </HBox>
          </right>
         </BorderPane>
     </top>

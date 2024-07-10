@@ -79,7 +79,7 @@ public class LoginController {
     public void login(ActionEvent event) {
         if(!YouTube.client.sendLoginRequest(emailTextField.getText(), TextEncryptor.encrypt(passwordField.getText())))
         {
-            //TODO Ehsasn Stylize
+            //TODO Ehsan Stylize
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Login Failed");
             alert.showAndWait();

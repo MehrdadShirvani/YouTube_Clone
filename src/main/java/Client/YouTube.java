@@ -24,8 +24,13 @@ public class YouTube extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource(viewName));
 //        Scene scene = new Scene(fxmlLoader.load(), 1007, 641);
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setMinWidth(1007);
-        stage.setMinHeight(641);
+        if (Objects.equals(viewName, "home-view.fxml")) {
+            stage.setMinWidth(1280.0);
+            stage.setMinHeight(720.0);
+        } else {
+            stage.setMinWidth(1007);
+            stage.setMinHeight(641);
+        }
         stage.setTitle("YouTube");
         stage.getIcons().add(new Image("file:youtubeicon.png"));
         String currentDirectory = System.getProperty("user.dir");
@@ -37,15 +42,14 @@ public class YouTube extends Application {
     public static void changeScene(String name) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(YouTube.class.getResource(name));
-            Scene scene = new Scene(fxmlLoader.load());
+            Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
             if (!name.equals("home-view.fxml"))
                 primaryStage.setScene(scene);
-            else
-            {
+            else {
                 primaryStage.close();
                 Stage stage = new Stage();
                 primaryStage = stage;
-                stage.setMinWidth(1280);
+                stage.setMinWidth(1280.0);
                 stage.setMinHeight(720.0);
                 stage.setTitle("YouTube");
                 stage.getIcons().add(new Image("file:youtubeicon.png"));
@@ -86,7 +90,7 @@ public class YouTube extends Application {
         if (CacheUtil.isCacheAvailable() & CacheUtil.isCacheUnchanged()) {
             System.out.println("Login with cached account !");
             Account account = CacheUtil.readAccountFromCache();
-            boolean isLoggedIn = client.sendLoginRequest(account.getEmail() , account.getPassword());
+            boolean isLoggedIn = client.sendLoginRequest(account.getEmail(), account.getPassword());
 
             if (isLoggedIn) {
                 viewAddress = "home-view.fxml";

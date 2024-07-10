@@ -560,4 +560,8 @@ public class HomeController {
 
     public void showAccount(MouseEvent mouseEvent) {
     }
+
+    public void createVideo(ActionEvent event) {
+        setVideoEditingPage(null);
+    }
 }
