@@ -199,6 +199,11 @@ public class SmallVideoView {
     }
 
     public void setPref(double ratio, Boolean avatar, Boolean author) {
+        if(ratio<=0.8) {
+            titleLabel.setStyle("-fx-font-size: 10");
+            webView.setPrefWidth(webView.getPrefWidth()*0.8);
+            webView.setPrefHeight(webView.getPrefHeight()*0.8);
+        }
         mainVBox.setPrefWidth(mainVBox.getPrefWidth() * ratio);
         mainVBox.setPrefHeight(mainVBox.getPrefHeight() * ratio);
         double size = authorLabel.getFont().getSize();

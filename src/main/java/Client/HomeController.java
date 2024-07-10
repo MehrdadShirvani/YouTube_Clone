@@ -1,5 +1,6 @@
 package Client;
 
+import Shared.Models.Account;
 import Shared.Models.Channel;
 import Shared.Models.Playlist;
 import Shared.Models.Video;
@@ -168,6 +169,14 @@ public class HomeController {
         editPro.setFill(Color.WHITE);
         editProfile.setGraphic(editPro);
 
+        Button addPlaylist = new Button("Add playlist");
+        addPlaylist.getStylesheets().add(getClass().getResource("home.css").toExternalForm());
+        addPlaylist.getStyleClass().add("menu-toggle-button");
+        accountVBox.getChildren().add(addPlaylist);
+        SVGPath playListSVG = new SVGPath();
+        playListSVG.setContent("M11.53 9.42V16.27L17.19 12.85L11.53 9.43V9.42ZM0.199997 9.42H9.26V11.7H0.199997V9.42ZM0.199997 0.279999H13.8V2.56H0.199997V0.279999ZM0.199997 4.85H13.8V7.13H0.199997V4.85Z");
+        playListSVG.setFill(Color.WHITE);
+        addPlaylist.setGraphic(playListSVG);
 
         accountPopup.getContent().add(accountVBox);
         proStackPane.setOnMouseClicked(e -> {
@@ -183,7 +192,7 @@ public class HomeController {
             @Override
             public void handle(ActionEvent event) {
                 accountPopup.hide();
-                YouTube.changeScene("edit-account-view.fxml");
+                setEditProfilePage();
             }
         });
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -199,6 +208,13 @@ public class HomeController {
                 accountPopup.hide();
                 YouTube.client.setAccount(null);
                 YouTube.changeScene("login-view.fxml");
+            }
+        });
+        addPlaylist.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                accountPopup.hide();
+                setPlaylistPage(null);
             }
         });
 
@@ -540,6 +556,15 @@ public class HomeController {
         }
         AddEditPlaylistController controller = fxmlLoader.getController();
         controller.setPlaylist(playlist, this);
+    }
+    private void setEditProfilePage() {
+        mainBorderPane.setCenter(null);
+        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("edit-account-view.fxml"));
+        try {
+            mainBorderPane.setCenter(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void showAccount(MouseEvent mouseEvent) {

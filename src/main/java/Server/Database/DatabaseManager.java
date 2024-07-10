@@ -3,23 +3,46 @@ import Shared.Models.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseManager {
-
+    private static String username;
+    private static String password;
     private static HikariDataSource dataSource;
+    private static void readConfigFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/Server/.DatabaseConfig.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("=", 2);
+                if (parts.length >= 2) {
+                    String key = parts[0].trim();
+                    String value = parts[1].trim();
+                    if (key.equals("username")) {
+                        username = value;
+                    } else if (key.equals("password")) {
+                        password = value;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     static {
+        readConfigFile();
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/YoutubeDB");
-        config.setUsername(DatabaseProperties.getUsername());
-        config.setPassword(DatabaseProperties.getPassword());
+        config.setUsername(username);
+        config.setPassword(password);
         config.setMaximumPoolSize(20);
         config.setMinimumIdle(5);
         config.setIdleTimeout(30000);
