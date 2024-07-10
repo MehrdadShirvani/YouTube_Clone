@@ -204,7 +204,7 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
         List<Channel> subscribers = YouTube.client.getChannelSubscribers(video.getChannelId());
-        if(subscribers != null)
+        if (subscribers != null)
             subsLabel.setText(subscribers.size() + " subscribers ");
 
         try {
@@ -216,29 +216,35 @@ public class VideoViewController {
         }
 
         boolean isPremium = !(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()));
-        if(!isPremium)
-        {
-            List<Video> ads = YouTube.client.searchAd(YouTube.client.getAccount().getChannelId(), null, "",1,1);
-            if(ads != null && ads.size() > 0)
-            {
-                Video ad =  ads.getFirst();
+        if (!isPremium) {
+            List<Video> ads = YouTube.client.searchAd(YouTube.client.getAccount().getChannelId(), null, "", 1, 1);
+            if (ads != null && ads.size() > 0) {
+                Video ad = ads.getFirst();
                 //TODO show the ad using the ad.getVideoId();
             }
         }
         Date eighteenBefore = Date.from(LocalDate.now().minusYears(18).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        if(video.getAgeRestricted() && (YouTube.client.getAccount().getBirthDate() == null || YouTube.client.getAccount().getBirthDate().after(eighteenBefore)))
-        {
+        if (video.getAgeRestricted() && (YouTube.client.getAccount().getBirthDate() == null || YouTube.client.getAccount().getBirthDate().after(eighteenBefore))) {
             //TODO this is adult content and the user should now watch it
         }
 
-        if(subtitleExists())
-        {
+        if (subtitleExists()) {
             //TODO get the subtitle from ->  http://localhost:2131/subtitle/videoId
+
         }
 
-        String path = HomeController.class.getResource("video-player.html").toExternalForm();
-        engine = videoWebView.getEngine();
-        engine.load(path);
+//        String path = HomeController.class.getResource("video-player.html").toExternalForm();
+//        engine = videoWebView.getEngine();
+//        engine.load(path);
+        try {
+            String htmlContent;
+            Path path = new File("src/main/resources/Client/video-player.html").toPath();
+            htmlContent = new String(Files.readAllBytes(path));
+            htmlContent = htmlContent.replace("@id", video.getVideoId() + "");
+            videoWebView.getEngine().loadContent(htmlContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Task<Void> loaderView = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -257,8 +263,7 @@ public class VideoViewController {
                     }
 
                     recommendedVideos = playlistVideos;
-                    if(recommendedVideos == null)
-                    {
+                    if (recommendedVideos == null) {
                         recommendedVideos = YouTube.client.searchVideo(YouTube.client.getCategoriesOfVideo(video.getVideoId()), "", 10, 1);
                     }
 
@@ -273,7 +278,7 @@ public class VideoViewController {
                             }
                             SmallVideoView controller = fxmlLoader.getController();
                             controller.setVideo(recVideo, homeController, playlist, playlistVideos);
-                            controller.setPref(0.8,true,true);
+                            controller.setPref(0.8, true, true);
                             sideBarVBox.getChildren().add(smallVideo);
                         }
                     }
@@ -307,8 +312,7 @@ public class VideoViewController {
         thread.start();
     }
 
-    private boolean subtitleExists()
-    {
+    private boolean subtitleExists() {
         String serverUrl = "http://localhost:2131/subtitle/" + video.getVideoId();
         URL url = null;
         try {
@@ -319,7 +323,7 @@ public class VideoViewController {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return true;
             }
-            return  false;
+            return false;
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         } catch (ProtocolException e) {
@@ -342,8 +346,7 @@ public class VideoViewController {
 
         for (Comment comment : commentList) {
 
-            if(comment.getRepliedCommentId() != null)
-            {
+            if (comment.getRepliedCommentId() != null) {
                 continue;
             }
             try {
@@ -351,8 +354,7 @@ public class VideoViewController {
                 FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
                 Node node = commentLoader.load();
                 leftVBox.getChildren().add(node);
-                if(firstComment == null)
-                {
+                if (firstComment == null) {
                     firstComment = node;
                 }
                 CommentViewController controller = commentLoader.getController();
@@ -360,11 +362,11 @@ public class VideoViewController {
 
                 controller.setComment(comment, this, null);
                 List<Comment> replies = commentList.stream().filter(c -> Objects.equals(c.getRepliedCommentId(), comment.getCommentId())).toList();
-                for(Comment reply : replies) {
+                for (Comment reply : replies) {
                     commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
                     controller.addReply(commentLoader.load());
                     CommentViewController replyController = commentLoader.getController();
-                    replyController.setComment(reply ,this, controller);
+                    replyController.setComment(reply, this, controller);
                     commentViewControllers.add(replyController);
                 }
             } catch (IOException e) {
@@ -378,18 +380,16 @@ public class VideoViewController {
             throw new RuntimeException(e);
         }
 
-        for(CommentViewController controller : commentViewControllers)
-        {
+        for (CommentViewController controller : commentViewControllers) {
             List<CommentReaction> commentReactionsOfComment = commentReactions.stream().filter(x -> Objects.equals(x.getCommentId(), controller.comment.getCommentId())).toList();
-            List<CommentReaction> userReaction = commentReactionsOfComment .stream().filter(x ->  Objects.equals(x.getChannelId(), YouTube.client.getAccount().getChannelId())).toList();
+            List<CommentReaction> userReaction = commentReactionsOfComment.stream().filter(x -> Objects.equals(x.getChannelId(), YouTube.client.getAccount().getChannelId())).toList();
             HashMap<Boolean, Short> commentLiked = new HashMap<>();
             CommentReaction commentReaction = null;
-            if(!userReaction.isEmpty())
-            {
+            if (!userReaction.isEmpty()) {
                 commentLiked.put(true, userReaction.getFirst().getCommentReactionTypeId());
                 commentReaction = userReaction.getFirst();
             }
-            controller.setCommentLiked(commentLiked , (long) commentReactionsOfComment.size(), commentReaction);
+            controller.setCommentLiked(commentLiked, (long) commentReactionsOfComment.size(), commentReaction);
         }
 
     }
@@ -502,11 +502,9 @@ public class VideoViewController {
         FXMLLoader commentLoader = new FXMLLoader(VideoViewController.class.getResource("comment-view.fxml"));
         try {
             Node theCommentNode = commentLoader.load();
-            if(firstComment == null)
-            {
+            if (firstComment == null) {
                 leftVBox.getChildren().add(theCommentNode);
-            }
-            else {
+            } else {
                 int index = leftVBox.getChildren().indexOf(firstComment);
                 leftVBox.getChildren().add(index, theCommentNode);
             }
@@ -516,7 +514,7 @@ public class VideoViewController {
         }
         CommentViewController newCommentController = commentLoader.getController();
 
-        newCommentController.setComment(newComment,this, null);
+        newCommentController.setComment(newComment, this, null);
         newCommentController.setCommentLiked(new HashMap<>(), 0L, null);
         notifyOneCommentUp();
     }
@@ -531,13 +529,13 @@ public class VideoViewController {
     }
 
     public void editBtnAction(ActionEvent actionEvent) {
-         homeController.setVideoEditingPage(video);
+        homeController.setVideoEditingPage(video);
     }
 
     public void share(ActionEvent event) {
         shareButton.setDisable(true);
         shareButton.setText("Copied!");
-        StringSelection stringSelection = new StringSelection("http://localhost:2131/video/"+video.getVideoId());
+        StringSelection stringSelection = new StringSelection("http://localhost:2131/video/" + video.getVideoId());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
         pause.setOnFinished(e -> {
@@ -547,8 +545,7 @@ public class VideoViewController {
         pause.play();
     }
 
-    public void saveAction(ActionEvent actionEvent)
-    {
+    public void saveAction(ActionEvent actionEvent) {
 
         javafx.scene.control.Dialog<ButtonType> dialog = new javafx.scene.control.Dialog<>();
         dialog.setTitle("Example Dialog");
@@ -561,15 +558,15 @@ public class VideoViewController {
             dialog.getDialogPane().setContent(content);
 
 
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        dialog.showAndWait().ifPresent(response -> {
-            if (response.equals(ButtonType.OK)) {
-                controller.save();
-            } else {
+            dialog.showAndWait().ifPresent(response -> {
+                if (response.equals(ButtonType.OK)) {
+                    controller.save();
+                } else {
 
-            }
-        });
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
