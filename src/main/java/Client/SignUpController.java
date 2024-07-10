@@ -234,8 +234,10 @@ public class SignUpController {
 
             passwordLabel.setTextFill(Paint.valueOf("#ffffff"));
             signupVbox.getChildren().add(signupVbox.getChildren().indexOf(passwordField) + 1, passwordLabel);
+            passwordField.setStyle("-fx-border-color: #dd2c00");
         } else {
             signupVbox.getChildren().remove(passwordLabel);
+            passwordField.setStyle("-fx-border-color: transparent");
         }
     }
 }

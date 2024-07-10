@@ -216,7 +216,7 @@ public class VideoViewController {
         }
 
         boolean isPremium = !(YouTube.client.getAccount().getPremiumExpirationDate() == null || YouTube.client.getAccount().getPremiumExpirationDate().before(new Date()));
-        if(isPremium == false)
+        if(!isPremium)
         {
             List<Video> ads = YouTube.client.searchAd(YouTube.client.getAccount().getChannelId(), null, "",1,1);
             if(ads != null && ads.size() > 0)

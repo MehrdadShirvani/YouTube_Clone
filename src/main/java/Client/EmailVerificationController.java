@@ -4,20 +4,27 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 
 public class EmailVerificationController {
     @FXML
-    private Label emailSentLabel;
-
+    public Label emailSentLabel;
     @FXML
-    private TextField tokenField;
-    private Integer originalToken;
+    public TextField tokenField;
+    public Integer originalToken;
+    @FXML
+    public VBox designVBox;
+    public BorderPane backgroundBorderPane;
+    public GridPane backgroundGridPane;
 
     public void initialize() {
         String email = YouTube.client.getAccount().getEmail();
         String emailSentText = "We've sent an token to " + email;
-
+        backgroundBorderPane.prefWidthProperty().bind(backgroundGridPane.widthProperty().multiply((double) 892 / 1007));
+        backgroundBorderPane.prefHeightProperty().bind(backgroundGridPane.heightProperty().multiply((double) 455 / 641));
         emailSentLabel.setText(emailSentText);
 
         originalToken = YouTube.client.verifyEmail();

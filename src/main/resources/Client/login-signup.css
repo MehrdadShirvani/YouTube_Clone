@@ -155,6 +155,36 @@ DatePicker .month-year-pane .spinner {
     -fx-background-color: #dd2c00;
     -fx-text-fill: #f1f1f1;
 }
+.age-toggle{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: #fbc02d;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-border-width: 1;
+    -fx-border-color: #fbc02d;
+}
+.age-toggle:selected{
+    -fx-background-color: #fbc02d;
+    -fx-text-fill: #f1f1f1;
+}
+.short-toggle{
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: #CD201F;
+    -fx-font-family: Roboto;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-border-width: 1;
+    -fx-border-color: #CD201F;
+}
+.short-toggle:selected{
+    -fx-background-color: #CD201F;
+    -fx-text-fill: #f1f1f1;
+}
 #CBIsCollaborative{
     -fx-background-radius: 20;
     -fx-border-radius: 20;
