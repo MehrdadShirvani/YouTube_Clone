@@ -275,15 +275,15 @@ public class HomeController {
     }
 
     private void setShorts() {
-        mainBorderPane.setCenter(null);
-        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
-        VBox videoPage = null;
-        try {
-            videoPage = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        mainBorderPane.setCenter(videoPage);
+//        mainBorderPane.setCenter(null);
+//        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
+//        VBox videoPage = null;
+//        try {
+//            videoPage = fxmlLoader.load();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        mainBorderPane.setCenter(videoPage);
     }
 
 
@@ -331,7 +331,6 @@ public class HomeController {
         homeVideosFlowPane.getChildren().clear();
 
         currentVideos = YouTube.client.getHomepageVideos(perPage , pageNumber);
-        System.out.println("WEEE SETTT HOMEEEE");
         System.out.println("currentVideos = " + currentVideos);
         for (SmallVideoView controller : currentSmallVideos) {
             controller.webView.getEngine().load(null);

@@ -137,6 +137,8 @@ public class VideoViewController {
         //Arrow keys assign
         leftScrollPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DOWN || event.getCode() == KeyCode.UP || event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.SPACE) {
+                if(engine == null)
+                    engine = videoWebView.getEngine();
                 if (event.getCode() == KeyCode.LEFT)
                     engine.executeScript("player.forward(-10);");
                 if (event.getCode() == KeyCode.RIGHT)
@@ -233,7 +235,7 @@ public class VideoViewController {
         }
 
         if (subtitleExists()) {
-            //TODO get the subtitle from ->  http://localhost:2131/subtitle/videoId
+            //TODO get the subtitle https://soundcloud.com/tags/PHONKfrom ->  http://localhost:2131/subtitle/videoId
 
         }
 
