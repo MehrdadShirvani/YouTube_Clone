@@ -7,9 +7,9 @@
 </p>
 
 This project was developed as the final project for an advanced programming course👨‍💻🥇. The primary goal was to create a user interface that is both visually appealing and feature-rich, closely resembling the functionality and design of YouTube. The project showcases a variety of advanced programming techniques and tools to deliver a seamless user experience.
-## Quick start
+
 ![Screenshot](https://github.com/user-attachments/assets/0cdcff8f-25fd-4a29-b297-c00df8aa86f5)
-<!--TODO-->
+
 Now ready to go!🎉🎉🎉
 
 
@@ -35,10 +35,6 @@ The user interface for this project was developed using the JavaFX framework, en
 | `←` | 10sec backward |
 | `Space` | pause/upause |
 
-
-
-## Minimal suggestion algorithm
-<!--TODO-->
 ## Contributing
 Contributions are the heart of the open-source community, fostering learning, inspiration, and creativity. Your contributions are highly valued and appreciated.
 
