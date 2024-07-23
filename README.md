@@ -18,7 +18,25 @@ The user interface for this project was developed using the JavaFX framework, en
 * Responsive(all pages)
 * Interactive(primary buttons|searchbar|hovering)
 * Input validation before backend check(Minimums for name&username|constraints for password field)
-* Shortcuts(`/`→search|`→`→10sec forward|`↑`→volume up|`ctrl+h`→home)
+* Shortcuts
+
+| Key | Action |
+| ---- | ----- |
+| `/` | search |
+| `Esc` | cancel search |
+| `ctrl+H` | Home |
+| `ctrl+S` | Shorts |
+| `ctrl+Shift+S` | subscriptions |
+| `ctrl+Y` | your channel |
+| `ctrl+Shift+ H` | History |
+| `↑` | volume 10% up |
+| `↓` | volume 10% down |
+| `→` | 10sec forward |
+| `←` | 10sec backward |
+| `Space` | pause/upause |
+
+
+
 ## Minimal suggestion algorithm
 <!--TODO-->
 ## Contributing
