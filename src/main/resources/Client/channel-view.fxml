@@ -125,7 +125,7 @@
                                                 <WebView fx:id="myNoContentWebView2" disable="true" prefHeight="147.0" prefWidth="147.0" style="-fx-background-color: transparent;" />
                                                 <Label styleClass="h1-label" text="Create content on any device" />
                                                 <Label styleClass="h2-label" text="Upload and record at home or on the go.&#10;Everything you make public will appear here." textAlignment="CENTER" />
-                                                <Button minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="submmit-button" text="Create">
+                                                <Button minHeight="40.0" mnemonicParsing="false" onAction="#createVideoAction" prefHeight="40.0" styleClass="submmit-button" text="Create">
                                                     <padding>
                                                         <Insets left="20.0" right="20.0" />
                                                     </padding>

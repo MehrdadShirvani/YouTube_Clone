@@ -1,32 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.AuthenticatorSetUpController">
-   <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="631.0" text="Authentication App">
-         <font>
-            <Font name="System Bold" size="28.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="608.0" text="Using an authenticator app like Google Authenticatorscan this QR code. It will generate a 6digit code for you to enter below.">
-         <font>
-            <Font size="11.0" />
-         </font>
-      </Label>
-      <AnchorPane prefHeight="168.0" prefWidth="600.0">
-         <children>
-            <ImageView fx:id="QrCodeImageView" fitHeight="170.0" fitWidth="200.0" layoutX="200.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </AnchorPane>
-      <Label alignment="CENTER" prefHeight="27.0" prefWidth="644.0" text="Enter Authentication Code" />
-      <TextField fx:id="authCodeField" alignment="CENTER" promptText="Code" />
-      <Button mnemonicParsing="false" onAction="#setUpButton" text="Set Up" />
-   </children>
-</VBox>
+<GridPane fx:id="backgroundGridPane" alignment="CENTER" prefHeight="641.0" prefWidth="1007.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.AuthenticatorSetUpController">
+    <stylesheets>
+        <URL value="@login-signup.css" />
+    </stylesheets>
+    <BorderPane fx:id="backgroundBorderPane" layoutX="64.0" layoutY="73.0" prefHeight="455.0" prefWidth="892.0">
+        <right>
+            <VBox fx:id="signupVbox" alignment="CENTER" prefHeight="510.0" prefWidth="426.0" spacing="30.0" stylesheets="@login-signup.css" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets left="20.0" />
+                </BorderPane.margin>
+                <children>
+               <Label layoutX="98.0" layoutY="185.0" styleClass="h1" text="Enter Authentication Code" wrapText="true" />
+               <TextField fx:id="authCodeField" alignment="CENTER" promptText="6 digits Code" />
+               <Label fx:id="emailSentLabel" styleClass="h2" text="Using an authenticator app like Google Authenticatorscan this QR code. It will generate a 6digit code for you to enter above." textAlignment="CENTER" wrapText="true" />
+               <HBox alignment="CENTER_RIGHT">
+                  <children>
+                     <Button alignment="CENTER" minHeight="34.0" mnemonicParsing="false" onAction="#setUpButton" prefHeight="39.0" prefWidth="91.0" styleClass="conformation-button" text="Verify" textAlignment="CENTER">
+                        <HBox.margin>
+                           <Insets top="10.0" />
+                        </HBox.margin></Button>
+                  </children>
+               </HBox>
+                </children>
+                <padding>
+                    <Insets bottom="30.0" top="40.0" />
+                </padding>
+            </VBox>
+        </right>
+        <padding>
+            <Insets left="20.0" right="20.0" />
+        </padding>
+        <center>
+            <VBox fx:id="designVBox" alignment="TOP_CENTER">
+            <ImageView fitHeight="133.0" fitWidth="114.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@bulb.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="designLabel" alignment="CENTER" contentDisplay="TEXT_ONLY" styleClass="account-title" stylesheets="@login-signup.css" text="Authentication App" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="45.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="QrCodeImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+            <BorderPane.margin>
+               <Insets top="50.0" />
+            </BorderPane.margin>
+            </VBox>
+        </center>
+    </BorderPane>
+   <padding>
+      <Insets top="20.0" />
+   </padding>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+    <!--  <padding>-->
+    <!--    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />-->
+    <!--  </padding>-->
+
+</GridPane>

@@ -80,9 +80,11 @@
 <body>
     <div id="videoContainer">
         <video id="videoPlayer" playsinline controls>
-            <source src="http://localhost:2131/video/37088" type="video/mp4">
+            <source src="http://localhost:2131/video/@id" type="video/mp4">
+
             Your browser does not support the video tag.
         </video>
+        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 <!--        <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>-->
         <script src="plyr.js"></script>
         <div id="progressContainer" onclick="seek(event)">

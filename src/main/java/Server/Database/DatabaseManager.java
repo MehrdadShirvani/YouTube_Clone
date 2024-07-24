@@ -43,7 +43,7 @@ public class DatabaseManager {
         config.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/YoutubeDB");
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(20);
+        config.setMaximumPoolSize(100);
         config.setMinimumIdle(5);
         config.setIdleTimeout(30000);
         config.setConnectionTimeout(20000);
@@ -1876,9 +1876,5 @@ public static Long getAllViewsOfChannel(long channelId)
             return category;
         }
     }
-
-
-
-
     //endregion
 }

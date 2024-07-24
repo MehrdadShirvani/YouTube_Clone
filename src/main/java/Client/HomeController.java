@@ -4,6 +4,7 @@ import Shared.Models.Account;
 import Shared.Models.Channel;
 import Shared.Models.Playlist;
 import Shared.Models.Video;
+import Shared.Utils.QrCodeGenerator;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,9 +85,10 @@ public class HomeController {
     private VBox accountVBox;
     private ArrayList<String> searchHistory;
     private int perPage = 8;
-    private int pageNumber = 1;
+    private int pageNumber;
 
     public void initialize() {
+        pageNumber = 1;
         searchHistory = YouTube.client.readSearchHistory();
         TextFields.bindAutoCompletion(searchTextField , searchHistory);
 
@@ -196,6 +199,13 @@ public class HomeController {
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                File file = new File("src/main/java/Client/.cache");
+                String[] entries = file.list();
+                for(String entry : entries){
+                    File currentFile = new File(file.getPath(),entry);
+                    currentFile.delete();
+                }
+
                 accountPopup.hide();
                 YouTube.client.setAccount(null);
                 YouTube.changeScene("login-view.fxml");
@@ -265,15 +275,15 @@ public class HomeController {
     }
 
     private void setShorts() {
-        mainBorderPane.setCenter(null);
-        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
-        VBox videoPage = null;
-        try {
-            videoPage = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        mainBorderPane.setCenter(videoPage);
+//        mainBorderPane.setCenter(null);
+//        FXMLLoader fxmlLoader = new FXMLLoader(HomeController.class.getResource("channel-view.fxml"));
+//        VBox videoPage = null;
+//        try {
+//            videoPage = fxmlLoader.load();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        mainBorderPane.setCenter(videoPage);
     }
 
 
@@ -316,12 +326,12 @@ public class HomeController {
         mainBorderPane.setCenter(videoPage);
     }
     private void setHome() {
+        pageNumber = 1;
         mainBorderPane.setCenter(homeScrollPane);
         homeVideosFlowPane.getChildren().clear();
 
-        currentVideos = YouTube.client.getHomepageVideos(8 , 1);
+        currentVideos = YouTube.client.getHomepageVideos(perPage , pageNumber);
         System.out.println("currentVideos = " + currentVideos);
-        updateHomepage();
         for (SmallVideoView controller : currentSmallVideos) {
             controller.webView.getEngine().load(null);
             controller.profileWebView.getEngine().load(null);
@@ -341,6 +351,7 @@ public class HomeController {
             controller.setVideo(video, this, null, null);
             homeVideosFlowPane.getChildren().add(smallVideo);
         }
+        updateHomepage();
         Platform.runLater(() -> {
             updateSubsList();
         });
@@ -350,6 +361,7 @@ public class HomeController {
     public void updateHomepage() {
         pageNumber++;
         currentVideos = YouTube.client.getHomepageVideos(perPage, pageNumber);
+        System.out.println("currentVideos(IN UPDATE HOME PAGE) = " + currentVideos);
         for (SmallVideoView controller : currentSmallVideos) {
             controller.webView.getEngine().load(null);
             controller.profileWebView.getEngine().load(null);
@@ -559,5 +571,9 @@ public class HomeController {
     }
 
     public void showAccount(MouseEvent mouseEvent) {
+    }
+
+    public void createVideo(ActionEvent event) {
+        setVideoEditingPage(null);
     }
 }
