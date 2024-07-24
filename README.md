@@ -1,5 +1,5 @@
 # Java YouTube clone app(Memoli)
-[![Static Badge](https://img.shields.io/badge/%231_advanced_programming_final_project-FF0000)]() [![license](https://img.shields.io/badge/License-MIT-FF0000)]()
+[![Static Badge](https://img.shields.io/badge/%231_advanced_programming_final_project-FF0000)]() [![star](https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flat&color=FF0000)]() [![license](https://img.shields.io/badge/License-MIT-FF0000)]() 
 
 <p align="center">
 <img src="./src/main/resources/Client/youtube-logo-white.png" width=50%>
