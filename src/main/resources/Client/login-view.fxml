@@ -28,7 +28,7 @@
                           </HBox.margin>
                       </Button>
 
-                      <Button alignment="CENTER" minHeight="34.0" mnemonicParsing="false" onAction="#login" prefHeight="43.0" prefWidth="85.0" styleClass="conformation-button" text="Log in" textAlignment="CENTER">
+                      <Button alignment="CENTER" defaultButton="true" minHeight="34.0" mnemonicParsing="false" onAction="#login" prefHeight="43.0" prefWidth="85.0" styleClass="conformation-button" text="Log in" textAlignment="CENTER">
                         <HBox.margin>
                            <Insets top="10.0" />
                         </HBox.margin></Button>
