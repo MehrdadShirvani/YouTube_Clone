@@ -43,7 +43,7 @@ If you have suggestions for improvements, please fork the repository and submit 
 **Don’t forget to star🌟 the project! Thanks again!**
 ## Acknowledgments
 I would like to express my sincere gratitude to the following individuals for their invaluable contributions and support throughout this project:
-* [Mohsen Minavand](https://github.com/woxane), [Ehsan Habibagahi](https://github.com/Ehsan-Habib-3H) and [Mehrdad Shirvani](https://github.com/MehrdadShirvani) (_Contributors_)
+* [Mohsen Minavand](https://github.com/woxane), [Ehsan Habibagahi](https://github.com/Ehsan-Habibagahi) and [Mehrdad Shirvani](https://github.com/MehrdadShirvani) (_Contributors_)
 * [Dr. Saeed R Kheradpishe](https://github.com/SRKH) (_Instructor_)
 * [Farid Karimi](https://github.com/Farid-Karimi) (_Teaching Assistant(TA)_)
 * [Video and Image Files](https://www.pexels.com)
